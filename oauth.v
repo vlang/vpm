@@ -40,7 +40,7 @@ fn (app mut App) oauth_cb() {
 	resp := http.post('https://github.com/login/oauth/access_token', d) or { return } 
 	println('resp text=' + resp.text) 
 	token := resp.text.find_between('access_token=', '&')
-println('token =$token') 
+	println('token =$token') 
 	mut req := http.new_request('GET', 'https://api.github.com/user?access_token=$token', '') or { return } 
 	req.add_header('User-Agent', 'V http client')
 	user_js := req.do() or {
@@ -55,7 +55,7 @@ println('token =$token')
 		app.vweb.redirect('/new')
 		return 
 	} 
-println('login =$login') 
+	println('login =$login') 
 	mut random_id := random_string(20)
 	app.db.exec_param2('insert into users (name, random_id) values ($1, $2)', login, random_id)
 	// Fetch the new or already existing user and set cookies
@@ -63,7 +63,7 @@ println('login =$login')
 	random_id = app.db.q_string('select random_id from users where name=\'$login\' ')
 	app.vweb.set_cookie('id', user_id.str())
 	app.vweb.set_cookie('q', random_id)
-println('redirecting to /new') 
+	println('redirecting to /new') 
 	app.vweb.redirect('/new')
 }
 

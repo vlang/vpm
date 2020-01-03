@@ -16,8 +16,7 @@ const (
 
 struct ModsRepo {
 	db pg.DB 
-} 
-
+}
 
 struct App {
 pub mut:
@@ -54,7 +53,7 @@ pub fn (app mut App) reset() {
 pub fn (app mut App) new() {
 	app.auth() 
 	logged_in := app.cur_user.name != '' 
-println('new() loggedin: $logged_in') 
+	println('new() loggedin: $logged_in') 
 	println(123) // TODO remove, won't work without it 
 	$vweb.html()
 }
@@ -68,7 +67,7 @@ fn is_valid_mod_name(s string) bool {
 		return false 
 	} 
 	for c in s {
-//println(c.str()) 
+	//println(c.str()) 
 		if !(c >= `A` && c <= `Z`) && !(c >= `a` && c <= `z`) && !(c >= `0` && c <= `9`) && c != `.` { 
 			return false 
 		} 
@@ -88,9 +87,8 @@ pub fn (app mut App) create_module() {
 	} 
 	url := app.vweb.form['url'].replace('<', '&lt;') 
 	println('CREATE url="$url"') 
-	if !url.starts_with('github.com/')  	&& !url.starts_with('http://github.com/')  	&& 
-		!url.starts_with('https://github.com/')  {
-println('NOT GITHUb') 
+	if !url.starts_with('github.com/') && !url.starts_with('http://github.com/') && !url.starts_with('https://github.com/')  {
+		println('NOT GITHUb') 
 		app.vweb.redirect('/') 
 		return 
 	} 
@@ -125,6 +123,4 @@ pub fn (app mut App) jsmod() {
 // "/post/:id/:title" 
 pub fn (app App) get_mod_name() string {
 	return app.vweb.req.url[5..]
-} 
-
-
+}
