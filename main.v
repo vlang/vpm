@@ -5,9 +5,9 @@ import (
 	vweb
 	os
 	pg
-	json 
-	rand 
-	time 
+	json
+	rand
+	time
 )
 
 const (
@@ -34,7 +34,8 @@ fn main() {
 
 pub fn (app mut App) init() {
 	println('pg.connect()')
-	app.db = pg.connect(pg.Config{dbname:'vpm', user:'alex'}) or { panic(err) }
+	db := pg.connect(pg.Config{host: 'localhost', dbname:'vpm', user:'admin'}) or { panic(err) }
+	app.db = db
 	app.cur_user = User{} 
 	app.mods_repo = ModsRepo{app.db} 
 	//app.vweb.serve_static('/img/github.png', 'img/github.png') 

@@ -4,6 +4,7 @@ import (
 	rand 
 	net.http
 	json
+	os
 ) 
 
 const (
@@ -21,7 +22,7 @@ const (
 )
 
 fn random_string(len int) string {
-	mut buf := [byte(0); len]
+	mut buf := [`0`].repeat(len)
 	for i := 0; i < len; i++ {
 		idx := rand.next(RANDOM.len)
 		buf[i] = RANDOM[idx]
@@ -42,7 +43,9 @@ fn (app mut App) oauth_cb() {
 println('token =$token') 
 	mut req := http.new_request('GET', 'https://api.github.com/user?access_token=$token', '') or { return } 
 	req.add_header('User-Agent', 'V http client')
-	user_js := req.do()
+	user_js := req.do() or {
+		panic(err)
+	}
 	gh_user := json.decode(GitHubUser, user_js.text) or {
 		println('cant decode')
 		return
@@ -65,10 +68,17 @@ println('redirecting to /new')
 }
 
 fn (app mut App) auth() {
-	sid := app.vweb.get_cookie('id') 
-	id := app.vweb.get_cookie('id').int()
-	random_id := app.vweb.get_cookie('q').trim_space() 
-	println('auth sid="$sid" id=$id len ="$random_id.len" qq="$random_id" !!!') 
+	id_cookie := app.vweb.get_cookie('id') or { 
+		println('failed to id cookie')
+		return
+	}
+	id := id_cookie.int()
+	q_cookie := app.vweb.get_cookie('q') or {
+		println("failed to get q cookie.")
+		return
+	}
+	random_id := q_cookie.trim_space() 
+	println('auth sid="$id_cookie" id=$id len ="$random_id.len" qq="$random_id" !!!') 
 	app.cur_user = User{} 
 	if id != 0 {
 		cur_user := app.retrieve_user(id, random_id) or {
