@@ -121,39 +121,6 @@ pub fn (app mut App) jsmod() {
 	app.vweb.json(json.encode(mod)) 
 } 
 
-/* 
-// new post 
-pub fn (app App) new() {
-	$vweb.html() 
-} 
-
-// [post] 
-pub fn (app mut App) new_post() {
-	mut name := '' 
-	if app.cur_user.name != '' {
-		name = app.cur_user.name
-	}
-	else {
-		// not logged in
-		//return
-		name = 'admin' // TODO remove 
-	}
-	title := app.vweb.post_form['title']
-	mut text := app.vweb.post_form['text']
-	if title == '' || text == '' {
-		app.vweb.redirect('/new')
-		return
-	}
-	// Allow admin to post HTML 
-	if name != 'admin' {
-		text = text.replace('<', '&lt;')
-	}
-	app.insert_post(title, text) 
-	app.vweb.redirect('/')
-} 
-
-
-*/ 
 // "/post/:id/:title" 
 pub fn (app App) get_mod_name() string {
 	return app.vweb.req.url[5..]
