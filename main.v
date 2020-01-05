@@ -18,7 +18,7 @@ struct ModsRepo {
 	db pg.DB 
 }
 
-struct App {
+pub struct App {
 pub mut:
 	vweb vweb.Context // TODO embed 
 	db pg.DB
@@ -93,7 +93,16 @@ pub fn (app mut App) create_module() {
 		return 
 	} 
 	println('CREATE url="$url"') 
-	app.mods_repo.insert_module(app.cur_user.name + '.' + name.limit(max_name_len), url.limit(50)) 
+	mut vcs := app.vweb.form['vcs'].to_lower()
+	if vcs == '' {
+		vcs = 'git'
+	}  
+	if !vcs in supported_vcs_systems {
+		println('Unsupported vcs: $vcs')
+		app.vweb.redirect('/')
+		return            
+	}
+	app.mods_repo.insert_module(app.cur_user.name + '.' + name.limit(max_name_len), url.limit(50), vcs.limit(3))
 	app.vweb.redirect('/') 
 } 
 
