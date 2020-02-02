@@ -41,11 +41,7 @@ fn (app mut App) oauth_cb() {
 	println('resp text=' + resp.text) 
 	token := resp.text.find_between('access_token=', '&')
 	println('token =$token') 
-	mut req := http.new_request('GET', 'https://api.github.com/user?access_token=$token', '') or { return } 
-	req.add_header('User-Agent', 'V http client')
-	user_js := req.do() or {
-		panic(err)
-	}
+	user_js := http.fetch("https://api.github.com/user?access_token=$token", {method: 'GET', headers: {'User-Agent': 'V http client'}}) or { panic(err) }
 	gh_user := json.decode(GitHubUser, user_js.text) or {
 		println('cant decode')
 		return
