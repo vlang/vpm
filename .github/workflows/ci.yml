@@ -1,0 +1,16 @@
+name: CI
+on: [push, pull_request]
+jobs:
+
+  ubuntu:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: sudo apt-get install --quiet -y postgresql libpq-dev libssl-dev 
+    - name: Make v
+      run: git clone https://github.com/vlang/v v/
+    - name: Build V
+      run: cd v/ ; make -j4; cd ../
+    - name: Build VPM
+      run: v/v . && ls -lat
