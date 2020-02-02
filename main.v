@@ -1,9 +1,7 @@
 module main
 
 import (
-	net
 	vweb
-	os
 	pg
 	json
 	rand
