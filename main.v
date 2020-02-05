@@ -30,9 +30,26 @@ fn main() {
 	vweb.run<App>(Port)
 }
 
+pub fn env_default(vname string, vdefault string) string {
+	value := os.getenv(vname)
+	if value == '' {
+		return vdefault
+	}
+	return value
+}
+
+pub fn env_pg_config() pg.Config {
+	return pg.Config {
+		host:     env_default('PGHOST',     'localhost'), 
+		user:     env_default('PGUSER',     'admin'),
+		password: env_default('PGPASSWORD', ''),
+		dbname:   env_default('PGDATABASE', 'vpm'),
+	}
+}
+
 pub fn (app mut App) init() {
 	println('pg.connect()')
-	db := pg.connect(pg.Config{host: 'localhost', dbname:'vpm', user:'admin'}) or { panic(err) }
+	db := pg.connect( env_pg_config() ) or { panic(err) }
 	app.db = db
 	app.cur_user = User{} 
 	app.mods_repo = ModsRepo{app.db} 
@@ -42,7 +59,6 @@ pub fn (app mut App) init() {
 pub fn (app mut App) index() {
 	app.vweb.set_cookie('vpm', '777') 
 	mods := app.find_all_mods()
-	println(123) // TODO remove, won't work without it 
 	$vweb.html()
 }
 
@@ -58,7 +74,8 @@ pub fn (app mut App) new() {
 }
 
 pub fn (app mut App) sqldump() {
-	sql := os.exec('pg_dump vpm --table=modules --no-password --username=admin') or { return }
+	pgc := env_pg_config()
+	sql := os.exec('pg_dump $pgc.dbname --table=modules --no-password') or { return }
 	$vweb.html()
 }
 
