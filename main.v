@@ -76,7 +76,7 @@ pub fn (app mut App) new() {
 pub fn (app mut App) sqldump() {
 	pgc := env_pg_config()
 	sql := os.exec('pg_dump $pgc.dbname --table=modules --no-password') or { return }
-	$vweb.html()
+	app.vweb.text(sql.output)
 }
 
 const (
