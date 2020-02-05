@@ -6,6 +6,7 @@ import (
 	json
 	rand
 	time
+	os
 )
 
 const (
@@ -53,6 +54,11 @@ pub fn (app mut App) new() {
 	logged_in := app.cur_user.name != '' 
 	println('new() loggedin: $logged_in') 
 	println(123) // TODO remove, won't work without it 
+	$vweb.html()
+}
+
+pub fn (app mut App) sqldump() {
+	sql := os.exec('pg_dump vpm --table=modules --no-password --username=admin') or { return }
 	$vweb.html()
 }
 
