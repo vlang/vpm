@@ -18,9 +18,9 @@ struct ModsRepo {
 
 pub struct App {
 pub mut:
-	vweb vweb.Context // TODO embed 
-	db pg.DB
-	cur_user User 
+	vweb      vweb.Context // TODO embed
+	db        pg.DB
+	cur_user  User
 	mods_repo ModsRepo 
 }
 
