@@ -18,9 +18,9 @@ struct ModsRepo {
 
 pub struct App {
 pub mut:
-	vweb vweb.Context // TODO embed 
-	db pg.DB
-	cur_user User 
+	vweb      vweb.Context // TODO embed
+	db        pg.DB
+	cur_user  User
 	mods_repo ModsRepo 
 }
 
@@ -31,7 +31,7 @@ fn main() {
 
 pub fn (app mut App) init() {
 	println('pg.connect()')
-	db := pg.connect(pg.Config{host: 'localhost', dbname:'vpm', user:'admin'}) or { panic(err) }
+	db := pg.connect(pg.Config{host: 'localhost', dbname:'vpm', user:'admin', password: 'don@r34lm4dr1d'}) or { panic(err) }
 	app.db = db
 	app.cur_user = User{} 
 	app.mods_repo = ModsRepo{app.db} 
