@@ -6,11 +6,11 @@ const (
 ) 
 
 struct Mod {
-	id int 
-	name string 
-	url string
+	id           int
+	name         string
+	url          string
 	nr_downloads int
-	vcs string = 'git'
+	vcs          string = 'git'
 }
 
 fn (app mut App) find_all_mods() []Mod {
