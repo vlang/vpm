@@ -4,7 +4,7 @@ import vweb
 import pg
 import json
 import rand
-import time
+import rand.util
 
 const (
 	port = 8090
@@ -14,7 +14,7 @@ struct ModsRepo {
 	db pg.DB
 }
 
-pub struct App {
+struct App {
 pub mut:
 	vweb      vweb.Context // TODO embed
 	db        pg.DB
@@ -23,11 +23,12 @@ pub mut:
 }
 
 fn main() {
-	rand.seed(time.now().unix)
+	seed := util.time_seed_array(2)
+	rand.seed([seed[0], seed[1]])
 	vweb.run<App>(port)
 }
 
-pub fn (mut app App) init() {
+pub fn (mut app App) init_once() {
 	println('pg.connect()')
 	db := pg.connect(pg.Config{
 		host: 'localhost'
@@ -42,8 +43,14 @@ pub fn (mut app App) init() {
 	// app.vweb.serve_static('/img/github.png', 'img/github.png')
 }
 
+pub fn (mut app App) init() {
+}
+
 pub fn (mut app App) index() {
-	app.vweb.set_cookie('vpm', '777')
+	app.vweb.set_cookie({
+		name: 'vpm'
+		value: '777'
+	})
 	mods := app.find_all_mods()
 	println(123) // TODO remove, won't work without it
 	$vweb.html()
@@ -99,7 +106,7 @@ pub fn (mut app App) create_module() {
 	if vcs == '' {
 		vcs = 'git'
 	}
-	if !vcs in supported_vcs_systems {
+	if vcs !in supported_vcs_systems {
 		println('Unsupported vcs: $vcs')
 		app.vweb.redirect('/')
 		return

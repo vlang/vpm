@@ -21,7 +21,7 @@ const (
 fn random_string(len int) string {
 	mut buf := [`0`].repeat(len)
 	for i := 0; i < len; i++ {
-		idx := rand.next(random.len)
+		idx := rand.intn(random.len)
 		buf[i] = random[idx]
 	}
 	return string(buf)
@@ -63,8 +63,14 @@ fn (mut app App) oauth_cb() {
 	// Fetch the new or already existing user and set cookies
 	user_id := app.db.q_int("select id from users where name=\'$login\' ")
 	random_id = app.db.q_string("select random_id from users where name=\'$login\' ")
-	app.vweb.set_cookie('id', user_id.str())
-	app.vweb.set_cookie('q', random_id)
+	app.vweb.set_cookie({
+		name: 'id'
+		value: user_id.str()
+	})
+	app.vweb.set_cookie({
+		name: 'q'
+		value: random_id
+	})
 	println('redirecting to /new')
 	app.vweb.redirect('/new')
 }

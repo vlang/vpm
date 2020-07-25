@@ -57,7 +57,7 @@ fn (repo ModsRepo) insert_module(name, url, vcs string) {
 	if url.contains(' ') || url.contains('%') || url.contains('<') {
 		return
 	}
-	if !vcs in supported_vcs_systems {
+	if vcs !in supported_vcs_systems {
 		return
 	}
 	repo.db.exec_param_many('insert into modules (name, url, vcs) values ($1, $2, $3)',
