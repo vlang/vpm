@@ -41,7 +41,7 @@ fn (mut app App) oauth_cb() {
 	token := resp.text.find_between('access_token=', '&')
 	println('token =$token')
 	user_js := http.fetch('https://api.github.com/user?access_token=$token', {
-		method: 'GET'
+		method: .get
 		headers: {
 			'User-Agent': 'V http client'
 		}
