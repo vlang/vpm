@@ -24,7 +24,7 @@ fn random_string(len int) string {
 		idx := rand.intn(random.len)
 		buf[i] = random[idx]
 	}
-	return string(buf)
+	return buf.str()
 }
 
 fn (mut app App) oauth_cb() {
