@@ -14,7 +14,7 @@ struct Mod {
 }
 
 fn (mut app App) find_all_mods() []Mod {
-	rows, _ := app.db.exec('select name, url, nr_downloads, vcs from modules order by nr_downloads desc')
+	rows := app.db.exec('select name, url, nr_downloads, vcs from modules order by nr_downloads desc')
 	mut mods := []Mod{}
 	for row in rows {
 		mods << Mod{
@@ -28,7 +28,8 @@ fn (mut app App) find_all_mods() []Mod {
 }
 
 fn (repo ModsRepo) retrieve(name string) ?Mod {
-	rows, _ := repo.db.exec('select name, url, nr_downloads from modules where name=$name')
+	rows := repo.db.exec_param('select name, url, nr_downloads from modules where name=$1',
+		name)
 	if rows.len == 0 {
 		return error('Found no module with name "$name"')
 	}
@@ -43,7 +44,8 @@ fn (repo ModsRepo) retrieve(name string) ?Mod {
 }
 
 fn (repo ModsRepo) inc_nr_downloads(name string) {
-	repo.db.exec('update modules set nr_downloads=nr_downloads+1 where name=$name')
+	repo.db.exec_param('update modules set nr_downloads=nr_downloads+1 where name=$1',
+		name)
 }
 
 fn (repo ModsRepo) insert_module(name, url, vcs string) {
@@ -58,7 +60,8 @@ fn (repo ModsRepo) insert_module(name, url, vcs string) {
 	if vcs !in supported_vcs_systems {
 		return
 	}
-	repo.db.exec('insert into modules (name, url, vcs) values ($name, $url, $vcs)')
+	repo.db.exec_param_many('insert into modules (name, url, vcs) values ($1, $2, $3)',
+		[name, url, vcs])
 }
 
 fn clean_url(s string) string {

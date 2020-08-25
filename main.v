@@ -1,7 +1,7 @@
 module main
 
 import vweb
-import sqlite
+import pg
 import json
 import rand
 import rand.util
@@ -11,13 +11,13 @@ const (
 )
 
 struct ModsRepo {
-	db sqlite.DB
+	db pg.DB
 }
 
 struct App {
 pub mut:
 	vweb      vweb.Context // TODO embed
-	db        sqlite.DB
+	db        pg.DB
 	cur_user  User
 	mods_repo ModsRepo
 }
@@ -29,11 +29,15 @@ fn main() {
 }
 
 pub fn (mut app App) init_once() {
-	println('sqlite.connect()')
-	app.db = sqlite.connect('init.sql') or {
-		println('failed to connect to db')
+	println('pg.connect()')
+	db := pg.connect(pg.Config{
+		host: 'localhost'
+		dbname: 'vpm'
+		user: 'admin'
+	}) or {
 		panic(err)
 	}
+	app.db = db
 	app.cur_user = User{}
 	app.mods_repo = ModsRepo{app.db}
 	// app.vweb.serve_static('/img/github.png', 'img/github.png')
