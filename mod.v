@@ -14,7 +14,9 @@ struct Mod {
 }
 
 fn (mut app App) find_all_mods() []Mod {
-	rows := app.db.exec('select name, url, nr_downloads, vcs from modules order by nr_downloads desc')
+	rows := app.db.exec('select name, url, nr_downloads, vcs from modules order by nr_downloads desc') or {
+		panic(err)
+	}
 	mut mods := []Mod{}
 	for row in rows {
 		mods << Mod{
