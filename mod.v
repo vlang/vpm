@@ -50,7 +50,7 @@ fn (repo ModsRepo) inc_nr_downloads(name string) {
 		name)
 }
 
-fn (repo ModsRepo) insert_module(name, url, vcs string) {
+fn (repo ModsRepo) insert_module(name string, url string, vcs string) {
 	for bad_name in banned_names {
 		if name.contains(bad_name) {
 			return
