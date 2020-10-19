@@ -26,5 +26,6 @@ jobs:
         v fmt -verify main.v oauth.v mod.v _user.v
     - name: Build VPM
       run: |
+        cd vpm
         v -prod .
         ls -lat
