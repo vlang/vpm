@@ -3,7 +3,6 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-# test
   ubuntu:
     runs-on: ubuntu-18.04
     steps:
@@ -21,8 +20,11 @@ jobs:
       run: |
         make
         sudo ./v symlink
-    - name: Build VPM
+    - name: v fmt -verify
       run: |
         cd vpm
-        v .
+        v fmt -verify main.v oauth.v mod.v _user.v
+    - name: Build VPM
+      run: |
+        v -prod .
         ls -lat
