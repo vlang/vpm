@@ -3,6 +3,24 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  code-formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout V
+      uses: actions/checkout@v2
+      with:
+        repository: vlang/v
+    - name: Checkout VPM
+      uses: actions/checkout@v2
+      with:
+        path: vpm
+    - name: Build V
+      run: make
+    - name: v fmt -verify
+      run: |
+        cd vpm
+        ../v fmt -verify main.v oauth.v mod.v _user.v
+
   ubuntu:
     runs-on: ubuntu-18.04
     steps:
@@ -17,15 +35,9 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get install --quiet -y postgresql libpq-dev libssl-dev
     - name: Build V
-      run: |
-        make
-        sudo ./v symlink
-    - name: v fmt -verify
-      run: |
-        cd vpm
-        v fmt -verify main.v oauth.v mod.v _user.v
+      run: make
     - name: Build VPM
       run: |
         cd vpm
-        v -prod .
+        ../v -prod .
         ls -lat
