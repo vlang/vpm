@@ -1,16 +1,43 @@
 name: CI
+
 on: [push, pull_request]
+
 jobs:
-# test
+  code-formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout V
+      uses: actions/checkout@v2
+      with:
+        repository: vlang/v
+    - name: Checkout VPM
+      uses: actions/checkout@v2
+      with:
+        path: vpm
+    - name: Build V
+      run: make
+    - name: v fmt -verify
+      run: |
+        cd vpm
+        ../v fmt -verify main.v oauth.v mod.v _user.v
+
   ubuntu:
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout V
+      uses: actions/checkout@v2
+      with:
+        repository: vlang/v
+    - name: Checkout VPM
+      uses: actions/checkout@v2
+      with:
+        path: vpm
     - name: Install dependencies
-      run: sudo apt-get install --quiet -y postgresql libpq-dev libssl-dev 
-    - name: Make v
-      run: git clone https://github.com/vlang/v v/
+      run: sudo apt-get install --quiet -y postgresql libpq-dev libssl-dev
     - name: Build V
-      run: cd v/ ; make -j4; cd ../
+      run: make
     - name: Build VPM
-      run: v/v . && ls -lat
+      run: |
+        cd vpm
+        ../v -prod .
+        ls -lat
