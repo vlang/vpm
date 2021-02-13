@@ -49,7 +49,7 @@ fn (repo ModsRepo) retrieve(name string) ?Mod {
 
 fn (repo ModsRepo) inc_nr_downloads(name string) {
 	repo.db.exec_param('update modules set nr_downloads=nr_downloads+1 where name=$1',
-		name)
+		name) or { panic(err) }
 }
 
 fn (repo ModsRepo) insert_module(name string, url string, vcs string) {
@@ -65,7 +65,7 @@ fn (repo ModsRepo) insert_module(name string, url string, vcs string) {
 		return
 	}
 	repo.db.exec_param_many('insert into modules (name, url, vcs) values ($1, $2, $3)',
-		[name, url, vcs])
+		[name, url, vcs]) or { panic(err) }
 }
 
 fn clean_url(s string) string {

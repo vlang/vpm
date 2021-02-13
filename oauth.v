@@ -28,7 +28,7 @@ fn random_string(len int) string {
 }
 
 fn (mut app App) oauth_cb() {
-	code := app.vweb.req.url.all_after('code=')
+	code := app.req.url.all_after('code=')
 	println(code)
 	if code == '' {
 		return
@@ -54,12 +54,12 @@ fn (mut app App) oauth_cb() {
 	}
 	login := gh_user.login.replace(' ', '')
 	if login.len < 2 {
-		app.vweb.redirect('/new')
+		app.redirect('/new')
 		return
 	}
 	println('login =$login')
 	mut random_id := random_string(20)
-	app.db.exec_param2('insert into users (name, random_id) values ($1, $2)', login, random_id)
+	app.db.exec_param2('insert into users (name, random_id) values ($1, $2)', login, random_id) or { panic(err) }
 	// Fetch the new or already existing user and set cookies
 	user_id := app.db.q_int("select id from users where name=\'$login\' ") or {
 		panic(err)
@@ -67,25 +67,25 @@ fn (mut app App) oauth_cb() {
 	random_id = app.db.q_string("select random_id from users where name=\'$login\' ") or {
 		panic(err)
 	}
-	app.vweb.set_cookie({
+	app.set_cookie({
 		name: 'id'
 		value: user_id.str()
 	})
-	app.vweb.set_cookie({
+	app.set_cookie({
 		name: 'q'
 		value: random_id
 	})
 	println('redirecting to /new')
-	app.vweb.redirect('/new')
+	app.redirect('/new')
 }
 
 fn (mut app App) auth() {
-	id_cookie := app.vweb.get_cookie('id') or {
+	id_cookie := app.get_cookie('id') or {
 		println('failed to id cookie')
 		return
 	}
 	id := id_cookie.int()
-	q_cookie := app.vweb.get_cookie('q') or {
+	q_cookie := app.get_cookie('q') or {
 		println('failed to get q cookie.')
 		return
 	}
