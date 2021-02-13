@@ -34,9 +34,7 @@ pub fn (mut app App) init_once() {
 		host: 'localhost'
 		dbname: 'vpm'
 		user: 'admin'
-	}) or {
-		panic(err)
-	}
+	}) or { panic(err) }
 	app.db = db
 	app.cur_user = User{}
 	app.mods_repo = ModsRepo{app.db}
@@ -47,10 +45,10 @@ pub fn (mut app App) init() {
 }
 
 pub fn (mut app App) index() {
-	app.set_cookie({
+	app.set_cookie(
 		name: 'vpm'
 		value: '777'
-	})
+	)
 	mods := app.find_all_mods()
 	println(123) // TODO remove, won't work without it
 	$vweb.html()
@@ -96,7 +94,8 @@ pub fn (mut app App) create_module() {
 	}
 	url := app.form['url'].replace('<', '&lt;')
 	println('CREATE url="$url"')
-	if !url.starts_with('github.com/') && !url.starts_with('http://github.com/') && !url.starts_with('https://github.com/') {
+	if !url.starts_with('github.com/') && !url.starts_with('http://github.com/')
+		&& !url.starts_with('https://github.com/') {
 		println('NOT GITHUb')
 		app.redirect('/')
 		return

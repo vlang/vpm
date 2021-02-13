@@ -34,20 +34,16 @@ fn (mut app App) oauth_cb() {
 		return
 	}
 	d := 'client_id=$client_id&client_secret=$client_secret&code=$code'
-	resp := http.post('https://github.com/login/oauth/access_token', d) or {
-		return
-	}
+	resp := http.post('https://github.com/login/oauth/access_token', d) or { return }
 	println('resp text=' + resp.text)
 	token := resp.text.find_between('access_token=', '&')
 	println('token =$token')
-	user_js := http.fetch('https://api.github.com/user?access_token=$token', {
+	user_js := http.fetch('https://api.github.com/user?access_token=$token', 
 		method: .get
-		headers: {
+		headers: map{
 			'User-Agent': 'V http client'
 		}
-	}) or {
-		panic(err)
-	}
+	) or { panic(err) }
 	gh_user := json.decode(GitHubUser, user_js.text) or {
 		println('cant decode')
 		return
@@ -59,22 +55,22 @@ fn (mut app App) oauth_cb() {
 	}
 	println('login =$login')
 	mut random_id := random_string(20)
-	app.db.exec_param2('insert into users (name, random_id) values ($1, $2)', login, random_id) or { panic(err) }
-	// Fetch the new or already existing user and set cookies
-	user_id := app.db.q_int("select id from users where name=\'$login\' ") or {
+	app.db.exec_param2('insert into users (name, random_id) values ($1, $2)', login, random_id) or {
 		panic(err)
 	}
+	// Fetch the new or already existing user and set cookies
+	user_id := app.db.q_int("select id from users where name=\'$login\' ") or { panic(err) }
 	random_id = app.db.q_string("select random_id from users where name=\'$login\' ") or {
 		panic(err)
 	}
-	app.set_cookie({
+	app.set_cookie(
 		name: 'id'
 		value: user_id.str()
-	})
-	app.set_cookie({
+	)
+	app.set_cookie(
 		name: 'q'
 		value: random_id
-	})
+	)
 	println('redirecting to /new')
 	app.redirect('/new')
 }
@@ -93,9 +89,7 @@ fn (mut app App) auth() {
 	println('auth sid="$id_cookie" id=$id len ="$random_id.len" qq="$random_id" !!!')
 	app.cur_user = User{}
 	if id != 0 {
-		cur_user := app.retrieve_user(id, random_id) or {
-			return
-		}
+		cur_user := app.retrieve_user(id, random_id) or { return }
 		app.cur_user = cur_user
 	}
 }

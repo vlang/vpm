@@ -31,9 +31,7 @@ fn (mut app App) find_all_mods() []Mod {
 
 fn (repo ModsRepo) retrieve(name string) ?Mod {
 	rows := repo.db.exec_param('select name, url, nr_downloads from modules where name=$1',
-		name) or {
-		return error(err)
-	}
+		name) or { return error(err) }
 	if rows.len == 0 {
 		return error('Found no module with name "$name"')
 	}
