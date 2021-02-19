@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>vpm</title>
+	<meta name="description" content="V's package manager">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/svg+xml" href="/static/assets/favicon.svg" sizes="any">
+
+	@css '//fonts.googleapis.com/css?family=Poppins:700,900&text="Package Manager for the V Language"'
+	@css '//fonts.googleapis.com/css?family=Fira Sans:400,500,600,700'
+	@css '//fonts.googleapis.com/css?family=Source Sans Pro:400,600,700'
+	@css '/static/css/reset.css'
+	@css '/static/css/main.css'
+	@css '/static/css/mod.css'
+	@css '/static/css/user.css'
+</head>
+<body>
+
+<header class="header">
+    .inner {
+		<a id="logo" href="/" aria-label="Homepage">
+			<img src="/static/assets/logo.svg" height="60" />
+		</a>
+		.account {
+			@if app.logged_in
+				<a class="new" href="/new">
+					<img src="/static/assets/new.svg" height="32" />
+				</a>
+				.avatar {
+					@if app.user.b_avatar
+						<img src="@app.user.avatar">
+					@else
+						<span>@app.user.avatar</span>
+					@end
+				}
+				.header-dropdown {
+					.username {
+						<span>Signed in as</span>
+						<a href="/@app.user.username">@app.user.username</a>
+					}
+					.links {
+						<a href="/@app.user.username/modules" class="link">Modules</a>
+						<a href="/@app.user.username/settings" class="link">Settings</a>
+						@if app.user.is_admin
+							<a href="/admin" class="link">Admin Panel</a>	
+						@end
+					}
+					.links {
+						<a href="/logout" class="link">Sign out</a>
+					}
+					<div class="dropdown-hoverzone"></div>
+				}
+			@else
+				<a class="login-button" href="/login">Log in with GitHub</a>
+			@end
+		}
+	}
+<header>

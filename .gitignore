@@ -1,3 +1,5 @@
-fns.txt
 vpm
+vpm.sqlite
+.lite_workspace.lua
+static/assets/version
 *.code-workspace
