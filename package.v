@@ -1,7 +1,8 @@
 module main
 
-struct Mod {
+struct Package {
 	id           int
+	author_id    int
 	name         string
 	version      string
 	description  string
@@ -14,9 +15,14 @@ struct Mod {
 	vcs          string = 'git'
 }
 
-pub fn (mut app App) insert_mod(mod Mod) {
+pub fn (mut app App) insert_package(pkg Package) {
 	sql app.db {
-		insert mod into Mod
+		insert pkg into Package
 	}
 }
 
+pub fn (mut app App) delete_package(pkg Package) {
+	sql app.db {
+		insert pkg into Package
+	}
+}

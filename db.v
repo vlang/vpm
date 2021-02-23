@@ -5,8 +5,9 @@ fn (mut app App) create_table(name string, fields []string) {
 }
 
 fn (mut app App) create_tables() {
-	app.create_table('Mod', [
+	app.create_table('Package', [
 		'id integer primary key',
+		'author_id integer default -1',
 		'name text default ""',
 		'version text default "0.0.1"',
 		'description text default ""',
@@ -14,9 +15,9 @@ fn (mut app App) create_tables() {
 		'dependencies text default ""',
 		'license text default ""',
 		'repo_url text default ""',
-		'url text default ""',
-		'nr_downloads int default 0',
+		'nr_downloads integer default 0',
 		'vcs text default "git"',
+		'foreign key (author_id) references User(id)'
 	])
 	app.create_table('User', [
 		'id integer primary key',
@@ -24,6 +25,6 @@ fn (mut app App) create_tables() {
 		'username text default ""',
 		'is_admin int default 0',
 		'avatar text default ""',
-		'login_attempts int default 0',
+		'login_attempts integer default 0'
 	])
 }
