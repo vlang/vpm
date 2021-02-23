@@ -1,20 +1,21 @@
 module main
 
 import time
+import os
 import vweb
 import sqlite
 
 const (
-	http_port = 3000
+	http_port = 80
 )
 
 struct App {
 	vweb.Context
 mut:
 	started_at u64
-	db sqlite.DB
-	logged_in bool
-	user User
+	db         sqlite.DB
+	logged_in  bool
+	user       User
 }
 
 fn main() {
@@ -23,16 +24,20 @@ fn main() {
 
 pub fn (mut app App) init_once() {
 	app.started_at = time.now().unix
+
+	// Connect to database
 	app.db = sqlite.connect('vpm.sqlite') or {
 		println('failed to connect to db')
 		panic(err)
 	}
 	app.create_tables()
 
-	app.handle_static('./static/assets/')
-	app.handle_static('./static/css/')
-	//app.serve_static('/reset.css', './static/css/reset.css', 'text/css')
-	//app.serve_static('/main.css', './static/css/main.css', 'text/css')
+	if !os.exists('./static/vpm.css') {
+		eprintln('Please compile styles with sass.')
+		eprintln('\'sass --recursive ./css/vpm.scss:./static/vpm.css\'')
+		panic('No vpm.css file in static')
+	}
+	app.handle_static('./static/', false)
 }
 
 // Global middleware
@@ -47,17 +52,29 @@ pub fn (mut app App) init() {
 	}
 }
 
-pub fn (mut app App) get_user_from_cookies() ?User {
-	return User{}
-}
-
 pub fn (mut app App) index() vweb.Result {
 	nr_packages := 140
-	new_packages := []Mod{}
-	most_downloaded_packages := []Mod{}
-	recently_updated_packages := []Mod{}
-	most_recent_downloads_packages := []Mod{}
-	popular_tags := []Mod{}
-	popular_categories := []Mod{}
+	new_packages := []Package{}
+	most_downloaded_packages := []Package{}
+	recently_updated_packages := []Package{}
+	most_recent_downloads_packages := []Package{}
+	popular_tags := []Package{}
+	popular_categories := []Package{}
+	return $vweb.html()
+}
+
+pub fn (mut app App) new() vweb.Result {
+	return $vweb.html()
+}
+
+pub fn (mut app App) browse() vweb.Result {
+	return $vweb.html()
+}
+
+pub fn (mut app App) package() vweb.Result {
+	return $vweb.html()
+}
+
+pub fn (mut app App) user() vweb.Result {
 	return $vweb.html()
 }
