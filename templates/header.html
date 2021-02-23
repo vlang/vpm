@@ -5,27 +5,29 @@
 	<title>vpm</title>
 	<meta name="description" content="V's package manager">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" type="image/svg+xml" href="/static/assets/favicon.svg" sizes="any">
-
-	@css '//fonts.googleapis.com/css?family=Poppins:700,900&text="Package Manager for the V Language"'
-	@css '//fonts.googleapis.com/css?family=Fira Sans:400,500,600,700'
-	@css '//fonts.googleapis.com/css?family=Source Sans Pro:400,600,700'
-	@css '/static/css/reset.css'
-	@css '/static/css/main.css'
-	@css '/static/css/mod.css'
-	@css '/static/css/user.css'
+	<meta name="theme-color" content="#ffffff">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" href="/favicon.svg">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap&text=Package Manager for the V Language" rel="stylesheet">
+	<link rel="stylesheet" href="/vpm.css">
 </head>
 <body>
 
 <header class="header">
     .inner {
 		<a id="logo" href="/" aria-label="Homepage">
-			<img src="/static/assets/logo.svg" height="60" />
+			<img src="/logo.svg" height="60" />
 		</a>
 		.account {
 			@if app.logged_in
 				<a class="new" href="/new">
-					<img src="/static/assets/new.svg" height="32" />
+					<img src="/new.svg" height="32" />
 				</a>
 				.avatar {
 					@if app.user.b_avatar
@@ -56,4 +58,4 @@
 			@end
 		}
 	}
-<header>
+</header>

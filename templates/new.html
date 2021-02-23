@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>vpm</title>
+	<meta name="description" content="V's package manager">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#ffffff">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" href="/favicon.svg">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/vpm.css">
+</head>
+<body>
+
+<header class="forever-alone-header">
+    .inner {
+		<a id="logo" href="/" aria-label="Homepage">
+			<img src="/logo.svg" height="60" />
+		</a>
+	}
+</header>
+
+<div class="new-form-container">
+    <div class="inner">
+        @if app.logged_in
+        <form>
+            <label for="repo_url">Repo</label>
+            <input id="repo_url" type="text"/>
+            <button>Submit</button>
+        </form>
+        @else
+        <p>
+            In order to upload your package, you must be logged in using github
+        </p>
+        <a href="/login">
+            Log in with Github
+        </a>
+        @end
+    </div>
+</div>
+
+@footer
