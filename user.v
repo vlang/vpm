@@ -10,3 +10,7 @@ mut:
 	b_avatar             bool    [skip]
 	login_attempts       int
 }
+
+pub fn (mut app App) get_user_from_cookies() ?User {
+	return error('Not implemented')
+}
