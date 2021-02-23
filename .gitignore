@@ -1,5 +1,6 @@
 vpm
+vpm.css
+vpm.css.map
 vpm.sqlite
 .lite_workspace.lua
-static/assets/version
 *.code-workspace
