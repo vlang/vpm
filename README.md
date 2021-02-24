@@ -1,3 +1,12 @@
-<img width='200' src='https://camo.githubusercontent.com/6c5fc4b03d3e90a7c345407cb57a82c0f4a68607/68747470733a2f2f766c616e672e696f2f696d672f76706d2e706e67'>
+<h1>
+    <img width='200' alt='vpm' src='https://user-images.githubusercontent.com/26527529/108953907-04e46a80-767d-11eb-98ec-a22a7f2ab7a6.png'>
+</h1>
+
+Package Manager for the V Language
 
 https://vpm.vlang.io
+
+- Light and fast
+- Minimal amount of RAM usage (works great on the cheapest $3.5 AWS Lightsail instance)
+- Easy to deploy via Docker
+- Works without JavaScript
