@@ -16,13 +16,13 @@ fn (mut app App) create_tables() {
 		'license text default ""',
 		'repo_url text default ""',
 		'nr_downloads integer default 0',
-		'vcs text default "git"',
 		'foreign key (author_id) references User(id)'
 	])
 	app.create_table('User', [
 		'id integer primary key',
 		'name text default ""',
 		'username text default ""',
+		'is_blocked int default 0',
 		'is_admin int default 0',
 		'avatar text default ""',
 		'login_attempts integer default 0'

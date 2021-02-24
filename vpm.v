@@ -45,7 +45,6 @@ pub fn (mut app App) init_once() {
 // Global middleware
 pub fn (mut app App) init() {
 	app.logged_in = app.logged_in()
-	app.user = User{}
 	if app.logged_in {
 		app.user = app.get_user_from_cookies() or {
 			app.logged_in = false
@@ -65,18 +64,54 @@ pub fn (mut app App) index() vweb.Result {
 	return $vweb.html()
 }
 
-pub fn (mut app App) new() vweb.Result {
+pub fn (mut app App) create() vweb.Result {
 	return $vweb.html()
+}
+
+[post]
+['/create']
+pub fn (mut app App) create_package() vweb.Result {
+	if app.logged_in {
+		repo_url := app.form['repo_url']
+		// TODO: get repo info from git
+		package := Package{
+			author_id: app.user.id
+			name: 'test'
+			version: '0.1.0'
+			description: 'Test package'
+			license: 'MIT'
+			repo_url: repo_url
+		}
+		app.insert_package(package)
+		return app.ok('')
+	}
+	app.error('Not logged in')
+	return app.server_error(401)
 }
 
 pub fn (mut app App) browse() vweb.Result {
+	packages := app.get_all_packages() or {
+		return app.server_error(500)
+	}
 	return $vweb.html()
 }
 
-pub fn (mut app App) package() vweb.Result {
+pub fn (mut app App) login() vweb.Result {
+	return app.redirect(app.get_login_link())
+}
+
+pub fn (mut app App) logout() vweb.Result {
+	app.set_cookie(name: 'id', value: '')
+	app.set_cookie(name: 'token', value: '')
+	return app.redirect('/')
+}
+
+['/user/:username']
+pub fn (mut app App) user(username string) vweb.Result {
 	return $vweb.html()
 }
 
-pub fn (mut app App) user() vweb.Result {
+['/:package']
+pub fn (mut app App) package(package string) vweb.Result {
 	return $vweb.html()
 }
