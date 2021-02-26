@@ -1,5 +1,92 @@
 @header
 
-<p>package placeholder</p>
+.content {
+  .package-markdown {
+    @package.rendered_markdown
+  }
+
+  .package-aside {
+    .package-aside-block {
+      <span class="package-aside-block-header">Install</span>
+      .package-aside-block-install {
+        <span>v install @package.name</span>
+        <span id="package-copy-install" onclick="copyToClipboard('v install @package.name')">
+          <img width="16" height="16" src="/copy.svg" />
+        </span>
+      }
+    }
+
+    .package-aside-block {
+      <span class="package-aside-block-header">License</span>
+      .package-aside-block-info {
+        <span>@package.license</span>
+      }
+    }
+
+    .package-aside-block {
+      <span class="package-aside-block-header">Last Updated</span>
+      .package-aside-block-info {
+        <span>@package.last_updated</span>
+      }
+    }
+
+    .package-aside-block {
+      <span class="package-aside-block-header">Tags</span>
+      .package-aside-block-tags {
+        @for tag in package.tags
+          <a href="@tag.uri">@tag.name</a>
+        @end
+      }
+    }
+
+    .package-aside-block {
+      <span class="package-aside-block-header">Categories</span>
+      <ul class="package-aside-block-categories">
+        @for category in package.categories
+          <li>
+            <a href="@category.uri">@category.name</a>
+          </li>
+        @end
+      </ul>
+    }
+
+    .package-aside-block {
+      <span class="package-aside-block-header">Versions</span>
+      <ul class="package-aside-block-versions">
+        @for version in package.versions
+          <li>
+            <a href="@category.uri">@version.name</a>
+            <span>@version.date</span>
+          </li>
+        @end
+      </ul>
+    }
+
+    .package-aside-block {
+      <span class="package-aside-block-header">Dependencies</span>
+      <ul class="package-aside-block-dependencies">
+        @for dependency in package.dependencies
+          <li>
+            <a href="@category.uri">@dependency.name @dependency.version</a>
+          </li>
+        @end
+      </ul>
+    }
+  }
+}
+
+<script>
+  const copyToClipboard = str => {
+    const el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  };
+</script>
 
 @footer
