@@ -1,5 +1,72 @@
 @header
 
+.content {
+  <div class="browse-header">
+    <span>@browse_header</span>
+  </div>
 
+  @for package in @packages
+    .browse-package {
+      .browse-package-left {
+        .browse-package-left-header {
+          <span>@package.name</span>
+          .browse-package-left-header-version {
+            <span>@package.version</span>
+            <span id="copy-button" onclick="copyToClipboard('v install @package.name')">
+              <img width="16" height="16" src="/copy.svg"/>
+            </span>
+          }
+        }
+
+        <span class="browse-package-left-description">
+          @package.description
+        </span>
+
+        <ul class="browse-package-left-tags">
+          @for tag in package.tags
+            <li>
+              <a href="@tag.uri">
+                <span>
+                  @tag.name
+                </span>
+              </a>
+            </li>
+          @end
+        </ul>
+      }
+
+      <ul class="browse-package-right">
+        <li>
+          <span>
+            <img src="/star.svg" />
+          </span>
+          <span>
+            @package.stars
+          </span>
+        </li>
+        <li>
+          <span>
+            <img src="/download.svg" />
+          </span>
+          <span>
+            @package.nr_downloads
+          </span>
+        </li>
+        <li>
+          <span>
+            <img src="/update.svg" />
+          </span>
+          <span>
+            @package.last_updated
+          </span>
+        </li>
+      </ul>
+
+      <a class="browse-package-arrow" href="@package.uri" >
+        <img src="/arrow.svg" />
+      </a>
+    }
+  @end
+}
 
 @footer
