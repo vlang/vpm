@@ -27,4 +27,10 @@ fn (mut app App) create_tables() {
 		'avatar text default ""',
 		'login_attempts integer default 0'
 	])
+	app.create_table('Token', [
+		'id integer primary key',
+		'user_id integer default 0',
+		"value text defaut ''",
+		'ip text default ""',
+	])
 }
