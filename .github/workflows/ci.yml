@@ -19,7 +19,7 @@ jobs:
     - name: v fmt -verify
       run: |
         cd vpm
-        ../v fmt -verify main.v oauth.v mod.v _user.v
+        ../v fmt -verify vpm.v user.v token.v package.v login.v db.v
 
   ubuntu:
     runs-on: ubuntu-18.04
