@@ -83,7 +83,7 @@ fn package_from_row(row sqlite.Row) Package {
 }
 
 fn (mut app App) get_package_info(id int) ?PackageInfo {
-
+	return PackageInfo{}
 }
 
 fn (mut app App) get_package(id int) ?Package {

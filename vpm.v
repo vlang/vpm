@@ -115,6 +115,6 @@ pub fn (mut app App) user(username string) vweb.Result {
 
 ['/:package']
 pub fn (mut app App) package(package string) vweb.Result {
-	package := PackageInfo{}
+	current_package := PackageInfo{}
 	return $vweb.html()
 }
