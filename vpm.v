@@ -6,7 +6,11 @@ import vweb
 import sqlite
 
 const (
-	http_port = 80
+	// Helps to keep @ in vweb templates
+	at_symbol = '@'
+	
+	// Port on which the application will run
+	http_port = 8080
 )
 
 struct App {
