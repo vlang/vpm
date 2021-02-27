@@ -34,7 +34,7 @@
 
   .packages {
     .packages-column {
-    <span>New packages</span>
+      <span>New packages</span>
       @for new_p in new_packages
         <a class="package" href="@new_p.repo_url">
           .packages-column-info {
@@ -51,81 +51,81 @@
 
     .packages-column {
       <span>Most Downloaded</span>
-        @for md_p in most_downloaded_packages
-          <a class="package" href="@md_p.repo_url">
-            .packages-column-info {
-              <span class="name">@md_p.name</span>
-              <span class="version">@md_p.version</span>
-            }
-            .packages-column-icon {
-              <img src="/arrow.svg" height="35" />
-            }
-          </a>
-        @end
+      @for md_p in most_downloaded_packages
+        <a class="package" href="@md_p.repo_url">
+          .packages-column-info {
+            <span class="name">@md_p.name</span>
+            <span class="version">@md_p.version</span>
+          }
+          .packages-column-icon {
+            <img src="/arrow.svg" height="35" />
+          }
+        </a>
+      @end
     }
 
     .packages-column {
       <span>Recently updated</span>
-        @for ru_p in recently_updated_packages
-          <a class="package" href="@ru_p.repo_url">
-            .packages-column-info {
-              <span class="name">@ru_p.name</span>
-              <span class="version">@ru_p.version</span>
-            }
+      @for ru_p in recently_updated_packages
+        <a class="package" href="@ru_p.repo_url">
+          .packages-column-info {
+            <span class="name">@ru_p.name</span>
+            <span class="version">@ru_p.version</span>
+          }
 
-            .packages-column-icon {
-              <img src="/arrow.svg" height="35" />
-            }
-          </a>
-        @end
+          .packages-column-icon {
+            <img src="/arrow.svg" height="35" />
+          }
+        </a>
+      @end
     }
 
     .packages-column {
       <span>Most Recent Downloads</span>
-        @for mrd_p in most_recent_downloads_packages
-          <a class="package" href="@mrd_p.repo_url">
-            .packages-column-info {
-              <span class="name">@mrd_p.name</span>
-              <span class="version">@mrd_p.version</span>
-            }
+      @for mrd_p in most_recent_downloads_packages
+        <a class="package" href="@mrd_p.repo_url">
+          .packages-column-info {
+            <span class="name">@mrd_p.name</span>
+            <span class="version">@mrd_p.version</span>
+          }
 
-            .packages-column-icon {
-              <img src="/arrow.svg" height="35" />
-            }
-          </a>
-        @end
+          .packages-column-icon {
+            <img src="/arrow.svg" height="35" />
+          }
+        </a>
+      @end
     }
 
     .packages-column {
       <span>Popular Tags <a href="/tags">(see all)</a></span>
-        @for pt_p in popular_tags
-          <a class="package" href="@pt_p.repo_url">
-            .packages-column-info {
-              <span class="name">@pt_p.name</span>
-              <span class="version">@pt_p.version</span>
-            }
+      @for pt_p in popular_tags
+        <a class="package" href="@pt_p.repo_url">
+          .packages-column-info {
+            <span class="name">@pt_p.name</span>
+            <span class="version">@pt_p.version</span>
+          }
 
-            .packages-column-icon {
-              <img src="/arrow.svg" height="35" />
-            }
-          </a>
-        @end
+          .packages-column-icon {
+            <img src="/arrow.svg" height="35" />
+          }
+        </a>
+      @end
     }
 
     .packages-column {
       <span>Popular Categories <a href="/categories">(see all)</a></span>
-        @for pc_p in popular_categories
-          <a class="package" href="@pc_p.repo_url">
-            .packages-column-info {
-              <span class="name">@pc_p.name</span>
-              <span class="version">@pc_p.version</span>
-            }
+      @for pc_p in popular_categories
+        <a class="package" href="@pc_p.repo_url">
+          .packages-column-info {
+            <span class="name">@pc_p.name</span>
+            <span class="version">@pc_p.version</span>
+          }
 
-            .packages-column-icon {
-              <img src="/arrow.svg" height="35" />
-            }
-          </a>
-        @end
+          .packages-column-icon {
+            <img src="/arrow.svg" height="35" />
+          }
+        </a>
+      @end
     }
   }
 }
