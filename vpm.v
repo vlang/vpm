@@ -90,9 +90,11 @@ pub fn (mut app App) create_package() vweb.Result {
 }
 
 pub fn (mut app App) browse() vweb.Result {
-	packages := app.get_all_packages() or {
-		return app.server_error(500)
-	}
+	// packages := app.get_all_packages() or {
+	// 	return app.server_error(500)
+	// }
+	browse_header := "All packages"
+	packages := []PackageInfo{}
 	return $vweb.html()
 }
 
@@ -113,5 +115,6 @@ pub fn (mut app App) user(username string) vweb.Result {
 
 ['/:package']
 pub fn (mut app App) package(package string) vweb.Result {
+	package := PackageInfo{}
 	return $vweb.html()
 }

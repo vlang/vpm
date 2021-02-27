@@ -6,8 +6,6 @@ struct Package {
 	id           int
 	author_id    int
 	name         string
-	// TODO: Figure out way to deal with many versions (releases)
-	// Maybe create PackageVersion that contains info about release
 	version      string
 	description  string
 	tags         string
@@ -15,6 +13,58 @@ struct Package {
 	license      string
 	repo_url     string
 	nr_downloads int
+}
+
+// Used in page rendering
+struct PackageInfo {
+	id           int
+	author_id    int
+	name         string
+	uri			 string
+	version      string
+	versions     []Version
+	categories   []Category
+	last_updated string
+	description  string
+	tags         []Tag
+	dependencies []Dependency
+	license      string
+	repo_url     string
+	stars        int
+	nr_downloads int
+}
+
+fn (mut app App) repo_markdown(repo_url string) string {
+	return '<p>Repo Markdown</p>'
+}
+
+struct Version {
+	id          int
+	package_id  string
+	name        string
+	uri         string
+	release_url string
+	date        string
+}
+
+struct Tag {
+	id          int
+	name        string
+	uri         string
+	nr_packages int
+}
+
+struct Category {
+	id   int
+	name string
+	uri  string
+}
+
+struct Dependency {
+	id      int
+	name    string
+	version string
+	uri     string
 }
 
 fn package_from_row(row sqlite.Row) Package {
@@ -30,6 +80,10 @@ fn package_from_row(row sqlite.Row) Package {
 		repo_url: row.vals[8]
 		nr_downloads: row.vals[9].int()
 	}
+}
+
+fn (mut app App) get_package_info(id int) ?PackageInfo {
+
 }
 
 fn (mut app App) get_package(id int) ?Package {

@@ -2,7 +2,7 @@
 
 .content {
   .package-markdown {
-    @package.rendered_markdown
+    @{app.repo_markdown(package.repo_url)}
   }
 
   .package-aside {
@@ -55,7 +55,7 @@
       <ul class="package-aside-block-versions">
         @for version in package.versions
           <li>
-            <a href="@category.uri">@version.name</a>
+            <a href="@version.uri">@version.name</a>
             <span>@version.date</span>
           </li>
         @end
@@ -67,7 +67,7 @@
       <ul class="package-aside-block-dependencies">
         @for dependency in package.dependencies
           <li>
-            <a href="@category.uri">@dependency.name @dependency.version</a>
+            <a href="@dependency.uri">@dependency.name @dependency.version</a>
           </li>
         @end
       </ul>
