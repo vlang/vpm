@@ -41,7 +41,7 @@ pub fn (mut app App) init_once() {
 			eprintln("'sass --recursive ./css/vpm.scss:./static/vpm.css'")
 			panic('No vpm.css file in static')
 		}
-		app.handle_static('./static/', false)
+		app.handle_static('./static/', true)
 	}
 }
 
