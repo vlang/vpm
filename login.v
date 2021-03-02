@@ -6,12 +6,12 @@ import math
 import crypto.sha256
 
 const (
-	client_id = os.getenv('VPM_GITHUB_CLIENT_ID')
+	client_id     = os.getenv('VPM_GITHUB_CLIENT_ID')
 	client_secret = os.getenv('VPM_GITHUB_SECRET')
 )
 
 fn (mut app App) get_login_link() string {
-	return 'https://github.com/login/oauth/authorize?response_type=code&client_id=${client_id}'
+	return 'https://github.com/login/oauth/authorize?response_type=code&client_id=$client_id'
 }
 
 fn make_password(password string, username string) string {
@@ -31,7 +31,7 @@ fn (mut app App) logged_in() bool {
 	token := app.get_cookie('token') or { return false }
 	ip := app.client_ip(id) or { return false }
 	t := app.find_user_token(id.int(), ip) or { '' }
-	user := app.get_user(id.int()) or {	User{} }
+	user := app.get_user(id.int()) or { User{} }
 	blocked := user.is_blocked
 	if blocked {
 		app.logout()

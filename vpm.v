@@ -8,7 +8,6 @@ import sqlite
 const (
 	// Helps to keep @ in vweb templates
 	at_symbol = '@'
-	
 	// Port on which the application will run
 	http_port = 8080
 )
@@ -39,7 +38,7 @@ pub fn (mut app App) init_once() {
 	if os.getenv('VPM_SKIP_STATIC') != '1' {
 		if !os.exists('./static/vpm.css') {
 			eprintln('Please compile styles with sass.')
-			eprintln('\'sass --recursive ./css/vpm.scss:./static/vpm.css\'')
+			eprintln("'sass --recursive ./css/vpm.scss:./static/vpm.css'")
 			panic('No vpm.css file in static')
 		}
 		app.handle_static('./static/', false)
@@ -97,7 +96,7 @@ pub fn (mut app App) browse() vweb.Result {
 	// packages := app.get_all_packages() or {
 	// 	return app.server_error(500)
 	// }
-	browse_header := "All packages"
+	browse_header := 'All packages'
 	packages := []PackageInfo{}
 	return $vweb.html()
 }

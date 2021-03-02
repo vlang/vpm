@@ -3,10 +3,10 @@ module main
 import sqlite
 
 struct Token {
-	id int
+	id      int
 	user_id int
-	value string
-	ip string
+	value   string
+	ip      string
 }
 
 fn token_from_row(row sqlite.Row) Token {
@@ -21,7 +21,11 @@ fn token_from_row(row sqlite.Row) Token {
 fn (mut app App) update_user_token(user_id int, token string, ip string) string {
 	tok := app.find_user_token(user_id, ip) or { '' }
 	if tok == '' {
-		new_token := Token{user_id: user_id, value: token, ip: ip }
+		new_token := Token{
+			user_id: user_id
+			value: token
+			ip: ip
+		}
 		app.db.insert(new_token)
 		return token
 	}
@@ -29,16 +33,16 @@ fn (mut app App) update_user_token(user_id int, token string, ip string) string 
 }
 
 fn (mut app App) find_user_token(user_id int, ip string) ?string {
-	row := app.db.exec_one('select from Token where (user_id=${user_id} and ip=${ip})') or {
-		return error('sql error: ${err}')
+	row := app.db.exec_one('select from Token where (user_id=$user_id and ip=$ip)') or {
+		return error('sql error: $err')
 	}
 	return token_from_row(row).value
 }
 
 fn (mut app App) clear_sessions(user_id int) ? {
-	code := app.db.exec_none('delete from Token where user_id=${user_id}')
+	code := app.db.exec_none('delete from Token where user_id=$user_id')
 	if code != 0 {
-		return error('sql result code ${code}')
+		return error('sql result code $code')
 	}
 }
 

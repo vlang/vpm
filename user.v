@@ -3,15 +3,15 @@ module main
 import sqlite
 
 struct User {
-	id int
-	name string
-	username string
+	id         int
+	name       string
+	username   string
 	is_blocked bool
-	is_admin bool
+	is_admin   bool
 mut:
-	avatar               string
-	b_avatar             bool    [skip]
-	login_attempts       int
+	avatar         string
+	b_avatar       bool   [skip]
+	login_attempts int
 }
 
 fn user_from_row(row sqlite.Row) User {
@@ -27,15 +27,13 @@ fn user_from_row(row sqlite.Row) User {
 }
 
 fn (mut app App) get_user(id int) ?User {
-	row := app.db.exec_one('select from User where id=${id}') or {
-		return error('sql error: ${err}')
-	}
+	row := app.db.exec_one('select from User where id=$id') or { return error('sql error: $err') }
 	return user_from_row(row)
 }
 
 fn (mut app App) get_user_by_name(name string) ?User {
-	row := app.db.exec_one('select from User where name=${name}') or {
-		return error('sql error: ${err}')
+	row := app.db.exec_one('select from User where name=$name') or {
+		return error('sql error: $err')
 	}
 	return user_from_row(row)
 }

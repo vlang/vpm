@@ -16,7 +16,7 @@ fn (mut app App) create_tables() {
 		'license text default ""',
 		'repo_url text default ""',
 		'nr_downloads integer default 0',
-		'foreign key (author_id) references User(id)'
+		'foreign key (author_id) references User(id)',
 	])
 	app.create_table('User', [
 		'id integer primary key',
@@ -25,7 +25,7 @@ fn (mut app App) create_tables() {
 		'is_blocked int default 0',
 		'is_admin int default 0',
 		'avatar text default ""',
-		'login_attempts integer default 0'
+		'login_attempts integer default 0',
 	])
 	app.create_table('Token', [
 		'id integer primary key',
