@@ -5,24 +5,27 @@
     <span>Package Manager for the <span id="v-letter">V</span> Language</span>
   }
 
-  .buttons {
-    <a id="browse-button" class="button" href="/browse">
-      <span class="icon">
-        <img src="/browse.svg" />
-      </span>
-      <span>
-        Browse packages
-      </span>
-    </a>
-    <a id="new-button" class="button" href="/new">
-      <span class="icon">
-        <img src="/new.svg" />
-      </span>
-      <span>
-        Submit a module
-      </span>
-    </a>
-    <span class="buttons-info">
+  .row {
+    .buttons {
+      <a id="browse-button" class="button" href="/browse">
+        <span class="icon">
+          <img src="/browse.svg" width="32" height="32" />
+        </span>
+        <span>
+          Browse packages
+        </span>
+      </a>
+      <a id="new-button" class="button" href="/create">
+        <span class="icon">
+          <img src="/new.svg" width="32" height="32" />
+        </span>
+        <span>
+          Submit a module
+        </span>
+      </a>
+    }
+  
+    <span class="packages-nr-info">
       <span class="highlight">
         @nr_packages
       </span>
