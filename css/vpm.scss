@@ -82,11 +82,23 @@
   padding: 30px 20px 15px;
   max-width: $base-content-width;
   width: 100%;
+
+  & > *:not(:last-child){
+    margin-bottom: 48px;
+  }
 }
 
-.title {
+.title span{
   font-family: "Poppins", sans-serif;
   font-weight: 700;
+  font-size: 64px;
+  line-height: 76px;
+  color: $header-color;
+
+  #v-letter {
+    font-weight: 900;
+    color: $v-color;
+  }
 }
 
 .row {
