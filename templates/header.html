@@ -24,6 +24,10 @@
     <a id="logo" href="/" aria-label="Homepage">
       <img src="/logo.svg" height="60" />
     </a>
+    <label id="search-bar">
+      <img src="/search.svg" width="34"/>
+      <input id="search-bar-input" type="text" name="search" placeholder="Search packages....">
+    </label>
 		.account {
 			@if app.logged_in
 				<a class="new" href="/new">
@@ -59,3 +63,14 @@
 		}
 	}
 </header>
+
+<script>
+  const search = document.getElementById("search-bar-input");
+  search.addEventListener("keypress", (ev) => {
+    if (ev.keyCode == 13) {
+      ev.preventDefault();
+      const query = search.value;
+      windows.location.href = "/browse?search=" + query;
+    }
+  });
+</script>

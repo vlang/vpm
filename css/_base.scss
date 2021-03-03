@@ -1,3 +1,7 @@
+@import 'colors';
+
+$base-content-width: 960px;
+
 /* Specify box sizing */
 *,
 *::before,
@@ -81,4 +85,5 @@ select {
   font-family: 'Fira Sans', 'Source Sans Pro', 'Roboto', sans-serif;
   font-size: 16px;
   font-weight: 400;
+  color: $text-color;
 }
