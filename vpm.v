@@ -62,11 +62,11 @@ pub fn (mut app App) index() vweb.Result {
 	most_recent_downloads_packages := []Package{}
 	popular_tags := []Package{}
 	popular_categories := []Package{}
-	return $html()
+	return $vweb.html()
 }
 
 pub fn (mut app App) create() vweb.Result {
-	return $html()
+	return $vweb.html()
 }
 
 [post]
@@ -96,7 +96,7 @@ pub fn (mut app App) browse() vweb.Result {
 	// }
 	browse_header := 'All packages'
 	packages := []PackageInfo{}
-	return $html()
+	return $vweb.html()
 }
 
 pub fn (mut app App) login() vweb.Result {
@@ -111,11 +111,11 @@ pub fn (mut app App) logout() vweb.Result {
 
 ['/user/:username']
 pub fn (mut app App) user(username string) vweb.Result {
-	return $html()
+	return $vweb.html()
 }
 
 ['/:package']
 pub fn (mut app App) package(package string) vweb.Result {
 	current_package := PackageInfo{}
-	return $html()
+	return $vweb.html()
 }
