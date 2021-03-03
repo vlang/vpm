@@ -6,8 +6,6 @@ import vweb
 import sqlite
 
 const (
-	// Helps to keep @ in vweb templates
-	at_symbol = '@'
 	// Port on which the application will run
 	http_port = 8080
 )
@@ -57,18 +55,18 @@ pub fn (mut app App) init() {
 }
 
 pub fn (mut app App) index() vweb.Result {
-	nr_packages := 140
+	nr_packages := 149
 	new_packages := []Package{}
 	most_downloaded_packages := []Package{}
 	recently_updated_packages := []Package{}
 	most_recent_downloads_packages := []Package{}
 	popular_tags := []Package{}
 	popular_categories := []Package{}
-	return $vweb.html()
+	return $html()
 }
 
 pub fn (mut app App) create() vweb.Result {
-	return $vweb.html()
+	return $html()
 }
 
 [post]
@@ -98,7 +96,7 @@ pub fn (mut app App) browse() vweb.Result {
 	// }
 	browse_header := 'All packages'
 	packages := []PackageInfo{}
-	return $vweb.html()
+	return $html()
 }
 
 pub fn (mut app App) login() vweb.Result {
@@ -113,11 +111,11 @@ pub fn (mut app App) logout() vweb.Result {
 
 ['/user/:username']
 pub fn (mut app App) user(username string) vweb.Result {
-	return $vweb.html()
+	return $html()
 }
 
 ['/:package']
 pub fn (mut app App) package(package string) vweb.Result {
 	current_package := PackageInfo{}
-	return $vweb.html()
+	return $html()
 }
