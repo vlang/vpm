@@ -62,7 +62,7 @@ pub fn (mut app App) index() vweb.Result {
 	most_recent_downloads_packages := app.get_some_random_package_info(6)
 	popular_tags := app.get_some_random_package_info(6)
 	popular_categories := app.get_some_random_package_info(6)
-	return $html()
+	return $vweb.html()
 }
 
 pub fn (mut app App) create() vweb.Result {
@@ -74,6 +74,7 @@ pub fn (mut app App) create() vweb.Result {
 pub fn (mut app App) create_package() vweb.Result {
 	if app.logged_in {
 		repo_url := app.form['repo_url']
+
 		// TODO: get repo info from git
 		package := Package{
 			author_id: app.user.id
