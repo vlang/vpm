@@ -95,7 +95,7 @@ pub fn (mut app App) browse() vweb.Result {
 	// 	return app.server_error(500)
 	// }
 	browse_header := 'All packages'
-	packages := []PackageInfo{}
+	packages := get_some_random_package_info(20)
 	return $vweb.html()
 }
 
