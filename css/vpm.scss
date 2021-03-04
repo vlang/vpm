@@ -239,4 +239,122 @@
     }
   }
 }
+
+.browse-header span {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  color: $header-color;
+}
+
+.browse-package {
+  padding: 20px 0 20px 16px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  &:not(:last-child) {
+    border-bottom: solid 2px $panel-color;
+  }
+
+  &-left {
+    padding-right: 20px;
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+
+      * {
+        font-family: 'Source Sans Pro', sans-serif;
+      }
+
+      & > span {
+        padding-bottom: 2px;
+        font-weight: 600;
+        font-size: 18px;
+        color: $header-color;
+      }
+
+      &-version {
+        margin-left: 14px;
+        min-width: fit-content;
+        flex: 0 0;
+        display: flex;
+        align-items: center;
+        
+        span {
+          font-family: 'Fira Sans', 'Source Sans Pro', sans-serif;
+          color: $darker-text-color;
+        }
+
+        #copy-button {
+          margin-left: 7px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    &-description {
+      font-size: 15px;
+    }
+
+    &-tags {
+      display: flex;
+      flex-wrap: wrap;
+
+      a {
+        margin-top: 10px;
+        margin-right: 10px;
+        padding: 4px 8px;
+        display: block;
+        background-color: $panel-color;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 15px;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  &-right {
+    flex: 0 1 200px;
+    justify-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    & > div:not(:last-child) {
+      margin-bottom: 10px;
+    }
+
+    & > div {
+      display: flex;
+      align-items: center;
+
+      span:first-child {
+        margin-right: 7px;
+      }
+
+      span:last-child {
+        font-family: 'Fira Sans', 'Source Sans Pro', sans-serif;
+        color: $darker-text-color;
+      }
+    }
+  }
+
+  &-arrow {
+    padding-left: 45px;
+    align-self: stretch;
+    flex: 0 1 90px;
+    display: flex;
+    align-items: center;
+  }
 }
