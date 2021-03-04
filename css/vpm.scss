@@ -7,6 +7,14 @@
   box-shadow: 0px 4px 13px rgba(0, 0, 0, 0.1);
   background: $bg-color;
 
+  &#create-header {
+    box-shadow: none;
+
+    .inner {
+      justify-content: center;
+    }
+  }
+
   .inner {
     display: flex;
     height: 80px;
@@ -82,9 +90,13 @@
   padding: 30px 20px 15px;
   max-width: $base-content-width;
   width: 100%;
+  display:flex;
+  flex-direction: column;
 
-  & > *:not(:last-child){
-    margin-bottom: 48px;
+  &.centered {
+    height: 80vh;
+    justify-content: center;
+    align-items: center;
   }
 }
 
