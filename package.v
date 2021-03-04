@@ -1,6 +1,7 @@
 module main
 
 import sqlite
+import rand
 
 struct Package {
 	id           int
@@ -82,6 +83,57 @@ fn package_from_row(row sqlite.Row) Package {
 	}
 }
 
+fn (mut app App) get_some_random_package_info(count int) []PackageInfo {
+	mut arr := []PackageInfo{}
+	for _ in 1..count {
+		arr << app.get_random_package_info()
+	}
+	return arr
+}
+
+fn (mut app App) get_random_package_info() PackageInfo {
+	names := [
+		"markdown",
+		"terisback.treplo",
+		"nedpals.vex",
+		"nedpals.jsonrpc",
+		"terisback.discordv",
+		"lydiandy.vast",
+		"vmarkdown",
+		"some.random",
+		"nsauzede.vsdl2",
+		"thecodrr.crayon",
+		"damienfamed75.vraylib",
+		"christopherzimmerman.vnum",
+		"duarteroso.vglfw"
+	]
+	tags := [
+		"net",
+		"log",
+		"logging",
+		"cli",
+		"discord",
+		"api",
+		"concurrency"
+	]
+	mut pac_tags := []Tag{}
+	for _ in 0..rand.intn(4)+2 {
+		pac_tags << Tag{
+			name: tags[rand.intn(tags.len-1)]
+		}
+	}
+	return PackageInfo{
+		name: names[rand.intn(names.len-1)]
+		description: 'Logging library similar to logrus '.repeat(rand.intn(5)+1)
+		version: 'v${rand.intn(2)}.${rand.intn(23)}.${rand.intn(12)}'
+		tags: pac_tags
+		nr_downloads: rand.intn(1000)
+		stars: rand.intn(100)
+		last_updated: rand.intn(7).str() + ' days ago'
+	}
+}
+
+// get package info from package id
 fn (mut app App) get_package_info(id int) ?PackageInfo {
 	return PackageInfo{}
 }

@@ -56,13 +56,13 @@ pub fn (mut app App) init() {
 
 pub fn (mut app App) index() vweb.Result {
 	nr_packages := 149
-	new_packages := []Package{}
-	most_downloaded_packages := []Package{}
-	recently_updated_packages := []Package{}
-	most_recent_downloads_packages := []Package{}
-	popular_tags := []Package{}
-	popular_categories := []Package{}
-	return $vweb.html()
+	new_packages := app.get_some_random_package_info(6)
+	most_downloaded_packages := app.get_some_random_package_info(6)
+	recently_updated_packages := app.get_some_random_package_info(6)
+	most_recent_downloads_packages := app.get_some_random_package_info(6)
+	popular_tags := app.get_some_random_package_info(6)
+	popular_categories := app.get_some_random_package_info(6)
+	return $html()
 }
 
 pub fn (mut app App) create() vweb.Result {
