@@ -22,48 +22,46 @@
           @package.description
         </span>
 
-        <ul class="browse-package-left-tags">
+        <div class="browse-package-left-tags">
           @for tag in package.tags
-            <li>
-              <a href="@tag.uri">
-                <span>
-                  @tag.name
-                </span>
-              </a>
-            </li>
+            <a href="@tag.uri">
+              <span>
+                @tag.name
+              </span>
+            </a>
           @end
-        </ul>
+        </div>
       }
 
-      <ul class="browse-package-right">
-        <li>
+      <div class="browse-package-right">
+        <div>
           <span>
-            <img src="/star.svg" />
+            <img width="20" height="20" src="/star.svg" />
           </span>
           <span>
             @package.stars
           </span>
-        </li>
-        <li>
+        </div>
+        <div>
           <span>
-            <img src="/download.svg" />
+            <img width="20" height="20" src="/download.svg" />
           </span>
           <span>
             @package.nr_downloads
           </span>
-        </li>
-        <li>
+        </div>
+        <div>
           <span>
-            <img src="/update.svg" />
+            <img width="20" height="20" src="/update.svg" />
           </span>
           <span>
             @package.last_updated
           </span>
-        </li>
-      </ul>
+        </div>
+      </div>
 
       <a class="browse-package-arrow" href="@package.uri" >
-        <img src="/arrow.svg" />
+        <img width="36" height="36" src="/arrow.svg" />
       </a>
     }
   @end
