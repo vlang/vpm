@@ -1,0 +1,448 @@
+html {
+  --header: #3a3d3f;
+  --text: #4e5355;
+  --dimmed-text: #8f95a3;
+  --darker-text: #6a6e7a;
+  --accent: #77b5f6;
+  --on-accent: #ffffff;
+  --panel: #f6f8fa;
+  --v: #4078c0;
+  --bg: #ffffff;
+}
+
+html.dark {
+  --header: #FFFFFF;
+  --text: #FFFFFF;
+  --dimmed-text: #A6AFBF;
+  --darker-text: #8F95A3;
+  --accent: #4798ED;
+  --on-accent: #ffffff;
+  --panel: #2A3747;
+  --v: #4078c0;
+  --bg: #18202B;
+}
+
+:root {
+  --base-content-width: 960px;
+}
+
+/* Specify box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Removing internal indentations */
+ul[class],
+ol[class] {
+  padding: 0;
+}
+
+/* Removing the outside indentation */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Set default settings for body */
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* Remove the standard styling for all ul and il that have the class attribute */
+ul[class],
+ol[class] {
+  list-style: none;
+}
+
+/* Elements a that have no class are reset to default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+a {
+  color: inherit;
+}
+
+/* Making it easier to work with images */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Specify an understandable periodicity in the data flow */
+article > * + * {
+  margin-top: 1em;
+}
+
+/* Inherit fonts for intuitions and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove all animations and transitions for people who would rather not use them */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  font-family: "Fira Sans", "Source Sans Pro", "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+html {
+  --header: #3a3d3f;
+  --text: #4e5355;
+  --dimmed-text: #8f95a3;
+  --darker-text: #6a6e7a;
+  --accent: #77b5f6;
+  --on-accent: #ffffff;
+  --panel: #f6f8fa;
+  --v: #4078c0;
+  --bg: #ffffff;
+}
+
+html.dark {
+  --header: #f4f5f5;
+  --text: #f2f2f3;
+  --dimmed-text: #8f95a3;
+  --darker-text: #6a6e7a;
+  --accent: #77b5f6;
+  --on-accent: #ffffff;
+  --panel: #414244;
+  --v: #4078c0;
+  --bg: #27292a;
+}
+
+.header {
+  width: 100%;
+  height: 80px;
+  box-shadow: 0px 4px 13px rgba(0, 0, 0, 0.1);
+  background: var(--bg);
+}
+.header#create-header {
+  box-shadow: none;
+}
+.header#create-header .inner {
+  justify-content: center;
+}
+.header .inner {
+  display: flex;
+  height: 80px;
+  margin: 0 auto;
+  max-width: var(--base-content-width);
+  align-items: center;
+  justify-content: space-between;
+}
+.header .inner #logo {
+  display: block;
+  width: fit-content;
+  height: 64px;
+  flex: 0 0 180px;
+}
+.header .inner #logo img {
+  margin: 0 auto;
+}
+.header .inner #search-bar {
+  padding: 0 12px;
+  max-width: 420px;
+  width: 100%;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  background-color: var(--panel);
+  border-radius: 5px;
+}
+.header .inner #search-bar img {
+  margin-right: 10px;
+}
+.header .inner #search-bar-input {
+  padding: 0;
+  flex: 1 1 420px;
+  border: none;
+  background-color: transparent;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--dimmed-text);
+}
+.header .inner #search-bar-input::placeholder {
+  color: var(--dimmed-text);
+}
+.header .inner #search-bar-input:focus {
+  outline: none;
+}
+.header .inner .account {
+  flex: 0 0 180px;
+}
+.header .inner .account .login-button {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: var(--darker-text);
+}
+.header .inner .account .login-button:hover {
+  text-decoration: underline;
+}
+
+.content {
+  margin: 0 auto;
+  padding: 30px 20px 15px;
+  max-width: var(--base-content-width);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.content.centered {
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  margin-bottom: 48px;
+  max-width: 730px;
+}
+.title span {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 76px;
+  color: var(--header);
+}
+.title span #v-letter {
+  font-weight: 900;
+  color: var(--v);
+}
+
+.row {
+  margin-bottom: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.buttons a {
+  margin-right: 32px;
+}
+
+.packages-nr-info span {
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--darker-text);
+}
+.packages-nr-info .highlight {
+  font-weight: 700;
+  color: var(--header);
+}
+
+.button {
+  padding: 8px 26px 8px 20px;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--accent);
+  border-radius: 5px;
+  text-decoration: none;
+}
+.button .icon {
+  margin-right: 8px;
+}
+.button span {
+  font-weight: 700;
+  color: var(--on-accent);
+}
+
+.packages {
+  display: flex;
+  flex-wrap: wrap;
+}
+.packages-column {
+  margin-bottom: 18px;
+  padding: 0 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 300px;
+}
+.packages-column > * {
+  margin-bottom: 8px;
+}
+.packages-column > span {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 32px;
+  color: var(--header);
+}
+.packages-column > span a {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 32px;
+  color: var(--accent);
+  text-decoration: none;
+}
+.packages-column > span a:hover {
+  text-decoration: underline;
+}
+.packages .package {
+  padding-left: 10px;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--panel);
+  text-decoration: none;
+}
+.packages .package:hover {
+  filter: saturate(2.2) invert(0.05);
+}
+.packages .package-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.packages .package-info span {
+  font-family: "Source Sans Pro", sans-serif;
+}
+.packages .package-info .name {
+  line-height: 18px;
+}
+.packages .package-info .version {
+  font-size: 14px;
+  line-height: 15px;
+  color: var(--dimmed-text);
+}
+
+.browse-header span {
+  font-family: "Source Sans Pro", sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  color: var(--header);
+}
+
+.browse-package {
+  padding: 20px 0 20px 16px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.browse-package:not(:last-child) {
+  border-bottom: solid 2px var(--panel);
+}
+.browse-package-left {
+  padding-right: 20px;
+  flex: 1 1;
+  display: flex;
+  flex-direction: column;
+}
+.browse-package-left-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.browse-package-left-header * {
+  font-family: "Source Sans Pro", sans-serif;
+}
+.browse-package-left-header > span {
+  padding-bottom: 2px;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--header);
+}
+.browse-package-left-header-version {
+  margin-left: 14px;
+  min-width: fit-content;
+  flex: 0 0;
+  display: flex;
+  align-items: center;
+}
+.browse-package-left-header-version span {
+  font-family: "Fira Sans", "Source Sans Pro", sans-serif;
+  color: var(--darker-text);
+}
+.browse-package-left-header-version #copy-button {
+  margin-left: 7px;
+  cursor: pointer;
+}
+.browse-package-left-description {
+  font-size: 15px;
+}
+.browse-package-left-tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+.browse-package-left-tags a {
+  margin-top: 10px;
+  margin-right: 10px;
+  padding: 4px 8px;
+  display: block;
+  background-color: var(--panel);
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 15px;
+}
+.browse-package-left-tags a:hover {
+  text-decoration: underline;
+}
+.browse-package-right {
+  flex: 0 1 200px;
+  justify-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.browse-package-right > div:not(:last-child) {
+  margin-bottom: 10px;
+}
+.browse-package-right > div {
+  display: flex;
+  align-items: center;
+}
+.browse-package-right > div span:first-child {
+  margin-right: 7px;
+}
+.browse-package-right > div span:last-child {
+  font-family: "Fira Sans", "Source Sans Pro", sans-serif;
+  color: var(--darker-text);
+}
+.browse-package-arrow {
+  padding-left: 45px;
+  align-self: center;
+  flex: 0 1 90px;
+  display: flex;
+  align-items: center;
+}
