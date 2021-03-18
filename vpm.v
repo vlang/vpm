@@ -120,3 +120,24 @@ pub fn (mut app App) package(package string) vweb.Result {
 	current_package := PackageInfo{}
 	return $vweb.html()
 }
+
+// ==API Endpoints==
+
+// Old module retrive
+['/jsmod/:name']
+pub fn (mut app App) jsmod(name string) vweb.Result {
+	pkg := app.get_package_by_name(name) or {
+		vweb.set_status(404, "Module not found")
+		return vweb.not_found()
+	}
+
+	mod := OldPackage{
+		id: pkg.id
+		name: pkg.name
+		url: pkg.repo_url
+		nr_downloads: pkg.nr_downloads
+		vcs: 'git'
+	}
+	
+	return vweb.json(json.encode(mod))
+}
