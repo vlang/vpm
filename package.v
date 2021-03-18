@@ -68,6 +68,14 @@ struct Dependency {
 	uri     string
 }
 
+struct OldPackage {
+	id           int
+	name         string
+	url          string
+	nr_downloads int
+	vcs          string
+}
+
 fn package_from_row(row sqlite.Row) Package {
 	return Package{
 		id: row.vals[0].int()
