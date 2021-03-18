@@ -1,0 +1,56 @@
+<header class="header">
+  .inner {
+    <a id="logo" href="/" aria-label="Homepage">
+      <img src="/logo.svg" height="60" />
+    </a>
+    <label id="search-bar">
+      <img src="/search.svg" width="34" />
+      <input id="search-bar-input" aria-labelledby="search-bar" type="text" name="search"
+        placeholder="Search packages....">
+    </label>
+    .account {
+      @if app.logged_in
+        <a class="new" href="/new">
+          <img src="/new.svg" height="32" />
+        </a>
+        .avatar {
+          @if app.user.b_avatar
+            <img src="@app.user.avatar">
+          @else
+            <span>@app.user.avatar</span>
+          @end
+        }
+        .header-dropdown {
+          .username {
+            <span>Signed in as</span>
+            <a href="/@app.user.username">@app.user.username</a>
+          }
+          .links {
+            <a href="/@app.user.username/modules" class="link">Modules</a>
+            <a href="/@app.user.username/settings" class="link">Settings</a>
+            @if app.user.is_admin
+              <a href="/admin" class="link">Admin Panel</a>
+            @end
+          }
+          .links {
+            <a href="/logout" class="link">Sign out</a>
+          }
+          <div class="dropdown-hoverzone"></div>
+        }
+      @else
+        <a class="login-button" href="/login">Log in with GitHub</a>
+      @end
+    }
+  }
+</header>
+
+<script>
+  const search = document.getElementById("search-bar-input");
+  search.addEventListener("keypress", (ev) => {
+    if (ev.keyCode == 13) {
+      ev.preventDefault();
+      const query = search.value;
+      windows.location.href = "/browse?search=" + query;
+    }
+  });
+</script>
