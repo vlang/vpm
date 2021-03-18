@@ -1,70 +1,68 @@
 @include 'header'
 
-.content {
-  <div class="browse-header">
-    <span>@browse_header</span>
-  </div>
+<div class="browse-header">
+  <span>@browse_header</span>
+</div>
 
-  @for package in packages
-    .browse-package {
-      .browse-package-left {
-        .browse-package-left-header {
-          <span>@package.name</span>
-          .browse-package-left-header-version {
-            <span>@package.version</span>
-            <span id="copy-button" onclick="copyToClipboard('v install @package.name')">
-              <img width="16" height="16" src="/copy.svg"/>
-            </span>
-          }
+@for package in packages
+  .browse-package {
+    .left {
+      .header {
+        <span>@package.name</span>
+        .version {
+          <span>@package.version</span>
+          <span id="copy-button" onclick="copyToClipboard('v install @package.name')">
+            <img width="16" height="16" src="/copy.svg"/>
+          </span>
         }
-
-        <span class="browse-package-left-description">
-          @package.description
-        </span>
-
-        <div class="browse-package-left-tags">
-          @for tag in package.tags
-            <a href="@tag.uri">
-              <span>
-                @tag.name
-              </span>
-            </a>
-          @end
-        </div>
       }
 
-      <div class="browse-package-right">
-        <div>
-          <span>
-            <img width="20" height="20" src="/star.svg" />
-          </span>
-          <span>
-            @package.stars
-          </span>
-        </div>
-        <div>
-          <span>
-            <img width="20" height="20" src="/download.svg" />
-          </span>
-          <span>
-            @package.nr_downloads
-          </span>
-        </div>
-        <div>
-          <span>
-            <img width="20" height="20" src="/update.svg" />
-          </span>
-          <span>
-            @package.last_updated
-          </span>
-        </div>
-      </div>
+      <span class="description">
+        @package.description
+      </span>
 
-      <a class="browse-package-arrow" href="@package.uri" >
-        <img width="36" height="36" src="/arrow.svg" />
-      </a>
+      <div class="tags">
+        @for tag in package.tags
+          <a href="@tag.uri">
+            <span>
+              @tag.name
+            </span>
+          </a>
+        @end
+      </div>
     }
-  @end
-}
+
+    .right {
+      <div>
+        <span>
+          <img width="20" height="20" src="/star.svg" />
+        </span>
+        <span>
+          @package.stars
+        </span>
+      </div>
+      <div>
+        <span>
+          <img width="20" height="20" src="/download.svg" />
+        </span>
+        <span>
+          @package.nr_downloads
+        </span>
+      </div>
+      <div>
+        <span>
+          <img width="20" height="20" src="/update.svg" />
+        </span>
+        <span>
+          @package.last_updated
+        </span>
+      </div>
+    }
+
+    <a class="arrow" href="@package.uri" >
+      <img width="36" height="36" src="/arrow.svg" />
+    </a>
+  }
+@end
 
 @include 'footer'

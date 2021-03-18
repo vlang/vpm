@@ -109,6 +109,8 @@ select {
   }
 }
 
+/* Global font */
+
 body {
   font-family: "Fira Sans", "Source Sans Pro", "Roboto", sans-serif;
   font-size: 16px;
@@ -116,6 +118,8 @@ body {
   color: var(--text);
   background-color: var(--bg);
 }
+
+/* Theme color */
 
 html {
   --header: #3a3d3f;
@@ -141,17 +145,13 @@ html.dark {
   --bg: #27292a;
 }
 
+/* Header/Navbar */
+
 .header {
   width: 100%;
   height: 80px;
   box-shadow: 0px 4px 13px rgba(0, 0, 0, 0.1);
   background: var(--bg);
-}
-.header#create-header {
-  box-shadow: none;
-}
-.header#create-header .inner {
-  justify-content: center;
 }
 .header .inner {
   display: flex;
@@ -211,6 +211,17 @@ html.dark {
   text-decoration: underline;
 }
 
+/* Create header */
+
+.header#create-header {
+  box-shadow: none;
+}
+.header#create-header .inner {
+  justify-content: center;
+}
+
+/* Content */
+
 .content {
   margin: 0 auto;
   padding: 30px 20px 15px;
@@ -219,11 +230,16 @@ html.dark {
   display: flex;
   flex-direction: column;
 }
+
+/* Create page content class */
+
 .content.centered {
   height: 80vh;
   justify-content: center;
   align-items: center;
 }
+
+/* Index page */
 
 .title {
   margin-bottom: 48px;
@@ -346,6 +362,8 @@ html.dark {
   color: var(--dimmed-text);
 }
 
+/* Browse */
+
 .browse-header span {
   font-family: "Source Sans Pro", sans-serif;
   font-weight: 700;
@@ -363,49 +381,49 @@ html.dark {
 .browse-package:not(:last-child) {
   border-bottom: solid 2px var(--panel);
 }
-.browse-package-left {
+.browse-package .left {
   padding-right: 20px;
   flex: 1 1;
   display: flex;
   flex-direction: column;
 }
-.browse-package-left-header {
+.browse-package .left .header {
   display: flex;
   align-items: center;
   margin-bottom: 8px;
 }
-.browse-package-left-header * {
+.browse-package .left .header * {
   font-family: "Source Sans Pro", sans-serif;
 }
-.browse-package-left-header > span {
+.browse-package .left .header > span {
   padding-bottom: 2px;
   font-weight: 600;
   font-size: 18px;
   color: var(--header);
 }
-.browse-package-left-header-version {
+.browse-package .left .header .version {
   margin-left: 14px;
   min-width: fit-content;
   flex: 0 0;
   display: flex;
   align-items: center;
 }
-.browse-package-left-header-version span {
+.browse-package .left .header .version span {
   font-family: "Fira Sans", "Source Sans Pro", sans-serif;
   color: var(--darker-text);
 }
-.browse-package-left-header-version #copy-button {
+.browse-package .left .header .version #copy-button {
   margin-left: 7px;
   cursor: pointer;
 }
-.browse-package-left-description {
+.browse-package .left .description {
   font-size: 15px;
 }
-.browse-package-left-tags {
+.browse-package .left .tags {
   display: flex;
   flex-wrap: wrap;
 }
-.browse-package-left-tags a {
+.browse-package .left .tags a {
   margin-top: 10px;
   margin-right: 10px;
   padding: 4px 8px;
@@ -415,31 +433,31 @@ html.dark {
   text-decoration: none;
   font-size: 15px;
 }
-.browse-package-left-tags a:hover {
+.browse-package .left .tags a:hover {
   text-decoration: underline;
 }
-.browse-package-right {
+.browse-package .right {
   flex: 0 1 200px;
   justify-self: flex-end;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-.browse-package-right > div:not(:last-child) {
+.browse-package .right > div:not(:last-child) {
   margin-bottom: 10px;
 }
-.browse-package-right > div {
+.browse-package .right > div {
   display: flex;
   align-items: center;
 }
-.browse-package-right > div span:first-child {
+.browse-package .right > div span:first-child {
   margin-right: 7px;
 }
-.browse-package-right > div span:last-child {
+.browse-package .right > div span:last-child {
   font-family: "Fira Sans", "Source Sans Pro", sans-serif;
   color: var(--darker-text);
 }
-.browse-package-arrow {
+.browse-package .arrow {
   padding-left: 45px;
   align-self: center;
   flex: 0 1 90px;
