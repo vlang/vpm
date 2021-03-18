@@ -27,7 +27,9 @@ fn user_from_row(row sqlite.Row) User {
 }
 
 fn (mut app App) get_user(id int) ?User {
-	row := app.db.exec_one('select from User where id=$id') or { return error('sql error: $err') }
+	row := app.db.exec_one('select from User where id=$id') or { 
+		return error('sql error: $err') 
+	}
 	return user_from_row(row)
 }
 
