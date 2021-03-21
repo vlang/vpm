@@ -56,6 +56,87 @@ pub fn (mut app App) init() {
 	}
 }
 
+// ==API Endpoints==
+
+// Old module retrive
+['/jsmod/:name']
+pub fn (mut app App) jsmod(name string) vweb.Result {
+	pkg := app.get_package_by_name(name) or {
+		app.set_status(404, "Module not found")
+		return app.not_found()
+	}
+
+	mod := OldPackage{
+		id: pkg.id
+		name: pkg.name
+		url: pkg.repo_url
+		nr_downloads: pkg.nr_downloads
+		vcs: 'git'
+	}
+	
+	return app.json(json.encode(mod))
+}
+
+[post]
+['/api/user']
+pub fn (mut app App) api_user_create() vweb.Result {
+	usr := user_from_map(app.form) or {
+		app.set_status(400, 'Please provide valid user')
+		return app.server_error(1)
+	}
+	
+	return app.json(json.encode(usr))
+}
+
+['/api/:user']
+pub fn (mut app App) api_user(user string) vweb.Result {
+	mut not_found := false
+
+	mut usr := app.get_user(user.int()) or { // get user by id
+		not_found = true
+		User{}
+	}
+	if not_found == false {
+		return app.json(json.encode(usr))
+	}
+
+	usr = app.get_user_by_name(user) or {
+		not_found = true
+		User{}
+	}
+	if not_found == false {
+		return app.json(json.encode(usr))
+	}
+
+	return app.not_found()
+}
+
+[delete]
+['/api/:user']
+pub fn (mut app App) api_user_delete(user string) vweb.Result {
+	app.delete_user(user) or {
+		return app.not_found()
+	}
+	return app.ok('Successfully deleted')
+}
+
+['/api/:user/:package']
+pub fn (mut app App) api_package(user string, package string) vweb.Result {
+	return app.ok('Not implemented')
+}	
+
+[delete]
+['/api/:user/:package']
+pub fn (mut app App) api_package_delete(user string, package string) vweb.Result {
+	if !app.user.is_admin {
+		// app.send_status(401) // not authorized
+		return app.redirect('/')
+	}
+
+	app.delete_package('-1') or {println(err)}
+	return app.ok('Nice')
+}
+
 // ==Frontend Endpoints==
 
 // Homepage
@@ -129,65 +210,4 @@ pub fn (mut app App) user(username string) vweb.Result {
 pub fn (mut app App) package(username string, package string) vweb.Result {
 	current_package := PackageInfo{}
 	return $vweb.html()
-}
-
-// ==API Endpoints==
-
-// Old module retrive
-['/jsmod/:name']
-pub fn (mut app App) jsmod(name string) vweb.Result {
-	pkg := app.get_package_by_name(name) or {
-		app.set_status(404, "Module not found")
-		return app.not_found()
-	}
-
-	mod := OldPackage{
-		id: pkg.id
-		name: pkg.name
-		url: pkg.repo_url
-		nr_downloads: pkg.nr_downloads
-		vcs: 'git'
-	}
-	
-	return app.json(json.encode(mod))
-}
-
-['/api/:user']
-pub fn (mut app App) api_user(user string) vweb.Result {
-	mut not_found := false
-
-	mut usr := app.get_user(user.int()) or { // get user by id
-		not_found = true
-		User{}
-	}
-	if not_found == false {
-		return app.json(json.encode(usr))
-	}
-
-	usr = app.get_user_by_name(user) or {
-		not_found = true
-		User{}
-	}
-	if not_found == false {
-		return app.json(json.encode(usr))
-	}
-
-	return app.not_found()
-}
-
-['/api/:user/:package']
-pub fn (mut app App) api_package(user string, package string) vweb.Result {
-	return app.ok('Not implemented')
-}	
-
-[delete]
-['/api/:user/:package']
-pub fn (mut app App) api_package_delete(user string, package string) vweb.Result {
-	if !app.user.is_admin {
-		// app.send_status(401) // not authorized
-		return app.redirect('/')
-	}
-
-	app.delete_package('-1') or {println(err)}
-	return app.ok('Nice')
 }
