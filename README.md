@@ -10,3 +10,7 @@ https://vpm.vlang.io
 - Minimal amount of RAM usage (works great on the cheapest $3.5 AWS Lightsail instance)
 - Easy to deploy via Docker
 - Works without JavaScript
+
+Required dependencies:
+* V 0.2.2 (https://vlang.io)
+* SQLite ^3.31.0 (Ubuntu/Debian: `libsqlite3-dev`)

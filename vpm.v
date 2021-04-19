@@ -5,6 +5,8 @@ import os
 import vweb
 import sqlite
 import json
+import models
+import vsqlite
 
 const (
 	// Port on which the application will run
@@ -15,7 +17,8 @@ struct App {
 	vweb.Context
 mut:
 	started_at u64
-	db         sqlite.DB
+	packages models.PackageService
+	users models.UserService
 	logged_in  bool
 	user       User
 }
@@ -29,16 +32,12 @@ pub fn (mut app App) init_once() {
 	app.started_at = time.now().unix
 
 	// Connect to database
-	app.db = sqlite.connect('vpm.sqlite') or {
+	db := sqlite.connect('vpm.sqlite') or {
 		println('failed to connect to db')
 		panic(err)
 	}
-	app.create_tables()
-
-	if client_id == "" {
-		eprintln('Please set client id with env variable VPM_GITHUB_CLIENT_ID')
-		panic('No github client id is specified')
-	}
+	app.packages = vsqlite.new_package_service(db) or {panic(err)}
+	app.users = vsqlite.new_user_service(db) or {panic(err)}
 
 	if os.getenv('VPM_SKIP_STATIC') !in ['1', 'true'] {
 		app.handle_static('./static/', true)
@@ -62,79 +61,76 @@ pub fn (mut app App) init() {
 ['/jsmod/:name']
 pub fn (mut app App) jsmod(name string) vweb.Result {
 	pkg := app.get_package_by_name(name) or {
-		app.set_status(404, "Module not found")
+		eprintln('GET /jsmod/$name $err')
 		return app.not_found()
 	}
-
-	mod := OldPackage{
-		id: pkg.id
-		name: pkg.name
-		url: pkg.repo_url
-		nr_downloads: pkg.nr_downloads
-		vcs: 'git'
-	}
 	
-	return app.json(json.encode(mod))
+	return app.json(json.encode(pkg.get_old_package()))
 }
 
 [post]
 ['/api/user']
 pub fn (mut app App) api_user_create() vweb.Result {
-	usr := user_from_map(app.form) or {
+	mut usr := models.user_from_map(app.form) or {
 		app.set_status(400, 'Please provide valid user')
+		return app.server_error(1)
+	}
+
+	usr := app.users.create_user(usr) or {
+		eprintln('POST /api/user $err')
+		app.set_status(500, 'Error then creating user')
 		return app.server_error(1)
 	}
 	
 	return app.json(json.encode(usr))
 }
 
-['/api/:user']
+['/api/user/:user']
 pub fn (mut app App) api_user(user string) vweb.Result {
-	mut not_found := false
-
-	mut usr := app.get_user(user.int()) or { // get user by id
-		not_found = true
-		User{}
-	}
-	if not_found == false {
-		return app.json(json.encode(usr))
+	usr := app.get_user(user) or {
+		eprintln('GET /api/user/$user $err')
+		return app.not_found()
 	}
 
-	usr = app.get_user_by_name(user) or {
-		not_found = true
-		User{}
-	}
-	if not_found == false {
-		return app.json(json.encode(usr))
-	}
-
-	return app.not_found()
+	return app.json(json.encode(usr))
 }
 
 [delete]
-['/api/:user']
+['/api/user/:user']
 pub fn (mut app App) api_user_delete(user string) vweb.Result {
-	app.delete_user(user) or {
+	usr := app.users.delete_user(usr.id) or {
+		eprintln('DELETE /api/user/$user $err')
 		return app.not_found()
 	}
-	return app.ok('Successfully deleted')
+
+	return app.json(json.encode(usr))
 }
 
-['/api/:user/:package']
-pub fn (mut app App) api_package(user string, package string) vweb.Result {
-	return app.ok('Not implemented')
+['/api/package/:package']
+pub fn (mut app App) api_package(package string) vweb.Result {
+	pkg := app.get_package(package) or {
+		eprintln('GET /api/package/$package $err')
+		return app.not_found()
+	}
+
+	return app.json(json.encode(pkg))
 }	
 
 [delete]
-['/api/:user/:package']
-pub fn (mut app App) api_package_delete(user string, package string) vweb.Result {
+['/api/package/:package']
+pub fn (mut app App) api_package_delete(package string) vweb.Result {
 	if !app.user.is_admin {
-		// app.send_status(401) // not authorized
-		return app.redirect('/')
+		eprintln('DELETE /api/package/$package Not authorized')
+		app.set_status(401, "")
+		return app.ok("")
 	}
 
-	app.delete_package('-1') or {println(err)}
-	return app.ok('Nice')
+	pkg := app.delete_package(pkg.id) or {
+		eprintln('DELETE /api/package/$package $err')
+		return app.not_found()
+	}
+
+	return app.json(json.encode(pkg))
 }
 
 // ==Frontend Endpoints==
@@ -160,7 +156,13 @@ pub fn (mut app App) create() vweb.Result {
 [post]
 ['/create']
 pub fn (mut app App) create_package() vweb.Result {
-	if app.logged_in {
+	if !app.logged_in {
+		if 'repo_url' !in app.form {
+			app.set_status(400, "Please provide 'repo_url'")
+			app.error("'repo_url' is not provided")
+			return app.ok("")
+		}
+
 		repo_url := app.form['repo_url']
 
 		// TODO: get repo info from git
@@ -172,8 +174,8 @@ pub fn (mut app App) create_package() vweb.Result {
 			license: 'MIT'
 			repo_url: repo_url
 		}
-		app.insert_package(package)
-		return app.ok('')
+		app.insert_package(package) // should return result row
+		return app.json(json.encode(package))
 	}
 	app.error('Not logged in')
 	return app.server_error(401)
