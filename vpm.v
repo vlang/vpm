@@ -138,12 +138,15 @@ pub fn (mut app App) api_package_delete(package string) vweb.Result {
 // Homepage
 pub fn (mut app App) index() vweb.Result {
 	nr_packages := 149
-	new_packages := app.get_some_random_package_info(6)
-	most_downloaded_packages := app.get_some_random_package_info(6)
-	recently_updated_packages := app.get_some_random_package_info(6)
-	most_recent_downloads_packages := app.get_some_random_package_info(6)
-	popular_tags := app.get_some_random_package_info(6)
-	popular_categories := app.get_some_random_package_info(6)
+	new_packages := app.packages.get_packages_sorted_by_created_at(10, 0) or {}
+	most_downloaded_packages := app.packages.get_packages_sorted_by_downloads(10, 0) or {}
+	recently_updated_packages := app.packages.get_packages_sorted_by_last_updated(10, 0) or {}
+	// TODO: most recent downloads
+	most_recent_downloads_packages := app.packages.get_packages_sorted_by_last_updated(10, 0) or {}
+	// TODO: tags
+	popular_tags := app.packages.get_packages_sorted_by_last_updated(10, 0) or {}
+	// TODO: categories
+	popular_categories := app.packages.get_packages_sorted_by_last_updated(10, 0) or {}
 	return $vweb.html()
 }
 

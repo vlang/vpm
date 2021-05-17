@@ -11,6 +11,7 @@ pub interface PackageService {
 	get_packages_sorted_by_stars(limit int, offset int) ?[]Package
 	get_packages_sorted_by_downloads(limit int, offset int) ?[]Package
 	get_packages_sorted_by_last_updated(limit int, offset int) ?[]Package
+	get_packages_sorted_by_created_at(limit int, offset int) ?[]Package
 	get_packages_all() ?[]Package
 	update_package(package Package) ?Package
 	delete_package(id int) ?Package
@@ -115,5 +116,5 @@ pub:
 	name         string
 	vcs          string
 	url          string
-	nr_downloads int [json: downloads]
+	nr_downloads int
 }
