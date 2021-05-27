@@ -1,4 +1,20 @@
-vpm
-vpm.sqlite
+# Binary
+/vpm
+/vpm.sqlite
+/test.bin
+
+# temp folders
+/temp
+/tmp
+
+# ide folders
+.idea
+.vscode/
 .lite_workspace.lua
 *.code-workspace
+
+# config files
+.env
+
+# documentation
+_docs
