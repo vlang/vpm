@@ -21,7 +21,9 @@ pub fn (r TagsRepo) create(name string) ?int {
 
 pub fn (r TagsRepo) get_by_id(id int) ?models.Tag {
 	query := 'SELECT name, nr_packages FROM $tags_table WHERE id = $id;'
-	row := r.db.exec_one(query) ?
+	row := r.db.exec_one(query) or {
+		check_one(err) ?
+	}
 
 	mut cursor := new_cursor()
 	category := models.Tag{
@@ -35,7 +37,9 @@ pub fn (r TagsRepo) get_by_id(id int) ?models.Tag {
 
 pub fn (r TagsRepo) get_by_name(name string) ?models.Tag {
 	query := "SELECT id, nr_packages FROM $tags_table WHERE name = '$name';"
-	row := r.db.exec_one(query) ?
+	row := r.db.exec_one(query) or {
+		check_one(err) ?
+	}
 
 	mut cursor := new_cursor()
 	category := models.Tag{
@@ -58,5 +62,5 @@ pub fn (r TagsRepo) add_package(id int, package_id int) ? {
 }
 
 pub fn (r TagsRepo) delete(id int) ? {
-	return exec(r.db, 'DELETE FROM $tags_table WHERE id = $id;')
+	exec(r.db, 'DELETE FROM $tags_table WHERE id = $id;') ?
 }

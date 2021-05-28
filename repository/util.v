@@ -26,7 +26,9 @@ fn exec(db sqlite.DB, query string) ? {
 }
 
 fn exec_field(db sqlite.DB, query string) ?string {
-	row := db.exec_one(query) ?
+	row := db.exec_one(query) or {
+		check_one(err) ?
+	}
 	return row.vals[0]
 }
 
@@ -37,13 +39,20 @@ fn exec_array(db sqlite.DB, query string) ?[]int {
 	return r2array(rows)
 }
 
+fn check_one(err IError) ? {
+	if err.msg == "No rows" {
+		return IError(&NotFoundError{code:err.code})
+	} else {
+		return IError(&SQLError{msg:err.msg, code:err.code})
+	}
+}
+
 fn check_sql_code(code int) ? {
 	if code == 101 {
 		return
 	}
 
-	return error_with_code(unsafe { cstring_to_vstring(&char(C.sqlite3_errstr(code))) },
-		code)
+	return IError(&SQLError{msg: unsafe { cstring_to_vstring(&char(C.sqlite3_errstr(code))) }, code: code})
 }
 
 // Converts sqlite rows with one element into array

@@ -21,7 +21,9 @@ pub fn (r CategoriesRepo) create(name string) ?int {
 
 pub fn (r CategoriesRepo) get_by_id(id int) ?models.Category {
 	query := 'SELECT name, nr_packages FROM $categories_table WHERE id = $id;'
-	row := r.db.exec_one(query) ?
+	row := r.db.exec_one(query) or {
+		check_one(err) ?
+	}
 
 	mut cursor := new_cursor()
 	category := models.Category{
@@ -35,7 +37,9 @@ pub fn (r CategoriesRepo) get_by_id(id int) ?models.Category {
 
 pub fn (r CategoriesRepo) get_by_name(name string) ?models.Category {
 	query := "SELECT id, nr_packages FROM $categories_table WHERE name = '$name';"
-	row := r.db.exec_one(query) ?
+	row := r.db.exec_one(query) or {
+		check_one(err) ?
+	}
 
 	mut cursor := new_cursor()
 	category := models.Category{
@@ -58,5 +62,5 @@ pub fn (r CategoriesRepo) add_package(id int, package_id int) ? {
 }
 
 pub fn (r CategoriesRepo) delete(id int) ? {
-	return exec(r.db, 'DELETE FROM $categories_table WHERE id = $id;')
+	exec(r.db, 'DELETE FROM $categories_table WHERE id = $id;') ?
 }

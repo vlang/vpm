@@ -46,7 +46,9 @@ pub fn (r PackagesRepo) get_by_id(id int) ?models.Package {
 	query := 'SELECT author_id, name, description, license, ' +
 		'vcs, repo_url, stars, nr_downloads, created_at, updated_at ' +
 		'FROM $packages_table WHERE id = $id;'
-	row := r.db.exec_one(query) ?
+	row := r.db.exec_one(query) or {
+		check_one(err) ?
+	}
 
 	mut cursor := new_cursor()
 	pkg := models.Package{
@@ -73,7 +75,9 @@ pub fn (r PackagesRepo) get_by_name(name string) ?models.Package {
 	query := 'SELECT id, author_id, description, license, ' +
 		'vcs, repo_url, stars, nr_downloads, created_at, updated_at ' +
 		"FROM $packages_table WHERE name = '$name';"
-	row := r.db.exec_one(query) ?
+	row := r.db.exec_one(query) or {
+		check_one(err) ?
+	}
 
 	mut cursor := new_cursor()
 	id := row.vals[cursor.next()].int()
