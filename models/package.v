@@ -13,11 +13,9 @@ pub:
 	vcs         string
 	repo_url    string [json: repoUrl]
 
-	versions     []int
-	tags         []int
-	categories   []int
 	stars        int
-	nr_downloads int   [json: downloads]
+	downloads int
+	downloaded_at time.Time [json: downloadedAt]
 
 	created_at time.Time [json: createdAt]
 	updated_at time.Time [json: updatedAt]
@@ -28,7 +26,7 @@ pub fn (package Package) get_old_package() OldPackage {
 		id: package.id
 		name: package.name
 		url: package.repo_url
-		nr_downloads: package.nr_downloads
+		nr_downloads: package.downloads
 		vcs: package.vcs
 	}
 }

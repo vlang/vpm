@@ -3,11 +3,10 @@ module models
 pub struct User {
 pub:
 	id         int
-	name       string
-	username   string
-	avatar_url string [json: avatarUrl]
+	github_id  int
+	name       string // Github name
+	username   string // Github username
+	avatar_url string [json: avatarUrl] // Github Avatar URL
 	is_blocked bool   [skip]
 	is_admin   bool   [skip]
-pub mut:
-	login_attempts int [skip]
 }

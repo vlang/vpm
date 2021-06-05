@@ -1,12 +1,12 @@
 FROM thevlang/vlang:alpine-dev AS build
-WORKDIR /vpm
+WORKDIR /app
 COPY ./templates ./templates
-COPY *.v .
-RUN v -prod -o vpm .
+COPY . .
+RUN v -prod -gc boehm -o vpm ./cmd/vpm
 
 FROM thevlang/vlang:alpine-base as app
-WORKDIR /vpm
+WORKDIR /app
 COPY ./static ./static
-COPY --from=build /vpm/vpm ./vpm
+COPY --from=build /app/vpm ./vpm
 EXPOSE 80
 CMD ["./vpm"]

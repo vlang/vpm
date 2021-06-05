@@ -27,7 +27,7 @@ fn exec(db sqlite.DB, query string) ? {
 
 fn exec_field(db sqlite.DB, query string) ?string {
 	row := db.exec_one(query) or {
-		check_one(err) ?
+		return error_one(err)
 	}
 	return row.vals[0]
 }
@@ -36,15 +36,20 @@ fn exec_array(db sqlite.DB, query string) ?[]int {
 	dump(query)
 	rows, code := db.exec(query)
 	check_sql_code(code) ?
+
+	if rows.len == 0 {
+		return not_found()
+	}
+
 	return r2array(rows)
 }
 
-fn check_one(err IError) ? {
+fn error_one(err IError) IError {
 	if err.msg == "No rows" {
 		return IError(&NotFoundError{code:err.code})
-	} else {
-		return IError(&SQLError{msg:err.msg, code:err.code})
 	}
+
+	return do_error(err.code)
 }
 
 fn check_sql_code(code int) ? {
@@ -52,7 +57,17 @@ fn check_sql_code(code int) ? {
 		return
 	}
 
-	return IError(&SQLError{msg: unsafe { cstring_to_vstring(&char(C.sqlite3_errstr(code))) }, code: code})
+	return do_error(code)
+}
+
+fn do_error(code int) IError {
+	msg := unsafe { cstring_to_vstring(&char(C.sqlite3_errstr(code))) }
+
+	if code in [275, 531, 787, 1043, 1299, 2835, 1555, 2579, 1811, 2067, 2323] {
+		return IError(&ConstraintError{msg: msg, code: code})
+	}
+
+	return IError(&SQLError{msg: msg, code: code})
 }
 
 // Converts sqlite rows with one element into array

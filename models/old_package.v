@@ -1,6 +1,6 @@
 module models
 
-// For backward compatibility for V <=0.2.2
+// Backward compatibility for V <=0.2.2
 pub struct OldPackage {
 pub:
 	id           int

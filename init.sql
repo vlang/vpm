@@ -5,8 +5,11 @@ create table category
 		constraint category_pk
 			primary key autoincrement,
 	name TEXT not null,
-	nr_packages INTEGER default 0 not null
+	packages INTEGER default 0 not null
 );
+
+create unique index category_name_uindex
+	on category (name);
 
 create table tag
 (
@@ -14,8 +17,11 @@ create table tag
 		constraint tag_pk
 			primary key autoincrement,
 	name TEXT not null,
-	nr_packages INTEGER default 0
+	packages INTEGER default 0
 );
+
+create unique index tag_name_uindex
+	on tag (name);
 
 create table token
 (
@@ -32,12 +38,12 @@ create table user
 	id INTEGER
 		constraint user_pk
 			primary key autoincrement,
+	github_id INTEGER not null,
+	name TEXT,
 	username TEXT not null,
 	avatar_url TEXT,
 	is_blocked BOOLEAN default 0,
-	is_admin BOOLEAN default 0,
-	login_attempts INTEGER default 0,
-	name TEXT
+	is_admin BOOLEAN default 0
 );
 
 create table package
@@ -48,12 +54,13 @@ create table package
 	author_id INTEGER not null
 		references user,
 	name TEXT not null,
-	description TEXT default "",
+	description TEXT default '',
 	license TEXT,
-	vcs TEXT default "git",
+	vcs TEXT default 'git',
 	repo_url TEXT not null,
 	stars INTEGER default 0,
-	nr_downloads INTEGER default 0,
+	downloads INTEGER default 0,
+	downloaded_at TIMESTAMP,
 	updated_at TIMESTAMP default CURRENT_TIMESTAMP,
 	created_at TIMESTAMP default CURRENT_TIMESTAMP
 );
@@ -64,26 +71,20 @@ create unique index package_name_uindex
 create unique index package_repo_url_uindex
 	on package (repo_url);
 
-CREATE TRIGGER delete_category_links_after_delete
-			AFTER DELETE ON package
+CREATE TRIGGER update_package_downloaded_at_after_update
+			AFTER UPDATE ON package
 		BEGIN
-			DELETE FROM package_to_category
-		    WHERE package_to_category.package_id = old.id;
-		END;
-
-CREATE TRIGGER delete_tag_links_after_delete
-			AFTER DELETE ON package
-		BEGIN
-			DELETE FROM package_to_tag
-		    WHERE package_to_tag.package_id = old.id;
+			UPDATE package
+			SET downloaded_at = CURRENT_TIMESTAMP
+			WHERE id = new.id AND old.downloads != new.downloads;
 		END;
 
 CREATE TRIGGER update_updated_at_after_update
-			BEFORE UPDATE ON package
+			AFTER UPDATE ON package
 		BEGIN
 			UPDATE package
 			SET updated_at = CURRENT_TIMESTAMP
-		    WHERE id = new.id;
+			WHERE id = new.id;
 		END;
 
 create table package_to_category
@@ -91,22 +92,22 @@ create table package_to_category
 	package_id INTEGER not null
 		references package,
 	category_id INTEGER not null
-		references category ("")
+		references category
 );
 
-CREATE TRIGGER update_category_nr_packages_after_delete
+CREATE TRIGGER update_category_packages_after_delete
 			AFTER DELETE ON package_to_category
 		BEGIN
 			UPDATE category
-			SET nr_packages = nr_packages - 1
+			SET packages = packages - 1
 			WHERE id = old.category_id;
 		END;
 
-CREATE TRIGGER update_category_nr_packages_after_insert
+CREATE TRIGGER update_category_packages_after_insert
 			AFTER INSERT ON package_to_category
 		BEGIN
 			UPDATE category
-			SET nr_packages = nr_packages + 1
+			SET packages = packages + 1
 			WHERE id = new.category_id;
 		END;
 
@@ -118,19 +119,19 @@ create table package_to_tag
 		references tag
 );
 
-CREATE TRIGGER update_tag_nr_packages_after_delete
+CREATE TRIGGER update_tag_packages_after_delete
 			AFTER DELETE ON package_to_tag
 		BEGIN
-			UPDATE "tag"
-			SET nr_packages = nr_packages - 1
+			UPDATE tag
+			SET packages = packages - 1
 			WHERE id = old.tag_id;
 		END;
 
-CREATE TRIGGER update_tag_nr_packages_after_insert
+CREATE TRIGGER update_tag_packages_after_insert
 			AFTER INSERT ON package_to_tag
 		BEGIN
-			UPDATE "tag"
-			SET nr_packages = nr_packages + 1
+			UPDATE tag
+			SET packages = packages + 1
 			WHERE id = new.tag_id;
 		END;
 
@@ -148,7 +149,7 @@ create table version
 	commit_hash TEXT not null,
 	date TIMESTAMP default CURRENT_TIMESTAMP,
 	release_url TEXT not null,
-	nr_downloads INTEGER default 0
+	downloads INTEGER default 0
 );
 
 create table dependency
@@ -163,4 +164,30 @@ create unique index version_commit_hash_uindex
 
 create unique index version_name_uindex
 	on version (name);
+
+CREATE TRIGGER update_package_downloads_after_update
+			AFTER UPDATE ON version
+		BEGIN
+			UPDATE package
+			SET downloads = downloads + (new.downloads - old.downloads)
+			WHERE id = new.package_id;
+		END;
+
+CREATE VIEW most_downloadable_packages as
+	select * from package order by downloads desc;
+
+CREATE VIEW most_recent_downloads as
+	select * from package order by downloaded_at desc;
+
+CREATE VIEW new_packages as
+	select * from package order by created_at desc;
+
+CREATE VIEW popular_categories as
+	select * from category order by packages desc;
+
+CREATE VIEW popular_tags as
+	select * from tag order by packages desc;
+
+CREATE VIEW recently_updated_packages as
+	select * from package order by updated_at;
 

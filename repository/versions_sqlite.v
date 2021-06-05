@@ -15,7 +15,7 @@ pub fn new_versions_repo(db sqlite.DB) VersionsRepo {
 }
 
 fn (r VersionsRepo) dependencies(id int) ?[]int {
-	// TODO: Sort by nr_downloads (join or smth)
+	// TODO: Sort by downloads (join or smth)
 	return exec_array(r.db, 'SELECT dependency_id FROM $dependencies_table' +
 		'WHERE version_id = $id;')
 }
@@ -32,10 +32,10 @@ pub fn (r VersionsRepo) create(version models.Version) ?int {
 }
 
 pub fn (r VersionsRepo) get_by_id(id int) ?models.Version {
-	query := 'SELECT package_id, name, release_url, commit_hash, nr_downloads, date' +
+	query := 'SELECT package_id, name, release_url, commit_hash, downloads, date' +
 		'FROM $versions_table WHERE id = $id;'
 	row := r.db.exec_one(query) or {
-		check_one(err) ?
+		return error_one(err)
 	}
 
 	mut cursor := new_cursor()
@@ -46,30 +46,30 @@ pub fn (r VersionsRepo) get_by_id(id int) ?models.Version {
 		release_url: row.vals[cursor.next()]
 		commit_hash: row.vals[cursor.next()]
 		dependencies: r.dependencies(id) ?
-		nr_downloads: row.vals[cursor.next()].int()
+		downloads: row.vals[cursor.next()].int()
 		date: time.unix(row.vals[cursor.next()].int())
 	}
 
 	return version
 }
 
-pub fn (r VersionsRepo) get_by_name(name string) ?models.Version {
-	query := 'SELECT id, package_id, release_url, commit_hash, nr_downloads, date' +
-		'FROM $versions_table WHERE name = $name;'
+pub fn (r VersionsRepo) get(package_id int, name string) ?models.Version {
+	query := 'SELECT id, release_url, commit_hash, downloads, date' +
+		"FROM $versions_table WHERE package_id = $package_id AND name = '$name';"
 	row := r.db.exec_one(query) or {
-		check_one(err) ?
+		return error_one(err)
 	}
 
 	mut cursor := new_cursor()
 	id := row.vals[cursor.next()].int()
 	version := models.Version{
 		id: id
-		package_id: row.vals[cursor.next()].int()
+		package_id: package_id
 		name: name
 		release_url: row.vals[cursor.next()]
 		commit_hash: row.vals[cursor.next()]
 		dependencies: r.dependencies(id) ?
-		nr_downloads: row.vals[cursor.next()].int()
+		downloads: row.vals[cursor.next()].int()
 		date: time.unix(row.vals[cursor.next()].int())
 	}
 
@@ -77,10 +77,14 @@ pub fn (r VersionsRepo) get_by_name(name string) ?models.Version {
 }
 
 pub fn (r VersionsRepo) get_by_package(package_id int) ?[]models.Version {
-	query := 'SELECT id, name, release_url, commit_hash, nr_downloads, date' +
+	query := 'SELECT id, name, release_url, commit_hash, downloads, date' +
 		'FROM $versions_table WHERE package_id = $package_id ORDER BY date DESC;'
 	rows, code := r.db.exec(query)
 	check_sql_code(code) ?
+
+	if rows.len == 0 {
+		return not_found()
+	}
 
 	mut versions := []models.Version{}
 	for row in rows {
@@ -93,7 +97,7 @@ pub fn (r VersionsRepo) get_by_package(package_id int) ?[]models.Version {
 			release_url: row.vals[cursor.next()]
 			commit_hash: row.vals[cursor.next()]
 			dependencies: r.dependencies(id) ?
-			nr_downloads: row.vals[cursor.next()].int()
+			downloads: row.vals[cursor.next()].int()
 			date: time.unix(row.vals[cursor.next()].int())
 		}
 		versions << version
@@ -102,10 +106,10 @@ pub fn (r VersionsRepo) get_by_package(package_id int) ?[]models.Version {
 	return versions
 }
 
-pub fn (r VersionsRepo) add_nr_downloads(id int) ? {
-	exec(r.db, 'UPDATE $versions_table SET nr_downloads = nr_downloads + 1 WHERE id = $id;') ?
+pub fn (r VersionsRepo) add_download(name string) ? {
+	exec(r.db, "UPDATE $versions_table SET downloads = downloads + 1 WHERE name = '$name';") ?
 }
 
-pub fn (r VersionsRepo) delete(id int) ? {
-	exec(r.db, 'DELETE FROM $versions_table WHERE id = $id;') ?
+pub fn (r VersionsRepo) delete(name string) ? {
+	exec(r.db, "DELETE FROM $versions_table WHERE name = '$name';") ?
 }
