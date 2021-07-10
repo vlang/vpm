@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  @include 'head'
+</head>
+
+<body>
+
+  <header id="create-navbar" class="navbar">
+    .inner {
+      <a id="logo" href="/" aria-label="Homepage">
+        <img src="/logo.svg" height="60" />
+      </a>
+    }
+  </header>
+
+  <div class="content centered">
+    @if app.logged_in
+      <form>
+        <label for="repo_url">Repo</label>
+        <input id="repo_url" type="text" />
+        <button>Submit</button>
+      </form>
+    @else
+      <p>
+        In order to upload your package, you must be logged in using github
+      </p>
+      <a href="/login">
+        Log in with Github
+      </a>
+    @end
+  </div>
+
+@include 'footer'
