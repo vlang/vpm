@@ -1,15 +1,16 @@
 module app
 
 import nedpals.vex.ctx
-import vpm.models
-import vpm.service
+import models
+import service
 
+// Package struct that returns from api
 pub struct Package {
-pub:
 	models.Package
-	tags []models.Tag
+pub:
+	tags       []models.Tag
 	categories []models.Category
-	versions []models.Version
+	versions   []models.Version
 }
 
 fn get_package(req &ctx.Req, mut res ctx.Resp) {
@@ -26,7 +27,7 @@ fn get_package(req &ctx.Req, mut res ctx.Resp) {
 				[]models.Tag{}
 			}
 			else {
-				wrap_service_error(req, mut res, err)	
+				wrap_service_error(req, mut res, err)
 			}
 		}
 
@@ -39,7 +40,7 @@ fn get_package(req &ctx.Req, mut res ctx.Resp) {
 				[]models.Category{}
 			}
 			else {
-				wrap_service_error(req, mut res, err)	
+				wrap_service_error(req, mut res, err)
 			}
 		}
 
@@ -52,7 +53,7 @@ fn get_package(req &ctx.Req, mut res ctx.Resp) {
 				[]models.Version{}
 			}
 			else {
-				wrap_service_error(req, mut res, err)	
+				wrap_service_error(req, mut res, err)
 			}
 		}
 

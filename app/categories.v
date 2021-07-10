@@ -44,7 +44,8 @@ fn admin_create_category(req &ctx.Req, mut res ctx.Resp) {
 		return
 	}
 
-	send_id(mut res, id)
+	res.headers['Content-Type'] = ['application/json']
+	res.send('{"id": $id.str()}', 200)
 }
 
 fn admin_delete_category(req &ctx.Req, mut res ctx.Resp) {

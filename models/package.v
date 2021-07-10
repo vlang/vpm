@@ -13,8 +13,8 @@ pub:
 	vcs         string
 	repo_url    string [json: repoUrl]
 
-	stars        int
-	downloads int
+	stars         int
+	downloads     int
 	downloaded_at time.Time [json: downloadedAt]
 
 	created_at time.Time [json: createdAt]

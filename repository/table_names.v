@@ -14,10 +14,10 @@ const (
 )
 
 const (
-	most_downloadable_view = 'most_downloadable_packages'
+	most_downloadable_view     = 'most_downloadable_packages'
 	most_recent_downloads_view = 'most_recent_downloads'
-	new_packages_view = 'new_packages'
-	popular_categories_view = 'popular_categories'
-	popular_tags_view = 'popular_tags'
-	recently_updated_view = 'recently_updated_packages'
+	new_packages_view          = 'new_packages'
+	popular_categories_view    = 'popular_categories'
+	popular_tags_view          = 'popular_tags'
+	recently_updated_view      = 'recently_updated_packages'
 )

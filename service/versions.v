@@ -1,7 +1,7 @@
 module service
 
-import vpm.models
-import vpm.repository
+import models
+import repository
 
 pub struct VersionsService {
 	repo repository.Versions
@@ -21,37 +21,25 @@ pub fn (service VersionsService) create(input CreateVersionInput) ?int {
 		release_url: input.release_url
 		dependencies: input.dependencies
 		date: input.date
-	}) or {
-		return wrap_err(err)
-	}
+	}) or { return wrap_err(err) }
 }
 
 pub fn (service VersionsService) get(package_id int, name string) ?models.Version {
-	return service.repo.get(package_id, name) or {
-		return wrap_err(err)
-	}
+	return service.repo.get(package_id, name) or { return wrap_err(err) }
 }
 
 pub fn (service VersionsService) get_by_id(id int) ?models.Version {
-	return service.repo.get_by_id(id) or {
-		return wrap_err(err)
-	}
+	return service.repo.get_by_id(id) or { return wrap_err(err) }
 }
 
 pub fn (service VersionsService) get_by_package(package_id int) ?[]models.Version {
-	return service.repo.get_by_package(package_id) or {
-		return wrap_err(err)
-	}
+	return service.repo.get_by_package(package_id) or { return wrap_err(err) }
 }
 
 pub fn (service VersionsService) add_download(name string) ? {
-	service.repo.add_download(name) or {
-		return wrap_err(err)
-	}
+	service.repo.add_download(name) or { return wrap_err(err) }
 }
 
 pub fn (service VersionsService) delete(name string) ? {
-	service.repo.delete(name) or {
-		return wrap_err(err)
-	}
+	service.repo.delete(name) or { return wrap_err(err) }
 }

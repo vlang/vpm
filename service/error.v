@@ -1,6 +1,6 @@
 module service
 
-import vpm.repository
+import repository
 
 fn s_err(err IError) string {
 	return '[$err.code] $err.msg'
@@ -8,7 +8,7 @@ fn s_err(err IError) string {
 
 pub struct NotFoundError {
 pub:
-	msg string = "doesn't exists"
+	msg  string = "doesn't exists"
 	code int
 }
 
@@ -32,7 +32,7 @@ fn not_found(entity string) IError {
 // *alias to ConsraintError from repository module
 pub struct AlreadyExists {
 pub:
-	msg string = "already exists"
+	msg  string = 'already exists'
 	code int
 }
 
@@ -49,7 +49,7 @@ fn from_repo_already_exists(err repository.ConstraintError) IError {
 
 pub struct IncorrectInputError {
 pub:
-	msg string = "input is fucked up"
+	msg  string = 'input is fucked up'
 	code int
 }
 

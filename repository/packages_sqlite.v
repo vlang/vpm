@@ -47,9 +47,7 @@ pub fn (r PackagesRepo) get_by_id(id int) ?models.Package {
 	query := 'SELECT author_id, name, description, license, ' +
 		'vcs, repo_url, stars, downloads, downloaded_at, created_at, updated_at ' +
 		'FROM $packages_table WHERE id = $id;'
-	row := r.db.exec_one(query) or {
-		return error_one(err)
-	}
+	row := r.db.exec_one(query) or { return error_one(err) }
 
 	mut cursor := new_cursor()
 	pkg := models.Package{
@@ -74,9 +72,7 @@ pub fn (r PackagesRepo) get_by_name(name string) ?models.Package {
 	query := 'SELECT id, author_id, description, license, ' +
 		'vcs, repo_url, stars, downloads, downloaded_at, created_at, updated_at ' +
 		"FROM $packages_table WHERE name = '$name';"
-	row := r.db.exec_one(query) or {
-		return error_one(err)
-	}
+	row := r.db.exec_one(query) or { return error_one(err) }
 
 	mut cursor := new_cursor()
 	mut pkg := models.Package{
@@ -132,7 +128,6 @@ pub fn (r PackagesRepo) get_by_author(author_id int) ?[]models.Package {
 }
 
 pub fn (r PackagesRepo) get_by_ids(ids ...int) ?[]models.Package {
-
 	mut query_ids := strings.new_builder(16)
 	for i in ids {
 		query_ids.write_string('$i,')
@@ -141,7 +136,7 @@ pub fn (r PackagesRepo) get_by_ids(ids ...int) ?[]models.Package {
 
 	query := 'SELECT id, author_id, name, description, license, ' +
 		'vcs, repo_url, stars, downloads, downloaded_at, created_at, updated_at ' +
-		'FROM $packages_table WHERE id IN (${query_ids.str()}) ORDER BY updated_at DESC;'
+		'FROM $packages_table WHERE id IN ($query_ids.str()) ORDER BY updated_at DESC;'
 	rows, code := r.db.exec(query)
 	check_sql_code(code) ?
 

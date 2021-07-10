@@ -6,7 +6,7 @@ fn s_err(err IError) string {
 
 pub struct SQLError {
 pub:
-	msg string
+	msg  string
 	code int
 }
 
@@ -16,7 +16,7 @@ pub fn (err SQLError) str() string {
 
 pub struct NotFoundError {
 pub:
-	msg string = "no records found"
+	msg  string = 'no records found'
 	code int
 }
 
@@ -30,7 +30,7 @@ fn not_found() IError {
 
 pub struct ConstraintError {
 pub:
-	msg string = "probably record already exists"
+	msg  string = 'probably record already exists'
 	code int
 }
 

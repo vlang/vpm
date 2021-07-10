@@ -34,9 +34,7 @@ pub fn (r VersionsRepo) create(version models.Version) ?int {
 pub fn (r VersionsRepo) get_by_id(id int) ?models.Version {
 	query := 'SELECT package_id, name, release_url, commit_hash, downloads, date' +
 		'FROM $versions_table WHERE id = $id;'
-	row := r.db.exec_one(query) or {
-		return error_one(err)
-	}
+	row := r.db.exec_one(query) or { return error_one(err) }
 
 	mut cursor := new_cursor()
 	version := models.Version{
@@ -56,9 +54,7 @@ pub fn (r VersionsRepo) get_by_id(id int) ?models.Version {
 pub fn (r VersionsRepo) get(package_id int, name string) ?models.Version {
 	query := 'SELECT id, release_url, commit_hash, downloads, date' +
 		"FROM $versions_table WHERE package_id = $package_id AND name = '$name';"
-	row := r.db.exec_one(query) or {
-		return error_one(err)
-	}
+	row := r.db.exec_one(query) or { return error_one(err) }
 
 	mut cursor := new_cursor()
 	id := row.vals[cursor.next()].int()

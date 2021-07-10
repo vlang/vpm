@@ -1,7 +1,7 @@
 module repository
 
 import sqlite
-import vpm.models
+import models
 
 pub struct TokensRepo {
 	db sqlite.DB

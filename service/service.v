@@ -1,8 +1,8 @@
 module service
 
 import time
-import vpm.models
-import vpm.repository
+import models
+import repository
 
 pub interface Categories {
 	create(name string) ?int
@@ -18,11 +18,11 @@ pub interface Categories {
 
 pub struct CreatePackageInput {
 pub:
-	author_id int [json: authorId]
-	name string
+	author_id   int    [json: authorId]
+	name        string
 	description string
-	license string
-	vcs string
+	license     string
+	vcs         string
 	repo_url    string [json: repoUrl]
 }
 
@@ -56,17 +56,17 @@ pub interface Tags {
 
 pub struct CreateUserInput {
 pub:
-	github_id int
-	name string
-	username string
+	github_id  int
+	name       string
+	username   string
 	avatar_url string [json: avatarUrl]
 }
 
 pub struct UpdateUserInput {
 pub:
-	github_id int
-	name string
-	username string
+	github_id  int
+	name       string
+	username   string
 	avatar_url string
 }
 
@@ -85,12 +85,12 @@ pub interface Users {
 
 pub struct CreateVersionInput {
 pub:
-	package_id int [json: packageId]
+	package_id   int       [json: packageId]
 	name         string
-	commit_hash  string [json: commitHash]
-	release_url  string [json: releaseUrl]
+	commit_hash  string    [json: commitHash]
+	release_url  string    [json: releaseUrl]
 	dependencies []int
-	date time.Time
+	date         time.Time
 }
 
 pub interface Versions {
@@ -105,10 +105,10 @@ pub interface Versions {
 pub struct Services {
 pub:
 	categories Categories
-	packages Packages
-	tags Tags
-	users Users
-	versions Versions
+	packages   Packages
+	tags       Tags
+	users      Users
+	versions   Versions
 }
 
 pub struct Deps {

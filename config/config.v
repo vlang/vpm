@@ -2,7 +2,7 @@ module config
 
 pub struct Config {
 	sqlite SqliteConfig
-	http HTTPConfig
+	http   HTTPConfig
 }
 
 pub struct SqliteConfig {
@@ -10,9 +10,9 @@ pub struct SqliteConfig {
 }
 
 pub struct HTTPConfig {
-	host string
-	port string
-	read_timeout int
-	write_timeout int
+	host                 string
+	port                 string
+	read_timeout         int
+	write_timeout        int
 	max_header_megabytes int
 }

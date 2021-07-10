@@ -1,16 +1,9 @@
 module main
 
-// import app
-// import config
-
-// fn main() {
-// 	app.run(config.get())
-// }
-
-import vpm.app
+import app
 
 const (
-	config_file = "./main.toml"
+	config_file = './main.toml'
 )
 
 fn main() {

@@ -31,7 +31,7 @@ jobs:
       with:
         path: vpm
     - name: Install dependencies
-      run: sudo apt-get install --quiet -y postgresql libpq-dev libssl-dev
+      run: sudo apt-get install --quiet -y libsqlite3-dev libssl-dev
     - name: Build V
       run: make
     - name: Build VPM

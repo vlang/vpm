@@ -2,20 +2,15 @@ module app
 
 import time
 import nedpals.vex.ctx
-import vpm.models
-import vpm.service
+import models
+import service
 
 fn dummy(req &ctx.Req, mut res ctx.Resp) {
-	res.send('Hello)', 200)
+	res.send('Hello :)', 200)
 }
 
 fn authorized(user models.User) bool {
 	return user.id != 0
-}
-
-fn send_id(mut res ctx.Resp, id int) {
-	res.headers['Content-Type'] = ['application/json']
-	res.send('{"id": ${id.str()}}', 200)
 }
 
 fn wrap_service_error(req &ctx.Req, mut res ctx.Resp, err IError) {
@@ -38,5 +33,5 @@ fn wrap_service_error(req &ctx.Req, mut res ctx.Resp, err IError) {
 }
 
 fn errout(req &ctx.Req, err IError) {
-	eprintln('[ERR][${time.now().hhmmss()}] $req.method $req.path : $err')
+	eprintln('[ERR][$time.now().hhmmss()] $req.method $req.path : $err')
 }

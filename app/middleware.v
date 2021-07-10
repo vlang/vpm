@@ -1,7 +1,7 @@
 module app
 
 import nedpals.vex.ctx
-import vpm.models
+import models
 
 fn clear_user(mut req ctx.Req, mut res ctx.Resp) {
 	mut app := &App(req.ctx)
@@ -12,4 +12,3 @@ fn identity(mut req ctx.Req, mut res ctx.Resp) {
 	mut app := &App(req.ctx)
 	// TODO: app.user
 }
-

@@ -1,7 +1,7 @@
 module repository
 
 import sqlite
-import vpm.models
+import models
 
 pub interface Categories {
 	create(name string) ?int
@@ -72,11 +72,11 @@ pub interface Users {
 pub struct Repositories {
 pub:
 	categories Categories
-	packages Packages
-	versions Versions
-	tags Tags
-	tokens Tokens
-	users Users
+	packages   Packages
+	versions   Versions
+	tags       Tags
+	tokens     Tokens
+	users      Users
 }
 
 pub fn new_repositories(db sqlite.DB) Repositories {

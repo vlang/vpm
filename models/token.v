@@ -2,6 +2,6 @@ module models
 
 pub struct Token {
 pub:
-	user_id string
+	user_id      string
 	access_token string
 }

@@ -9,12 +9,16 @@
 
 # ide folders
 .idea
-.vscode/
+.vscode
 .lite_workspace.lua
 *.code-workspace
 
 # config files
-.env
+/.env
+/config.toml
+/deploy.toml
+/prod.toml
+/dev.toml
 
 # documentation
-_docs
+/_docs
