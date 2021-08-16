@@ -1,8 +1,10 @@
 module service
 
 import time
+import io
 import models
 import repository
+
 
 pub interface Categories {
 	create(name string) ?int
@@ -118,9 +120,8 @@ pub:
 }
 
 pub interface Registry {
-	upload(path string, content io.Reader, content_length int) ?
-	url(path string) ?string
-	download(path string) ?io.Reader
+	add_to_index(file_name string, content io.Reader) ?
+    take_from_index(file_name string) ?io.Reader {
 }
 
 pub fn new_services(deps Deps) Services {
