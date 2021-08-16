@@ -117,6 +117,12 @@ pub:
 	// TODO: auth token manager
 }
 
+pub interface Registry {
+	upload(path string, content io.Reader, content_length int) ?
+	url(path string) ?string
+	download(path string) ?io.Reader
+}
+
 pub fn new_services(deps Deps) Services {
 	return Services{
 		categories: new_categories_service(deps.repos.categories, deps.repos.packages)
