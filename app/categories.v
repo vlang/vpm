@@ -3,8 +3,7 @@ module app
 import json
 import vweb
 
-[get]
-['/api/categories']
+['/api/categories'; get]
 fn (mut app App) get_all_categories() vweb.Result {
 	categories := app.services.categories.get_popular_categories() or {
 		return wrap_service_error(mut app, err)
@@ -13,8 +12,7 @@ fn (mut app App) get_all_categories() vweb.Result {
 	return app.json(json.encode(categories))
 }
 
-[get]
-['/api/categories/:name']
+['/api/categories/:name'; get]
 fn (mut app App) get_category_packages(name string) vweb.Result {
 	packages := app.services.categories.get_packages(name) or {
 		return wrap_service_error(mut app, err)
@@ -23,8 +21,7 @@ fn (mut app App) get_category_packages(name string) vweb.Result {
 	return app.json(json.encode(packages))
 }
 
-[post]
-['/api/categories/:name']
+['/api/categories/:name'; post]
 fn (mut app App) admin_create_category(name string) vweb.Result {
 	if !authorized(app.user) {
 		app.set_status(401, 'Unauthorized')
@@ -36,15 +33,12 @@ fn (mut app App) admin_create_category(name string) vweb.Result {
 		return app.not_found()
 	}
 
-	id := app.services.categories.create(name) or {
-		return wrap_service_error(mut app, err)
-	}
+	id := app.services.categories.create(name) or { return wrap_service_error(mut app, err) }
 
 	return app.json('{"id": $id)}')
 }
 
-[delete]
-['/api/categories/:name']
+['/api/categories/:name'; delete]
 fn (mut app App) admin_delete_category(name string) vweb.Result {
 	if !authorized(app.user) {
 		app.set_status(401, 'Unauthorized')
@@ -56,9 +50,7 @@ fn (mut app App) admin_delete_category(name string) vweb.Result {
 		return app.not_found()
 	}
 
-	app.services.categories.delete(name) or {
-		return wrap_service_error(mut app, err)
-	}
+	app.services.categories.delete(name) or { return wrap_service_error(mut app, err) }
 
 	return app.ok('')
 }

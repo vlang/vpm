@@ -24,8 +24,8 @@ pub fn new(path string) ?Config {
 		return error('config file does not exist')
 	}
 
-	file := os.read_file(path)?
-	return json.decode(Config, file)
+	file := os.read_file(path) ?
+	return json.decode(Config, file) or {}
 }
 
 pub fn generate(path string) ? {

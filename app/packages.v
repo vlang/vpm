@@ -13,8 +13,7 @@ pub:
 	versions   []models.Version
 }
 
-[get]
-['/api/package/:name']
+['/api/package/:name'; get]
 fn (mut app App) get_package(name string) vweb.Result {
 	package := app.services.packages.get_by_name(name) or {
 		return wrap_service_error(mut app, err)
@@ -57,8 +56,7 @@ fn (mut app App) get_package(name string) vweb.Result {
 	return app.json(json.encode(result))
 }
 
-[get]
-['/api/package']
+['/api/package'; get]
 fn (mut app App) get_new_packages() vweb.Result {
 	packages := app.services.packages.get_new_packages() or {
 		return wrap_service_error(mut app, err)

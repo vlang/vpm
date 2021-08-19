@@ -21,7 +21,7 @@ pub fn new(services service.Services) App {
 		services: services
 	}
 
-	if !app.handle_static('./static', true){
+	if !app.handle_static('./static', true) {
 		panic('folder does not exist or app already end its work')
 	}
 
@@ -32,7 +32,7 @@ pub fn run(config_file string) ? {
 	cfg := config.new(config_file) ?
 	db := sqlite.connect(cfg.sqlite.path) ?
 	repos := repository.new_repositories(db)
-	services := service.new_services(repos: repos)
+	services := service.new_services(service.Deps{ repos: repos })
 	app := new(services)
 	vweb.run(app, cfg.http.port)
 }

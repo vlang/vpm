@@ -4,7 +4,6 @@ import time
 import models
 import repository
 
-
 pub interface Categories {
 	create(name string) ?int
 	get_by_id(id int) ?models.Category
