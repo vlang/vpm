@@ -3,7 +3,7 @@ module main
 import app
 
 const (
-	config_file = './main.toml'
+	config_file = './config.json'
 )
 
 fn main() {

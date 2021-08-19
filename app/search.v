@@ -1,9 +1,9 @@
 module app
 
-import nedpals.vex.ctx
+import vweb
 
-fn search(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
-	res.send('ass', 200)
+[get]
+['/api/search']
+fn (mut app App) search() vweb.Result  {
+	return app.ok('search placeholder')
 }

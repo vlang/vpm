@@ -1,8 +1,8 @@
 module app
 
-import nedpals.vex.ctx
+import json
+import vweb
 import models
-import service
 
 // Package struct that returns from api
 pub struct Package {
@@ -13,51 +13,38 @@ pub:
 	versions   []models.Version
 }
 
-fn get_package(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
-	package := app.services.packages.get_by_name(req.params['name']) or {
-		wrap_service_error(req, mut res, err)
-		return
+[get]
+['/api/package/:name']
+fn (mut app App) get_package(name string) vweb.Result {
+	package := app.services.packages.get_by_name(name) or {
+		return wrap_service_error(mut app, err)
 	}
 
 	tags := app.services.tags.get_by_package(package.id) or {
-		match err {
-			service.NotFoundError {
-				[]models.Tag{}
-			}
-			else {
-				wrap_service_error(req, mut res, err)
-			}
-		}
-
-		return
+		// if err !is service.NotFoundError {
+		// 	return wrap_service_error(mut app, err)
+		// } else {
+		// 	[]models.Tag{}
+		// }
+		[]models.Tag{}
 	}
 
 	categories := app.services.categories.get_by_package(package.id) or {
-		match err {
-			service.NotFoundError {
-				[]models.Category{}
-			}
-			else {
-				wrap_service_error(req, mut res, err)
-			}
-		}
-
-		return
+		// if err !is service.NotFoundError {
+		// 	return wrap_service_error(mut app, err)
+		// } else {
+		// 	[]models.Category{}
+		// }
+		[]models.Category{}
 	}
 
 	versions := app.services.versions.get_by_package(package.id) or {
-		match err {
-			service.NotFoundError {
-				[]models.Version{}
-			}
-			else {
-				wrap_service_error(req, mut res, err)
-			}
-		}
-
-		return
+		// if err !is service.NotFoundError {
+		// 	return wrap_service_error(mut app, err)
+		// } else {
+		// 	[]models.Version{}
+		// }
+		[]models.Version{}
 	}
 
 	result := Package{
@@ -67,21 +54,15 @@ fn get_package(req &ctx.Req, mut res ctx.Resp) {
 		versions: versions
 	}
 
-	res.send_json(result, 200)
+	return app.json(json.encode(result))
 }
 
-fn get_package_version(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
-	package := app.services.packages.get_by_name(req.params['name']) or {
-		wrap_service_error(req, mut res, err)
-		return
+[get]
+['/api/package']
+fn (mut app App) get_new_packages() vweb.Result {
+	packages := app.services.packages.get_new_packages() or {
+		return wrap_service_error(mut app, err)
 	}
 
-	version := app.services.versions.get(package.id, req.params['version']) or {
-		wrap_service_error(req, mut res, err)
-		return
-	}
-
-	res.send_json(version, 200)
+	return app.json(json.encode(packages))
 }

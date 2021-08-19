@@ -1,70 +1,64 @@
 module app
 
-import nedpals.vex.ctx
+import json
+import vweb
 
-fn get_all_categories(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
+[get]
+['/api/categories']
+fn (mut app App) get_all_categories() vweb.Result {
 	categories := app.services.categories.get_popular_categories() or {
-		wrap_service_error(req, mut res, err)
-		return
+		return wrap_service_error(mut app, err)
 	}
 
-	res.send_json(categories, 200)
+	return app.json(json.encode(categories))
 }
 
-fn get_category_packages(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
-	name := req.params['name']
-
+[get]
+['/api/categories/:name']
+fn (mut app App) get_category_packages(name string) vweb.Result {
 	packages := app.services.categories.get_packages(name) or {
-		wrap_service_error(req, mut res, err)
-		return
+		return wrap_service_error(mut app, err)
 	}
 
-	res.send_json(packages, 200)
+	return app.json(json.encode(packages))
 }
 
-fn admin_create_category(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
+[post]
+['/api/categories/:name']
+fn (mut app App) admin_create_category(name string) vweb.Result {
 	if !authorized(app.user) {
-		res.send_status(401)
-		return
+		app.set_status(401, 'Unauthorized')
+		return app.not_found()
 	}
 
 	if !app.user.is_admin {
-		res.send_status(403)
-		return
+		app.set_status(403, 'Forbidden')
+		return app.not_found()
 	}
 
-	id := app.services.categories.create(req.params['name']) or {
-		wrap_service_error(req, mut res, err)
-		return
+	id := app.services.categories.create(name) or {
+		return wrap_service_error(mut app, err)
 	}
 
-	res.headers['Content-Type'] = ['application/json']
-	res.send('{"id": $id.str()}', 200)
+	return app.json('{"id": $id)}')
 }
 
-fn admin_delete_category(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
+[delete]
+['/api/categories/:name']
+fn (mut app App) admin_delete_category(name string) vweb.Result {
 	if !authorized(app.user) {
-		res.send_status(401)
-		return
+		app.set_status(401, 'Unauthorized')
+		return app.not_found()
 	}
 
 	if !app.user.is_admin {
-		res.send_status(403)
-		return
+		app.set_status(403, 'Forbidden')
+		return app.not_found()
 	}
 
-	app.services.categories.delete(req.params['name']) or {
-		wrap_service_error(req, mut res, err)
-		return
+	app.services.categories.delete(name) or {
+		return wrap_service_error(mut app, err)
 	}
 
-	res.send_status(200)
+	return app.ok('')
 }

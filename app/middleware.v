@@ -1,14 +1,11 @@
 module app
 
-import nedpals.vex.ctx
-import models
+pub fn (mut app App) before_request() {
+	if !app.handle_static('./static', true) {
+		panic('folder does not exist or app already end its work')
+	}
 
-fn clear_user(mut req ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-	app.user = models.User{}
-}
-
-fn identity(mut req ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-	// TODO: app.user
+	// Get token from headers
+	// Check is valid
+	// Add user to app.user
 }

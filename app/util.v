@@ -1,37 +1,30 @@
 module app
 
-import time
-import nedpals.vex.ctx
+import vweb
 import models
 import service
-
-fn dummy(req &ctx.Req, mut res ctx.Resp) {
-	res.send('Hello :)', 200)
-}
 
 fn authorized(user models.User) bool {
 	return user.id != 0
 }
 
-fn wrap_service_error(req &ctx.Req, mut res ctx.Resp, err IError) {
+fn wrap_service_error(mut app App, err IError) vweb.Result {
 	match err {
 		service.NotFoundError {
-			res.send_status(404)
-			return
+			return vweb.not_found()
 		}
 		// Also known as constraint error
 		service.AlreadyExists {
-			res.send_status(422)
-			return
+			app.set_status(422, 'Already exists')
+			return app.not_found()
 		}
 		else {
-			errout(req, err)
-			res.send_status(500)
-			return
+			app.set_status(500, err.msg)
+			return app.server_error(500)
 		}
 	}
 }
 
-fn errout(req &ctx.Req, err IError) {
-	eprintln('[ERR][$time.now().hhmmss()] $req.method $req.path : $err')
-}
+// fn errout(req &ctx.Req, err IError) {
+// 	eprintln('[ERR][$time.now().hhmmss()] $req.method $req.path : $err')
+// }

@@ -1,7 +1,6 @@
 module service
 
 import time
-import io
 import models
 import repository
 
@@ -117,11 +116,6 @@ pub struct Deps {
 pub:
 	repos repository.Repositories
 	// TODO: auth token manager
-}
-
-pub interface Registry {
-	add_to_index(file_name string, content io.Reader) ?
-    take_from_index(file_name string) ?io.Reader {
 }
 
 pub fn new_services(deps Deps) Services {

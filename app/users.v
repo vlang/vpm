@@ -1,66 +1,62 @@
 module app
 
-import nedpals.vex.ctx
+import json
+import vweb
 
-fn get_user(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
-	user := app.services.users.get_by_username(req.params['username']) or {
-		wrap_service_error(req, mut res, err)
-		return
+[get]
+['/api/user/:username']
+fn (mut app App) get_user(username string) vweb.Result {
+	user := app.services.users.get_by_username(username) or {
+		return wrap_service_error(mut app, err)
 	}
 
-	res.send_json(user, 200)
+	return app.json(json.encode(user))
 }
 
-fn admin_create_user_ban(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
+[post]
+['/api/bans/:username']
+fn (mut app App) admin_create_user_ban(username string) vweb.Result {
 	if !authorized(app.user) {
-		res.send_status(401)
-		return
+		app.set_status(401, 'Unauthorized')
+		return app.not_found()
 	}
 
 	if !app.user.is_admin {
-		res.send_status(403)
-		return
+		app.set_status(403, 'Forbidden')
+		return app.not_found()
 	}
 
-	user := app.services.users.get_by_username(req.params['username']) or {
-		wrap_service_error(req, mut res, err)
-		return
+	user := app.services.users.get_by_username(username) or {
+		return wrap_service_error(mut app, err)
 	}
 
 	app.services.users.set_blocked(user.id, true) or {
-		wrap_service_error(req, mut res, err)
-		return
+		return wrap_service_error(mut app, err)
 	}
 
-	res.send_status(200)
+	return app.ok('')
 }
 
-fn admin_delete_user_ban(req &ctx.Req, mut res ctx.Resp) {
-	mut app := &App(req.ctx)
-
+[delete]
+['/api/bans/:username']
+fn (mut app App) admin_delete_user_ban(username string) vweb.Result {
 	if !authorized(app.user) {
-		res.send_status(401)
-		return
+		app.set_status(401, 'Unauthorized')
+		return app.not_found()
 	}
 
 	if !app.user.is_admin {
-		res.send_status(403)
-		return
+		app.set_status(403, 'Forbidden')
+		return app.not_found()
 	}
 
-	user := app.services.users.get_by_username(req.params['username']) or {
-		wrap_service_error(req, mut res, err)
-		return
+	user := app.services.users.get_by_username(username) or {
+		return wrap_service_error(mut app, err)
 	}
 
 	app.services.users.set_blocked(user.id, false) or {
-		wrap_service_error(req, mut res, err)
-		return
+		return wrap_service_error(mut app, err)
 	}
 
-	res.send_status(200)
+	return app.ok('')
 }
