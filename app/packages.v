@@ -3,7 +3,6 @@ module app
 import json
 import vweb
 import models
-import service
 
 // Package struct that returns from api
 pub struct Package {

@@ -1,7 +1,6 @@
 module repository
 
 import pg
-import models
 
 pub struct Repositories {
 pub:
