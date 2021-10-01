@@ -30,7 +30,6 @@ fn new(services service.Services) App {
 
 pub fn run(config_file string) ? {
 	cfg := config.new(config_file) ?
-	// db := sqlite.connect(cfg.sqlite.path) ?
 	db := pg.connect(pg.Config{
 		host: cfg.pg.host
 		port: cfg.pg.port

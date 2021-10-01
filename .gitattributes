@@ -1,0 +1,3 @@
+*.v linguist-language=V text=auto eol=lf
+*.mod linguist-language=V text=auto eol=lf
+*.toml text eol=lf
