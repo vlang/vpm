@@ -5,13 +5,13 @@ import time
 pub struct Version {
 pub:
 	id         int
-	package_id int [json: packageId]
+	package_id int
 
-	name         string // Name of tag
-	commit_hash  string [json: commitHash]
-	release_url  string [json: releaseUrl] // Github release page
-	dependencies []int // Version id's of dependency
-	downloads    int
+	tag       string // semver tag
+	dependencies []int
+	downloads int
 
-	date time.Time
+	commit_hash  string
+	release_url  string // Github release page
+	release_date time.Time
 }

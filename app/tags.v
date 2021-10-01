@@ -5,14 +5,14 @@ import vweb
 
 ['/api/tags'; get]
 fn (mut app App) get_all_tags() vweb.Result {
-	tags := app.services.tags.get_popular_tags() or { return wrap_service_error(mut app, err) }
+	tags := app.db.tags.get_popular_tags() or { return wrap_service_error(mut app, err) }
 
 	return app.json(json.encode(tags))
 }
 
 ['/api/tags/:name'; get]
 fn (mut app App) get_tag_packages(name string) vweb.Result {
-	packages := app.services.tags.get_packages(name) or {
+	packages := app.db.tags.get_packages(name) or {
 		return wrap_service_error(mut app, err)
 	}
 
@@ -31,7 +31,7 @@ fn (mut app App) admin_create_tag(name string) vweb.Result {
 		return app.not_found()
 	}
 
-	id := app.services.tags.create(name) or { return wrap_service_error(mut app, err) }
+	id := app.db.tags.create(name) or { return wrap_service_error(mut app, err) }
 
 	return app.json('{"id": $id)}')
 }
@@ -48,7 +48,7 @@ fn (mut app App) admin_delete_tag(name string) vweb.Result {
 		return app.not_found()
 	}
 
-	app.services.tags.delete(name) or { return wrap_service_error(mut app, err) }
+	app.db.tags.delete(name) or { return wrap_service_error(mut app, err) }
 
 	return app.ok('')
 }

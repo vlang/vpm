@@ -3,6 +3,7 @@ module app
 import json
 import vweb
 import models
+import service
 
 // Package struct that returns from api
 pub struct Package {
@@ -15,33 +16,27 @@ pub:
 
 ['/api/package/:name'; get]
 fn (mut app App) get_package(name string) vweb.Result {
-	package := app.services.packages.get_by_name(name) or {
+	package := app.db.packages.get_by_name(name) or {
 		return wrap_service_error(mut app, err)
 	}
 
-	tags := app.services.tags.get_by_package(package.id) or {
+	tags := app.db.tags.get_by_package(package.id) or {
 		// if err !is service.NotFoundError {
 		// 	return wrap_service_error(mut app, err)
-		// } else {
-		// 	[]models.Tag{}
 		// }
 		[]models.Tag{}
 	}
 
-	categories := app.services.categories.get_by_package(package.id) or {
+	categories := app.db.categories.get_by_package(package.id) or {
 		// if err !is service.NotFoundError {
 		// 	return wrap_service_error(mut app, err)
-		// } else {
-		// 	[]models.Category{}
 		// }
 		[]models.Category{}
 	}
 
-	versions := app.services.versions.get_by_package(package.id) or {
+	versions := app.db.versions.get_by_package(package.id) or {
 		// if err !is service.NotFoundError {
 		// 	return wrap_service_error(mut app, err)
-		// } else {
-		// 	[]models.Version{}
 		// }
 		[]models.Version{}
 	}
@@ -58,7 +53,7 @@ fn (mut app App) get_package(name string) vweb.Result {
 
 ['/api/package'; get]
 fn (mut app App) get_new_packages() vweb.Result {
-	packages := app.services.packages.get_new_packages() or {
+	packages := app.db.packages.get_new_packages() or {
 		return wrap_service_error(mut app, err)
 	}
 

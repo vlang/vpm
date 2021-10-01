@@ -5,7 +5,7 @@ import vweb
 
 ['/api/categories'; get]
 fn (mut app App) get_all_categories() vweb.Result {
-	categories := app.services.categories.get_popular_categories() or {
+	categories := app.db.categories.get_popular_categories() or {
 		return wrap_service_error(mut app, err)
 	}
 
@@ -14,7 +14,7 @@ fn (mut app App) get_all_categories() vweb.Result {
 
 ['/api/categories/:name'; get]
 fn (mut app App) get_category_packages(name string) vweb.Result {
-	packages := app.services.categories.get_packages(name) or {
+	packages := app.db.categories.get_packages(name) or {
 		return wrap_service_error(mut app, err)
 	}
 
@@ -33,7 +33,7 @@ fn (mut app App) admin_create_category(name string) vweb.Result {
 		return app.not_found()
 	}
 
-	id := app.services.categories.create(name) or { return wrap_service_error(mut app, err) }
+	id := app.db.categories.create(name) or { return wrap_service_error(mut app, err) }
 
 	return app.json('{"id": $id)}')
 }
@@ -50,7 +50,7 @@ fn (mut app App) admin_delete_category(name string) vweb.Result {
 		return app.not_found()
 	}
 
-	app.services.categories.delete(name) or { return wrap_service_error(mut app, err) }
+	app.db.categories.delete(name) or { return wrap_service_error(mut app, err) }
 
 	return app.ok('')
 }

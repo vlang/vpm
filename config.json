@@ -1,8 +1,0 @@
-{
-    "http": {
-        "port": 8080
-    },
-    "sqlite": {
-        "path": "./vpm.sqlite"
-    }
-}

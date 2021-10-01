@@ -5,20 +5,19 @@ import time
 pub struct Package {
 pub:
 	id        int
-	author_id int [json: authorId]
+	author_id int
 
 	name        string
 	description string
 	license     string
-	vcs         string
-	repo_url    string [json: repoUrl]
+	repo_url    string
 
 	stars         int
 	downloads     int
-	downloaded_at time.Time [json: downloadedAt]
+	downloaded_at time.Time
 
-	created_at time.Time [json: createdAt]
-	updated_at time.Time [json: updatedAt]
+	created_at time.Time
+	updated_at time.Time
 }
 
 pub fn (package Package) get_old_package() OldPackage {
@@ -27,6 +26,5 @@ pub fn (package Package) get_old_package() OldPackage {
 		name: package.name
 		url: package.repo_url
 		nr_downloads: package.downloads
-		vcs: package.vcs
 	}
 }

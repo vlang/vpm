@@ -1,6 +1,5 @@
 # Binary
 /vpm
-/vpm.sqlite
 /test.bin
 
 # temp folders
@@ -16,9 +15,6 @@
 # config files
 /.env
 /config.toml
-/deploy.toml
-/prod.toml
-/dev.toml
 
 # documentation
 /_docs

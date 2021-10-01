@@ -6,7 +6,7 @@ import vweb
 // Backward compatibility for V <=0.2.2
 ['/jsmod/:name'; get]
 fn (mut app App) jsmod(name string) vweb.Result {
-	package := app.services.packages.get_by_name(name) or {
+	package := app.db.packages.get_by_name(name) or {
 		return wrap_service_error(mut app, err)
 	}
 
