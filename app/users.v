@@ -5,9 +5,7 @@ import vweb
 
 ['/api/user/:username'; get]
 fn (mut app App) get_user(username string) vweb.Result {
-	user := app.db.users.get_by_username(username) or {
-		return wrap_service_error(mut app, err)
-	}
+	user := app.db.users.get_by_username(username) or { return wrap_service_error(mut app, err) }
 
 	return app.json(json.encode(user))
 }
@@ -24,9 +22,7 @@ fn (mut app App) admin_create_user_ban(username string) vweb.Result {
 		return app.not_found()
 	}
 
-	user := app.db.users.get_by_username(username) or {
-		return wrap_service_error(mut app, err)
-	}
+	user := app.db.users.get_by_username(username) or { return wrap_service_error(mut app, err) }
 
 	app.db.users.set_blocked(user.id, true) or { return wrap_service_error(mut app, err) }
 
@@ -45,9 +41,7 @@ fn (mut app App) admin_delete_user_ban(username string) vweb.Result {
 		return app.not_found()
 	}
 
-	user := app.db.users.get_by_username(username) or {
-		return wrap_service_error(mut app, err)
-	}
+	user := app.db.users.get_by_username(username) or { return wrap_service_error(mut app, err) }
 
 	app.db.users.set_blocked(user.id, false) or { return wrap_service_error(mut app, err) }
 

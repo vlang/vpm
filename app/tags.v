@@ -12,9 +12,7 @@ fn (mut app App) get_all_tags() vweb.Result {
 
 ['/api/tags/:name'; get]
 fn (mut app App) get_tag_packages(name string) vweb.Result {
-	packages := app.db.tags.get_packages(name) or {
-		return wrap_service_error(mut app, err)
-	}
+	packages := app.db.tags.get_packages(name) or { return wrap_service_error(mut app, err) }
 
 	return app.json(json.encode(packages))
 }

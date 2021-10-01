@@ -16,9 +16,8 @@ pub fn new_packages(db pg.DB) &Packages {
 }
 
 pub fn (r Packages) create(package models.Package) ?models.Package {
-	query := 'INSERT INTO $packages_table ' +
-		'(author_id, name, description, license, repo_url) ' + 'VALUES' + '(' +
-		package.author_id.str() + ", '" +
+	query := 'INSERT INTO $packages_table ' + '(author_id, name, description, license, repo_url) ' +
+		'VALUES' + '(' + package.author_id.str() + ", '" +
 		[package.name, package.description, package.license, package.repo_url].join("', '") +
 		"') RETURNING $packages_fields;"
 	row := r.db.exec_one(query) ?
@@ -47,14 +46,14 @@ pub fn (r Packages) get_by_id(id int) ?models.Package {
 	query := 'SELECT $packages_fields FROM $packages_table WHERE id = $id;'
 	row := r.db.exec_one(query) ?
 
-	return row2package(row) 
+	return row2package(row)
 }
 
 pub fn (r Packages) get_by_name(name string) ?models.Package {
 	query := "SELECT $packages_fields FROM $packages_table WHERE name = '$name';"
 	row := r.db.exec_one(query) ?
 
-	return row2package(row) 
+	return row2package(row)
 }
 
 pub fn (r Packages) get_by_author(author_id int) ?[]models.Package {
@@ -67,7 +66,7 @@ pub fn (r Packages) get_by_author(author_id int) ?[]models.Package {
 
 	mut pkgs := []models.Package{cap: rows.len}
 	for row in rows {
-		pkgs << row2package(&row)?
+		pkgs << row2package(&row) ?
 	}
 	return pkgs
 }
@@ -79,7 +78,7 @@ pub fn (r Packages) get_by_ids(ids ...int) ?[]models.Package {
 	}
 	query_ids.cut_last(1)
 
-	query := 'SELECT $packages_fields FROM $packages_table WHERE id IN (${query_ids.str()}) ORDER BY updated_at DESC;'
+	query := 'SELECT $packages_fields FROM $packages_table WHERE id IN ($query_ids.str()) ORDER BY updated_at DESC;'
 	rows := r.db.exec(query) ?
 
 	if rows.len == 0 {
@@ -88,7 +87,7 @@ pub fn (r Packages) get_by_ids(ids ...int) ?[]models.Package {
 
 	mut pkgs := []models.Package{cap: rows.len}
 	for row in rows {
-		pkgs << row2package(&row)?
+		pkgs << row2package(&row) ?
 	}
 	return pkgs
 }
@@ -114,7 +113,7 @@ pub fn (r Packages) delete(name string) ?models.Package {
 }
 
 pub fn (r Packages) get_most_downloadable() ?[]models.Package {
-	rows := r.db.exec('SELECT $packages_fields FROM $most_downloadable_view;')?
+	rows := r.db.exec('SELECT $packages_fields FROM $most_downloadable_view;') ?
 
 	if rows.len == 0 {
 		return not_found()
@@ -122,7 +121,7 @@ pub fn (r Packages) get_most_downloadable() ?[]models.Package {
 
 	mut pkgs := []models.Package{cap: rows.len}
 	for row in rows {
-		pkgs << row2package(&row)?
+		pkgs << row2package(&row) ?
 	}
 	return pkgs
 }
@@ -136,7 +135,7 @@ pub fn (r Packages) get_most_recent_downloads() ?[]models.Package {
 
 	mut pkgs := []models.Package{cap: rows.len}
 	for row in rows {
-		pkgs << row2package(&row)?
+		pkgs << row2package(&row) ?
 	}
 	return pkgs
 }
@@ -150,7 +149,7 @@ pub fn (r Packages) get_new_packages() ?[]models.Package {
 
 	mut pkgs := []models.Package{cap: rows.len}
 	for row in rows {
-		pkgs << row2package(&row)?
+		pkgs << row2package(&row) ?
 	}
 	return pkgs
 }
@@ -164,7 +163,7 @@ pub fn (r Packages) get_recently_updated() ?[]models.Package {
 
 	mut pkgs := []models.Package{cap: rows.len}
 	for row in rows {
-		pkgs << row2package(&row)?
+		pkgs << row2package(&row) ?
 	}
 	return pkgs
 }

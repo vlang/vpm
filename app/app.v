@@ -10,8 +10,8 @@ import service
 struct App {
 	vweb.Context
 mut:
-	db &service.Services
-	user     models.User
+	db   &service.Services
+	user models.User
 	// github integration
 	// auth token manager
 }
@@ -37,7 +37,7 @@ pub fn run(config_file string) ? {
 		user: cfg.pg.user
 		password: cfg.pg.password
 		dbname: cfg.pg.db_name
-	})?
+	}) ?
 	repos := repository.new_repositories(db)
 	services := service.new_services(repos: repos)
 	app := new(services)

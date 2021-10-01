@@ -15,9 +15,7 @@ pub:
 
 ['/api/package/:name'; get]
 fn (mut app App) get_package(name string) vweb.Result {
-	package := app.db.packages.get_by_name(name) or {
-		return wrap_service_error(mut app, err)
-	}
+	package := app.db.packages.get_by_name(name) or { return wrap_service_error(mut app, err) }
 
 	tags := app.db.tags.get_by_package(package.id) or {
 		// if err !is service.NotFoundError {
@@ -52,9 +50,7 @@ fn (mut app App) get_package(name string) vweb.Result {
 
 ['/api/package'; get]
 fn (mut app App) get_new_packages() vweb.Result {
-	packages := app.db.packages.get_new_packages() or {
-		return wrap_service_error(mut app, err)
-	}
+	packages := app.db.packages.get_new_packages() or { return wrap_service_error(mut app, err) }
 
 	return app.json(json.encode(packages))
 }

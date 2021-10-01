@@ -7,9 +7,9 @@ pub:
 	id         int
 	package_id int
 
-	tag       string // semver tag
+	tag          string // semver tag
 	dependencies []int
-	downloads int
+	downloads    int
 
 	commit_hash  string
 	release_url  string // Github release page

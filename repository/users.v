@@ -15,23 +15,24 @@ pub fn new_users(db pg.DB) &Users {
 }
 
 pub fn (r Users) create(user models.User) ?models.User {
-	row := r.db.exec_one('INSERT INTO $users_table ' + '(login, avatar_url, github_id) ' + 'VALUES' +
-		"('" + [user.login, user.avatar_url].join("', '") + "', $user.github_id) RETURNING $users_fields;") ?
+	row := r.db.exec_one('INSERT INTO $users_table ' + '(login, avatar_url, github_id) ' +
+		'VALUES' + "('" + [user.login, user.avatar_url].join("', '") +
+		"', $user.github_id) RETURNING $users_fields;") ?
 	return row2user(row)
 }
 
 pub fn (r Users) get_by_id(id int) ?models.User {
-	row := r.db.exec_one('SELECT $users_fields FROM $users_table WHERE id = $id;')?
+	row := r.db.exec_one('SELECT $users_fields FROM $users_table WHERE id = $id;') ?
 	return row2user(row)
 }
 
 pub fn (r Users) get_by_github_id(id int) ?models.User {
-	row := r.db.exec_one('SELECT $users_fields FROM $users_table WHERE github_id = $id;')?
+	row := r.db.exec_one('SELECT $users_fields FROM $users_table WHERE github_id = $id;') ?
 	return row2user(row)
 }
 
 pub fn (r Users) get_by_username(username string) ?models.User {
-	row := r.db.exec_one("SELECT $users_fields FROM $users_table WHERE username = '$username';")?
+	row := r.db.exec_one("SELECT $users_fields FROM $users_table WHERE username = '$username';") ?
 	return row2user(row)
 }
 
@@ -41,7 +42,7 @@ pub fn (r Users) update(user models.User) ?models.User {
 	// 	row := r.db.exec_one("UPDATE $users_table SET name = '$user.name', username = '$user.username', avatar_url = '$user.avatar_url' WHERE id = $user.id RETURNING $users_fields;") ?
 	// 	return row2user(row)
 	// }
-	return error("why?")
+	return error('why?')
 }
 
 pub fn (r Users) set_blocked(id int, is_blocked bool) ?models.User {

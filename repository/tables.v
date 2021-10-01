@@ -1,22 +1,22 @@
 module repository
 
 const (
-	access_tokens_fields = "user_id, value, ip, created_at"
-	categories_fields = "id, slug, name"
-	gh_tokens_fields = "user_id, token"
-	packages_fields = "id, author_id, name, description, license, repo_url, stars, downloads, downloaded_at, created_at, updated_at"
-	tags_fields = "id, slug, name"
-	users_fields = "id, github_id, login, name, avatar_url"
-	versions_fields = "id, package_id, tag, downloads, commit_hash, release_url, release_date"
+	access_tokens_fields = 'user_id, value, ip, created_at'
+	categories_fields    = 'id, slug, name'
+	gh_tokens_fields     = 'user_id, token'
+	packages_fields      = 'id, author_id, name, description, license, repo_url, stars, downloads, downloaded_at, created_at, updated_at'
+	tags_fields          = 'id, slug, name'
+	users_fields         = 'id, github_id, login, name, avatar_url'
+	versions_fields      = 'id, package_id, tag, downloads, commit_hash, release_url, release_date'
 )
 
 const (
-	access_tokens_table          = 'vpm.access_tokens'
-	admins_table          = 'vpm.admins'
-	bans_table          = 'vpm.bans'
+	access_tokens_table       = 'vpm.access_tokens'
+	admins_table              = 'vpm.admins'
+	bans_table                = 'vpm.bans'
 	categories_table          = 'vpm.categories'
 	dependencies_table        = 'vpm.dependencies'
-	gh_tokens_table          = 'vpm.gh_tokens'
+	gh_tokens_table           = 'vpm.gh_tokens'
 	package_to_category_table = 'vpm.package_to_category'
 	package_to_tag_table      = 'vpm.package_to_tag'
 	packages_table            = 'vpm.packages'

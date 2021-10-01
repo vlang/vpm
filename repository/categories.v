@@ -42,7 +42,7 @@ pub fn (r Categories) get_by_package(id int) ?[]models.Category {
 
 	mut ctgs := []models.Category{cap: rows.len}
 	for row in rows {
-		ctgs << row2category(&row)?
+		ctgs << row2category(&row) ?
 	}
 	return ctgs
 }
@@ -51,19 +51,19 @@ pub fn (r Categories) get_packages(name string) ?[]int {
 	query := 'SELECT ${package_to_category_table}.package_id FROM $package_to_category_table ' +
 		'INNER JOIN $categories_table ON ${package_to_category_table}.category_id = ${categories_table}.id' +
 		"WHERE ${categories_table}.name = '$name' ORDER BY ${categories_table}.packages DESC;"
-	rows := r.db.exec(query)?
+	rows := r.db.exec(query) ?
 
-	return rows.map(fn(row pg.Row)int {
+	return rows.map(fn (row pg.Row) int {
 		return row.vals[0].int()
 	})
 }
 
 pub fn (r Categories) get_popular_categories() ?[]models.Category {
-	rows := r.db.exec('SELECT $categories_fields FROM $popular_categories_view;')?
+	rows := r.db.exec('SELECT $categories_fields FROM $popular_categories_view;') ?
 
 	mut ctgs := []models.Category{cap: rows.len}
 	for row in rows {
-		ctgs << row2category(&row)?
+		ctgs << row2category(&row) ?
 	}
 	return ctgs
 }
@@ -77,7 +77,7 @@ pub fn (r Categories) get_all() ?[]models.Category {
 
 	mut ctgs := []models.Category{cap: rows.len}
 	for row in rows {
-		ctgs << row2category(&row)?
+		ctgs << row2category(&row) ?
 	}
 	return ctgs
 }

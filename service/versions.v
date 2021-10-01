@@ -23,7 +23,7 @@ pub fn (service Versions) create(input dto.CreateVersionRequest) ?int {
 	// 	release_url: input.release_url
 	// 	date: input.date
 	// }) or { return wrap_err(err) }
-	println("service.version is not implemented")
+	println('service.version is not implemented')
 	return -1
 }
 

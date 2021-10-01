@@ -9,7 +9,7 @@ pub:
 	versions   &Versions
 	tags       &Tags
 	// tokens     &Tokens
-	users      &Users
+	users &Users
 }
 
 pub fn new_repositories(db pg.DB) Repositories {
