@@ -6,36 +6,35 @@ jobs:
   code-formatting:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout V
-      uses: actions/checkout@v2
-      with:
-        repository: vlang/v
-    - name: Checkout VPM
-      uses: actions/checkout@v2
-      with:
-        path: vpm
-    - name: Build V
-      run: make
-    - name: v fmt -verify
-      run: ./v fmt -verify vpm
+      - name: Checkout V
+        uses: actions/checkout@v2
+        with:
+          repository: vlang/v
+      - name: Checkout VPM
+        uses: actions/checkout@v2
+        with:
+          path: vpm
+      - name: Build V
+        run: make
+      - name: v fmt -verify
+        run: ./v fmt -verify vpm
 
   ubuntu:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
-    - name: Checkout V
-      uses: actions/checkout@v2
-      with:
-        repository: vlang/v
-    - name: Checkout VPM
-      uses: actions/checkout@v2
-      with:
-        path: vpm
-    - name: Install dependencies
-      run: sudo apt-get install --quiet -y libsqlite3-dev libssl-dev
-    - name: Build V
-      run: make
-    - name: Build VPM
-      run: |
-        cd vpm
-        ../v -prod .
-        ls -lat
+      - name: Checkout V
+        uses: actions/checkout@v2
+        with:
+          repository: vlang/v
+      - name: Checkout VPM
+        uses: actions/checkout@v2
+        with:
+          path: vpm
+      - name: Install dependencies
+        run: sudo apt-get install --quiet -y libsqlite3-dev libssl-dev
+      - name: Build V
+        run: make
+      - name: Build VPM
+        run: |
+          ./v -prod ./vpm/cmd/vpm
+          ls -lat
