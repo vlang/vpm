@@ -1,10 +1,11 @@
 module dto
 
-pub struct Package {
+pub struct NewPackage {
 pub:
-	author_id   int    [json: authorId]
-	name        string
+	repository string
+}
+
+pub struct UpdatePackage {
 	description string
-	license     string
-	repo_url    string [json: repoUrl]
+	keywords    []string
 }

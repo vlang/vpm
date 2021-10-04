@@ -2,8 +2,9 @@ module dto
 
 pub struct User {
 pub:
-	github_id  int    [json: githubId]
-	login      string
-	name       string
-	avatar_url string [json: avatarUrl]
+	gh_id    int
+	gh_login string
+	name string
+	gh_avatar string
+	gh_access_token string
 }
