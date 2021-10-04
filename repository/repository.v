@@ -4,21 +4,19 @@ import pg
 
 pub struct Repositories {
 pub:
-	categories &Categories
-	packages   &Packages
-	versions   &Versions
-	tags       &Tags
+	keywords Keywords
+	packages Packages
 	// tokens     &Tokens
-	users &Users
+	users    Users
+	versions Versions
 }
 
 pub fn new_repositories(db pg.DB) Repositories {
 	return Repositories{
-		categories: new_categories(db)
+		keywords: new_keywords(db)
 		packages: new_packages(db)
-		versions: new_versions(db)
-		tags: new_tags(db)
 		// tokens: new_tokens(db)
 		users: new_users(db)
+		versions: new_versions(db)
 	}
 }
