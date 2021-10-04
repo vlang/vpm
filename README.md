@@ -4,7 +4,7 @@
 
 Package Manager for the V Language
 
-https://vpm.vlang.io
+<https://vpm.vlang.io>
 
 - Light and fast
 - Minimal amount of RAM usage (works great on the cheapest $3.5 AWS Lightsail instance)
@@ -12,5 +12,7 @@ https://vpm.vlang.io
 - Works without JavaScript
 
 Required dependencies:
-* V 0.2.2 (https://vlang.io)
-* SQLite ^3.31.0 (Ubuntu/Debian: `libsqlite3-dev`)
+
+- V 0.2.4 (<https://vlang.io>)
+- PostgreSQL ^13 (Ubuntu/Debian: `postgresql-client`)
+- NodeJS (<https://nodejs.org/en/>)

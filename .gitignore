@@ -1,3 +1,10 @@
+# Web
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
+
 # Binary
 /vpm
 /test.bin
