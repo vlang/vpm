@@ -1,6 +1,6 @@
 module dto
 
-pub struct CreatePackageRequest {
+pub struct Package {
 pub:
 	author_id   int    [json: authorId]
 	name        string
