@@ -5,16 +5,16 @@ import models
 import repository
 
 pub struct Versions {
-	repo &repository.Versions
+	repo repository.Versions
 }
 
-pub fn new_versions(repo &repository.Versions) Versions {
+pub fn new_versions(repo repository.Versions) Versions {
 	return Versions{
 		repo: repo
 	}
 }
 
-pub fn (service Versions) create(input dto.CreateVersionRequest) ?int {
+pub fn (service Versions) create(input dto.Version) ?int {
 	// return service.repo.create(models.Version{
 	// 	package_id: input.package_id
 	// 	tag: input.tag

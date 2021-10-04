@@ -4,11 +4,11 @@ import models
 import repository
 
 pub struct Categories {
-	repo &repository.Categories
-	pkgs &repository.Packages
+	repo repository.Categories
+	pkgs repository.Packages
 }
 
-pub fn new_categories(repo &repository.Categories, pkgs &repository.Packages) Categories {
+pub fn new_categories(repo repository.Categories, pkgs repository.Packages) Categories {
 	return Categories{
 		repo: repo
 		pkgs: pkgs

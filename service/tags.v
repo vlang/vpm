@@ -4,11 +4,11 @@ import models
 import repository
 
 pub struct Tags {
-	repo &repository.Tags
-	pkgs &repository.Packages
+	repo repository.Tags
+	pkgs repository.Packages
 }
 
-pub fn new_tags(repo &repository.Tags, pkgs &repository.Packages) Tags {
+pub fn new_tags(repo repository.Tags, pkgs repository.Packages) Tags {
 	return Tags{
 		repo: repo
 		pkgs: pkgs

@@ -5,17 +5,17 @@ import models
 import repository
 
 pub struct Packages {
-	repo &repository.Packages
+	repo repository.Packages
 	// TODO: github api for getting markdown
 }
 
-pub fn new_packages(repo &repository.Packages) Packages {
+pub fn new_packages(repo repository.Packages) Packages {
 	return Packages{
 		repo: repo
 	}
 }
 
-pub fn (service Packages) create(input dto.CreatePackageRequest) ?models.Package {
+pub fn (service Packages) create(input dto.Package) ?models.Package {
 	return service.repo.create(models.Package{
 		author_id: input.author_id
 		name: input.name

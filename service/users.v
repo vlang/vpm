@@ -5,19 +5,19 @@ import models
 import repository
 
 pub struct Users {
-	repo &repository.Users
-	pkgs &repository.Packages
+	repo repository.Users
+	pkgs repository.Packages
 	// TODO: auth token manager
 }
 
-pub fn new_users(repo &repository.Users, pkgs &repository.Packages) Users {
+pub fn new_users(repo repository.Users, pkgs repository.Packages) Users {
 	return Users{
 		repo: repo
 		pkgs: pkgs
 	}
 }
 
-pub fn (service Users) create(input dto.CreateUserRequest) ?models.User {
+pub fn (service Users) create(input dto.User) ?models.User {
 	return service.repo.create(models.User{
 		github_id: input.github_id
 		login: input.login
@@ -41,8 +41,7 @@ pub fn (service Users) get_packages(id int) ?[]models.Package {
 	return service.pkgs.get_by_author(id) or { return wrap_err(err) }
 }
 
-pub fn (service Users) update(input dto.UpdateUserRequest) ?models.User {
-	println(input)
+pub fn (service Users) update(input dto.User) ?models.User {
 	return error("I'm a teapot")
 }
 
