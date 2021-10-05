@@ -4,7 +4,9 @@ import time
 import utils
 
 // User fields for Postgres SELECT and RETURNING
-pub const user_fields = 'id, gh_id, gh_login, gh_avatar, name, is_blocked, block_reason, is_admin'
+pub const user_fields = 'id, gh_id, gh_login, gh_avatar, name, access_token, is_blocked, block_reason, is_admin'
+
+pub const users_table = 'users'
 
 pub struct User {
 pub:
@@ -32,6 +34,7 @@ pub fn row2user(row utils.Row) ?User {
 		gh_login: i.next() ?
 		gh_avatar: i.next() ?
 		name: i.next() ?
+		access_token: i.next() ?
 		is_blocked: i.next() ?.bool()
 		block_reason: i.next() ?
 		is_admin: i.next() ?.bool()

@@ -1,8 +1,12 @@
 module dto
 
-pub struct NewPackage {
+pub struct Package {
 pub:
-	repository string
+	author_id int
+
+	name        string
+	description string
+	repository  string
 }
 
 pub struct UpdatePackage {

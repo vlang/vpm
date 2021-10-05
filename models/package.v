@@ -4,7 +4,9 @@ import time
 import utils
 
 // Package fields for Postgres SELECT and RETURNING
-pub const package_fields = "id, author_id, name, description, documentation, repository, stars, downloads, to_char(downloaded_at, '$iso8601'), to_char(created_at, '$iso8601'), to_char(updated_at, '$iso8601')"
+pub const package_fields = 'id, author_id, name, description, documentation, repository, stars, downloads, downloaded_at, created_at, updated_at'
+
+pub const packages_table = 'packages'
 
 pub struct Package {
 pub:
@@ -58,7 +60,7 @@ pub fn row2package(row utils.Row) ?Package {
 		stars: i.next() ?.int()
 		downloads: i.next() ?.int()
 		downloaded_at: time.unix(i.next() ?.i64())
-		created_at: time.parse_iso8601(i.next() ?) ?
-		updated_at: time.parse_iso8601(i.next() ?) ?
+		created_at: time.parse(i.next() ?) ?
+		updated_at: time.parse(i.next() ?) ?
 	}
 }

@@ -2,6 +2,17 @@ module repository
 
 import pg
 
+// Helper tables
+const (
+	version_dependencies_table = 'version_dependencies'
+	package_keywords_table     = 'package_keywords'
+)
+
+// Helper views
+const (
+	most_downloadable_view = 'most_downloadable_packages'
+)
+
 pub struct Repositories {
 pub:
 	keywords Keywords

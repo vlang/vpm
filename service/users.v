@@ -17,12 +17,8 @@ pub fn new_users(repo repository.Users, pkgs repository.Packages) Users {
 	}
 }
 
-pub fn (service Users) create(input dto.User) ?models.User {
-	return service.repo.create(models.User{
-		github_id: input.github_id
-		login: input.login
-		avatar_url: input.avatar_url
-	}) or { return wrap_err(err) }
+pub fn (service Users) create(user dto.User) ?models.User {
+	return service.repo.create(user) or { return wrap_err(err) }
 }
 
 pub fn (service Users) get_by_id(id int) ?models.User {
@@ -33,8 +29,8 @@ pub fn (service Users) get_by_github_id(id int) ?models.User {
 	return service.repo.get_by_github_id(id) or { return wrap_err(err) }
 }
 
-pub fn (service Users) get_by_username(username string) ?models.User {
-	return service.repo.get_by_username(username) or { return wrap_err(err) }
+pub fn (service Users) get_by_login(login string) ?models.User {
+	return service.repo.get_by_login(login) or { return wrap_err(err) }
 }
 
 pub fn (service Users) get_packages(id int) ?[]models.Package {

@@ -4,10 +4,6 @@ import vweb
 import models
 import service
 
-fn authorized(user models.User) bool {
-	return user.id != 0
-}
-
 fn wrap_service_error(mut app App, err IError) vweb.Result {
 	match err {
 		service.NotFoundError {

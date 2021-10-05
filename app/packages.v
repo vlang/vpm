@@ -4,53 +4,43 @@ import json
 import vweb
 import models
 
-// Package struct that returns from api
-pub struct Package {
+struct Package {
 	models.Package
 pub:
-	tags       []models.Tag
-	categories []models.Category
-	versions   []models.Version
+	version string
+}
+
+pub fn (mut app App) fpackage(id int) Package {
+	package := app.services.packages.get_by_id(id) or { models.Package{} }
+	version := app.services.packages.get_lastest_version(id) or { models.Version{} }
+	return Package{package, version.tag}
 }
 
 ['/api/package/:name'; get]
-fn (mut app App) get_package(name string) vweb.Result {
-	package := app.db.packages.get_by_name(name) or { return wrap_service_error(mut app, err) }
-
-	tags := app.db.tags.get_by_package(package.id) or {
-		// if err !is service.NotFoundError {
-		// 	return wrap_service_error(mut app, err)
-		// }
-		[]models.Tag{}
+fn (mut app App) api_package(name string) vweb.Result {
+	package := app.services.packages.get_by_name(name) or {
+		return wrap_service_error(mut app, err)
 	}
 
-	categories := app.db.categories.get_by_package(package.id) or {
-		// if err !is service.NotFoundError {
-		// 	return wrap_service_error(mut app, err)
-		// }
-		[]models.Category{}
-	}
+	return app.json(json.encode(package))
+}
 
-	versions := app.db.versions.get_by_package(package.id) or {
-		// if err !is service.NotFoundError {
-		// 	return wrap_service_error(mut app, err)
-		// }
-		[]models.Version{}
+['/api/package/:name/versions'; get]
+fn (mut app App) api_package_versions(name string) vweb.Result {
+	package := app.services.packages.get_by_name(name) or {
+		return wrap_service_error(mut app, err)
 	}
-
-	result := Package{
-		Package: package
-		tags: tags
-		categories: categories
-		versions: versions
+	versions := app.services.packages.get_versions(package.id) or {
+		return wrap_service_error(mut app, err)
 	}
-
-	return app.json(json.encode(result))
+	return app.json(json.encode(versions))
 }
 
 ['/api/package'; get]
-fn (mut app App) get_new_packages() vweb.Result {
-	packages := app.db.packages.get_new_packages() or { return wrap_service_error(mut app, err) }
+fn (mut app App) api_most_downloadable_packages() vweb.Result {
+	packages := app.services.packages.get_most_downloadable() or {
+		return wrap_service_error(mut app, err)
+	}
 
 	return app.json(json.encode(packages))
 }

@@ -9,16 +9,16 @@ import service
 
 struct App {
 	vweb.Context
-mut:
-	db   &service.Services
-	user models.User
+pub mut:
+	services service.Services [vweb_global]
+	user     models.User
 	// github integration
 	// auth token manager
 }
 
 fn new(services service.Services) App {
 	mut app := App{
-		db: &services
+		services: services
 	}
 
 	if !app.handle_static('./static', true) {
@@ -40,5 +40,18 @@ pub fn run(config_file string) ? {
 	repos := repository.new_repositories(db)
 	services := service.new_services(repos: repos)
 	app := new(services)
-	vweb.run(app, cfg.http.port)
+
+	println(app.services.packages.get_most_downloadable() ?)
+	println(app.services.packages.get_packages_count() ?)
+
+	vweb.run(&app, cfg.http.port)
+}
+
+fn (mut app App) index() vweb.Result {
+	nr_packages := app.services.packages.get_packages_count() or {
+		println(err)
+		0
+	}
+	packages := app.services.packages.get_most_downloadable() or { []models.Package{} }
+	return $vweb.html()
 }

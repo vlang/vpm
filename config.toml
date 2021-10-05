@@ -1,3 +1,7 @@
+[github]
+client_id = "0db1855e4922a7bb0eb5"
+secret = "someverysecuretoken"
+
 [http]
 port = 8080
 

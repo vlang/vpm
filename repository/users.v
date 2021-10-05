@@ -14,43 +14,44 @@ pub fn new_users(db pg.DB) Users {
 	}
 }
 
-pub fn (r Users) create(user dto.User) ?models.User {
-	row := r.db.exec_one('INSERT INTO $users_table ' + '(login, avatar_url, github_id) ' +
-		'VALUES' + "('" + [user.login, user.avatar_url].join("', '") +
-		"', $user.github_id) RETURNING $users_fields;") ?
+pub fn (repo Users) create(user dto.User) ?models.User {
+	row := repo.db.exec_one('INSERT INTO $models.users_table ' +
+		'(gh_id, gh_login, gh_avatar, name, gh_access_token) ' + 'VALUES' + "($user.gh_id, '" +
+		[user.gh_login, user.gh_avatar, user.name, user.gh_access_token].join("', '") +
+		"') RETURNING $models.user_fields;") ?
 	return models.row2user(row)
 }
 
-pub fn (r Users) get_by_id(id int) ?models.User {
-	row := r.db.exec_one('SELECT $users_fields FROM $users_table WHERE id = $id;') ?
+pub fn (repo Users) get_by_id(id int) ?models.User {
+	row := repo.db.exec_one('SELECT $models.user_fields FROM $models.users_table WHERE id = $id;') ?
 	return models.row2user(row)
 }
 
-pub fn (r Users) get_by_github_id(id int) ?models.User {
-	row := r.db.exec_one('SELECT $users_fields FROM $users_table WHERE github_id = $id;') ?
+pub fn (repo Users) get_by_github_id(id int) ?models.User {
+	row := repo.db.exec_one('SELECT $models.user_fields FROM $models.users_table WHERE gh_id = $id;') ?
 	return models.row2user(row)
 }
 
-pub fn (r Users) get_by_username(username string) ?models.User {
-	row := r.db.exec_one("SELECT $users_fields FROM $users_table WHERE username = '$username';") ?
+pub fn (repo Users) get_by_login(login string) ?models.User {
+	row := repo.db.exec_one("SELECT $models.user_fields FROM $models.users_table WHERE gh_login = '$login';") ?
 	return models.row2user(row)
 }
 
 // Please fetch user before updating
-pub fn (r Users) update(user dto.User) ?models.User {
+pub fn (repo Users) update(user dto.User) ?models.User {
 	// if user.name != '' && user.username != '' && user.avatar_url != '' {
-	// 	row := r.db.exec_one("UPDATE $users_table SET name = '$user.name', username = '$user.username', avatar_url = '$user.avatar_url' WHERE id = $user.id RETURNING $users_fields;") ?
+	// 	row := r.db.exec_one("UPDATE $users_table SET name = '$user.name', username = '$user.username', avatar_url = '$user.avatar_url' WHERE id = $user.id RETURNING $user_fields;") ?
 	// 	return models.row2user(row)
 	// }
 	return error('Stop right there you criminal scum')
 }
 
-pub fn (r Users) set_blocked(id int, is_blocked bool) ?models.User {
-	row := r.db.exec_one('UPDATE $users_table SET is_blocked = $is_blocked WHERE id = $id RETURNING $users_fields;') ?
+pub fn (repo Users) set_blocked(id int, is_blocked bool) ?models.User {
+	row := repo.db.exec_one('UPDATE $models.users_table SET is_blocked = $is_blocked WHERE id = $id RETURNING $models.user_fields;') ?
 	return models.row2user(row)
 }
 
-pub fn (r Users) set_admin(id int, is_admin bool) ?models.User {
-	row := r.db.exec_one('UPDATE $users_table SET is_admin = $is_admin WHERE id = $id RETURNING $users_fields;') ?
+pub fn (repo Users) set_admin(id int, is_admin bool) ?models.User {
+	row := repo.db.exec_one('UPDATE $models.users_table SET is_admin = $is_admin WHERE id = $id RETURNING $models.user_fields;') ?
 	return models.row2user(row)
 }

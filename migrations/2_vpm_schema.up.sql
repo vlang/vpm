@@ -86,21 +86,17 @@ create table version_dependencies (
 	constraint version_dependencies_check check (version_id <> dependency_id)
 );
 
-create unique index if not exists users_github_id_uindex on users (github_id);
+create unique index if not exists users_gh_id_uindex on users (gh_id);
 
-create unique index if not exists users_login_uindex on users (login);
+create unique index if not exists users_gh_login_uindex on users (gh_login);
 
 create unique index if not exists keywords_slug_uindex on keywords (slug);
 
 create unique index if not exists packages_name_uindex on packages (name);
 
-create unique index if not exists packages_repo_url_uindex on packages (repo_url);
+create unique index if not exists packages_repository_uindex on packages (repository);
 
 create unique index if not exists versions_semver_uindex on versions (tag);
-
-create sequence tokens_user_id_seq as integer;
-
-alter sequence tokens_user_id_seq owned by access_tokens.user_id;
 
 create sequence versions_package_id_seq as integer;
 

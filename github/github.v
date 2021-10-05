@@ -1,4 +1,4 @@
 module github
 
 // !!! DO NOT USE IN YOUR PROJECT
-// vpm.github implements only specific for vpm part of api
+// vpm.github implements only specific for vpm parts of api

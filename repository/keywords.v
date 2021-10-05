@@ -14,24 +14,24 @@ pub fn new_keywords(db pg.DB) Keywords {
 }
 
 pub fn (r Keywords) create(slug string, name string) ?models.Keyword {
-	row := r.db.exec_one("INSERT INTO $keywords_table (slug, name) VALUES ('$slug', '$name') RETURNING $keywords_fields;") ?
+	row := r.db.exec_one("INSERT INTO $models.keywords_table (slug, name) VALUES ('$slug', '$name') RETURNING $models.keyword_fields;") ?
 	return models.row2keyword(row)
 }
 
 pub fn (r Keywords) get_by_id(id int) ?models.Keyword {
-	row := r.db.exec_one('SELECT $keywords_fields FROM $keywords_table WHERE id = $id;') ?
+	row := r.db.exec_one('SELECT $models.keyword_fields FROM $models.keywords_table WHERE id = $id;') ?
 	return models.row2keyword(row)
 }
 
 pub fn (r Keywords) get_by_slug(slug string) ?models.Keyword {
-	row := r.db.exec_one("SELECT $keywords_fields FROM $keywords_table WHERE slug = '$slug';") ?
+	row := r.db.exec_one("SELECT $models.keyword_fields FROM $models.keywords_table WHERE slug = '$slug';") ?
 	return models.row2keyword(row)
 }
 
 pub fn (r Keywords) get_packages(id int) ?[]int {
 	query := 'SELECT ${package_keywords_table}.package_id FROM $package_keywords_table ' +
-		'INNER JOIN $keywords_table ON ${package_keywords_table}.keyword_id = ${keywords_table}.id' +
-		'WHERE ${keywords_table}.id = $id ORDER BY ${keywords_table}.packages DESC;'
+		'INNER JOIN $models.keywords_table ON ${package_keywords_table}.keyword_id = ${models.keywords_table}.id' +
+		'WHERE ${models.keywords_table}.id = $id ORDER BY ${models.keywords_table}.packages DESC;'
 	rows := r.db.exec(query) ?
 
 	return rows.map(fn (row pg.Row) int {
@@ -40,7 +40,7 @@ pub fn (r Keywords) get_packages(id int) ?[]int {
 }
 
 pub fn (r Keywords) all() ?[]models.Keyword {
-	rows := r.db.exec('SELECT $keywords_fields FROM $keywords_table;') ?
+	rows := r.db.exec('SELECT $models.keyword_fields FROM $models.keywords_table;') ?
 
 	if rows.len == 0 {
 		return not_found()
@@ -54,6 +54,6 @@ pub fn (r Keywords) all() ?[]models.Keyword {
 }
 
 pub fn (r Keywords) delete(id int) ?models.Keyword {
-	row := r.db.exec_one("DELETE FROM $keywords_table WHERE id = '$id' RETURNING $keywords_fields;") ?
+	row := r.db.exec_one("DELETE FROM $models.keywords_table WHERE id = '$id' RETURNING $models.keyword_fields;") ?
 	return models.row2keyword(row)
 }

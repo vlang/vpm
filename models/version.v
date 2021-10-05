@@ -4,7 +4,9 @@ import time
 import utils
 
 // Version fields for Postgres SELECT and RETURNING
-pub const version_fields = "id, package_id, tag, downloads, commit_hash, release_url, to_char(release_date, '$iso8601')"
+pub const version_fields = 'id, package_id, tag, downloads, commit_hash, release_url, release_date'
+
+pub const versions_table = 'versions'
 
 pub struct Version {
 pub:
@@ -31,6 +33,6 @@ pub fn row2version(row utils.Row) ?Version {
 		downloads: i.next() ?.int()
 		commit_hash: i.next() ?
 		release_url: i.next() ?
-		release_date: time.unix(i.next() ?.i64())
+		release_date: time.parse(i.next() ?) ?
 	}
 }

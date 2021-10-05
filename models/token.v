@@ -4,7 +4,9 @@ import time
 import utils
 
 // ApiToken fields for Postgres SELECT and RETURNING
-pub const token_fields = "id, user_id, name, token, revoked, to_char(created_at, '$iso8601'), to_char(last_used_at, '$iso8601')"
+pub const token_fields = 'id, user_id, name, token, revoked, created_at, last_used_at'
+
+pub const tokens_table = 'tokens'
 
 pub struct ApiToken {
 pub:
@@ -30,7 +32,7 @@ pub fn row2token(row utils.Row) ?ApiToken {
 		name: i.next() ?
 		token: i.next() ?
 		revoked: i.next() ?.bool()
-		created_at: time.parse_iso8601(i.next() ?) ?
-		last_used_at: time.parse_iso8601(i.next() ?) ?
+		created_at: time.parse(i.next() ?) ?
+		last_used_at: time.parse(i.next() ?) ?
 	}
 }
