@@ -8,6 +8,14 @@ services:
     environment:
       POSTGRES_PASSWORD: ''
       POSTGRES_HOST_AUTH_METHOD: trust
+
+  vpm:
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
+    volume:
+      - "./config.toml:/app/config.toml"
       
 volumes:
   database: {}

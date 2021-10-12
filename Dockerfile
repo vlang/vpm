@@ -8,5 +8,5 @@ FROM thevlang/vlang:alpine-base as app
 WORKDIR /app
 COPY ./static ./static
 COPY --from=build /app/vpm ./vpm
-EXPOSE 80
+EXPOSE 8080
 CMD ["./vpm"]
