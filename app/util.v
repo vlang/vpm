@@ -1,7 +1,6 @@
 module app
 
 import vweb
-import models
 import service
 
 fn wrap_service_error(mut app App, err IError) vweb.Result {

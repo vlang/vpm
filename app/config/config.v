@@ -2,11 +2,19 @@ module config
 
 import os
 import toml
+import utils
 
 pub struct Config {
 pub mut:
+	gh   GHConfig
 	http HTTPConfig
 	pg   PGConfig
+}
+
+pub struct GHConfig {
+pub mut:
+	client_id string
+	secret    string
 }
 
 pub struct HTTPConfig {
@@ -23,23 +31,32 @@ pub mut:
 	db_name  string = 'vpm'
 }
 
-pub fn new(path string) ?Config {
+pub fn parse_file(path string) ?Config {
 	if !os.exists(path) {
 		return error('config file does not exist')
 	}
 
-	doc := toml.parse_file(path) ?
+	data := os.read_file(path) ?
+	return parse(data) ?
+}
+
+pub fn parse(data string) ?Config {
+	cfg := toml.parse_text(data) ?
 
 	return Config{
+		gh: GHConfig{
+			client_id: cfg.value('github.client_id').string()
+			secret: cfg.value('github.secret').string()
+		}
 		http: HTTPConfig{
-			port: doc.value('http.port').int()
+			port: utils.default(cfg.value('http.port').int(), 8080)
 		}
 		pg: PGConfig{
-			host: doc.value('postgres.host').string()
-			port: doc.value('postgres.port').int()
-			user: doc.value('postgres.user').string()
-			password: doc.value('postgres.password').string()
-			db_name: doc.value('postgres.db_name').string()
+			host: utils.default(cfg.value('postgres.host').string(), 'localhost')
+			port: utils.default(cfg.value('postgres.port').int(), 5432)
+			user: utils.default(cfg.value('postgres.user').string(), 'postgres')
+			password: utils.default(cfg.value('postgres.password').string(), 'postgres')
+			db_name: utils.default(cfg.value('postgres.db_name').string(), 'vpm')
 		}
 	}
 }

@@ -29,7 +29,7 @@ fn new(services service.Services) App {
 }
 
 pub fn run(config_file string) ? {
-	cfg := config.new(config_file) ?
+	cfg := config.parse_file(config_file) ?
 	db := pg.connect(pg.Config{
 		host: cfg.pg.host
 		port: cfg.pg.port
