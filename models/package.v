@@ -4,9 +4,10 @@ import time
 import utils
 
 // Package fields for Postgres SELECT and RETURNING
-pub const package_fields = 'id, author_id, name, description, documentation, repository, stars, downloads, downloaded_at, created_at, updated_at'
-
-pub const packages_table = 'packages'
+pub const (
+	packages_table = 'packages'
+	package_fields = 'id, author_id, name, description, documentation, repository, stars, downloads, downloaded_at, created_at, updated_at'
+)
 
 pub struct Package {
 pub:

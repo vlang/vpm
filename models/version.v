@@ -4,9 +4,10 @@ import time
 import utils
 
 // Version fields for Postgres SELECT and RETURNING
-pub const version_fields = 'id, package_id, tag, downloads, commit_hash, release_url, release_date'
-
-pub const versions_table = 'versions'
+pub const (
+	versions_table = 'versions'
+	version_fields = 'id, package_id, tag, downloads, commit_hash, release_url, release_date'
+)
 
 pub struct Version {
 pub:

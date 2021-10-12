@@ -4,9 +4,10 @@ import time
 import utils
 
 // ApiToken fields for Postgres SELECT and RETURNING
-pub const token_fields = 'id, user_id, name, token, revoked, created_at, last_used_at'
-
-pub const tokens_table = 'tokens'
+pub const (
+	tokens_table = 'tokens'
+	token_fields = 'id, user_id, name, token, revoked, created_at, last_used_at'
+)
 
 pub struct ApiToken {
 pub:

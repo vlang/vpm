@@ -3,9 +3,10 @@ module models
 import utils
 
 // Keyword fields for Postgres SELECT and RETURNING
-pub const keyword_fields = 'id, slug, name, packages'
-
-pub const keywords_table = 'keywords'
+pub const (
+	keywords_table = 'keywords'
+	keyword_fields = 'id, slug, name, packages'
+)
 
 pub struct Keyword {
 pub:

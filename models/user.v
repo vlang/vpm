@@ -1,12 +1,12 @@
 module models
 
-import time
 import utils
 
 // User fields for Postgres SELECT and RETURNING
-pub const user_fields = 'id, gh_id, gh_login, gh_avatar, name, access_token, is_blocked, block_reason, is_admin'
-
-pub const users_table = 'users'
+pub const (
+	users_table = 'users'
+	user_fields = 'id, gh_id, gh_login, gh_avatar, name, access_token, is_blocked, block_reason, is_admin'
+)
 
 pub struct User {
 pub:
