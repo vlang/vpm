@@ -2,7 +2,7 @@ module app
 
 import pg
 import vweb
-import config
+import app.config
 import models
 import repository
 import service
