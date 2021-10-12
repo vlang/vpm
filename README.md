@@ -1,18 +1,7 @@
-<h1>
-    <img width='200' alt='vpm' src='https://user-images.githubusercontent.com/26527529/108953907-04e46a80-767d-11eb-98ec-a22a7f2ab7a6.png'>
-</h1>
+<img width='200' alt='V Package Manager' src='.github/assets/vpm.svg'>
 
-Package Manager for the V Language
+## Package Manager for the **V** Language
+
+Instantly publish your modules and install them. Use the API to interact and find out more information about available modules. Become a contributor and enhance V with your work.
 
 <https://vpm.vlang.io>
-
-- Light and fast
-- Minimal amount of RAM usage (works great on the cheapest $3.5 AWS Lightsail instance)
-- Easy to deploy via Docker
-- Works without JavaScript
-
-Required dependencies:
-
-- V 0.2.4 (<https://vlang.io>)
-- PostgreSQL ^13 (Ubuntu/Debian: `postgresql-client`)
-- NodeJS (<https://nodejs.org/en/>)
