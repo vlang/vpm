@@ -1,7 +1,7 @@
 module app
 
 import json
-import vweb
+import web
 import models
 
 struct Package {
@@ -17,30 +17,30 @@ pub fn (mut app App) fpackage(id int) Package {
 }
 
 ['/api/package/:name'; get]
-fn (mut app App) api_package(name string) vweb.Result {
+fn (mut app App) api_package(name string) web.Result {
 	package := app.services.packages.get_by_name(name) or {
 		return wrap_service_error(mut app, err)
 	}
 
-	return app.json(json.encode(package))
+	return app.json(.ok, json.encode(package))
 }
 
 ['/api/package/:name/versions'; get]
-fn (mut app App) api_package_versions(name string) vweb.Result {
+fn (mut app App) api_package_versions(name string) web.Result {
 	package := app.services.packages.get_by_name(name) or {
 		return wrap_service_error(mut app, err)
 	}
 	versions := app.services.packages.get_versions(package.id) or {
 		return wrap_service_error(mut app, err)
 	}
-	return app.json(json.encode(versions))
+	return app.json(.ok, json.encode(versions))
 }
 
 ['/api/package'; get]
-fn (mut app App) api_most_downloadable_packages() vweb.Result {
+fn (mut app App) api_most_downloadable_packages() web.Result {
 	packages := app.services.packages.get_most_downloadable() or {
 		return wrap_service_error(mut app, err)
 	}
 
-	return app.json(json.encode(packages))
+	return app.json(.ok, json.encode(packages))
 }

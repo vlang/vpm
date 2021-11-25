@@ -1,13 +1,13 @@
 module app
 
-import vweb
+import web
 
 ['/search'; get]
-fn (mut app App) search() vweb.Result {
-	return app.ok('search page placeholder')
+fn (mut app App) search() web.Result {
+	return app.text(.ok, 'search page placeholder')
 }
 
 ['/api/search'; get]
-fn (mut app App) api_search() vweb.Result {
-	return app.ok('search placeholder')
+fn (mut app App) api_search() web.Result {
+	return app.text(.ok, 'search placeholder')
 }

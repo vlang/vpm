@@ -1,14 +1,26 @@
 module app
 
 import json
-import vweb
+import web
+import models
 
 // Backward compatibility for V <=0.2.2
 ['/jsmod/:name'; get]
-fn (mut app App) jsmod(name string) vweb.Result {
+fn (mut app App) jsmod(name string) web.Result {
 	package := app.services.packages.get_by_name(name) or {
 		return wrap_service_error(mut app, err)
 	}
 
-	return app.json(json.encode(package.get_old_package()))
+	latest_version := app.services.packages.add_download(package.id) or {
+		println(err)
+		return wrap_service_error(mut app, err)
+	}
+
+	println('$package.name@$latest_version.tag downloads: $latest_version.downloads')
+	old_package := package.get_old_package()
+
+	return app.json(.ok, json.encode(models.OldPackage{
+		...old_package
+		nr_downloads: latest_version.downloads
+	}))
 }

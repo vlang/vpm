@@ -1,16 +1,16 @@
 module app
 
 import pg
-import vweb
+import web
 import app.config
 import models
 import repository
 import service
 
 struct App {
-	vweb.Context
+	web.Context
 pub mut:
-	services service.Services [vweb_global]
+	services service.Services [frak_concurrency]
 	user     models.User
 	// github integration
 	// auth token manager
@@ -21,9 +21,9 @@ fn new(services service.Services) App {
 		services: services
 	}
 
-	if !app.handle_static('./static', true) {
-		panic('`static` folder does not exist')
-	}
+	// if !app.handle_static('./static', true) {
+	// 	panic('`static` folder does not exist')
+	// }
 
 	return app
 }
@@ -41,17 +41,15 @@ pub fn run(config_file string) ? {
 	services := service.new_services(repos: repos)
 	app := new(services)
 
-	println(app.services.packages.get_most_downloadable() ?)
-	println(app.services.packages.get_packages_count() ?)
-
-	vweb.run(&app, cfg.http.port)
+	mut router := web.new(app, web.Config{}) ?
+	router.listen(':$cfg.http.port') ?
 }
 
-fn (mut app App) index() vweb.Result {
+fn (mut app App) index() web.Result {
 	nr_packages := app.services.packages.get_packages_count() or {
 		println(err)
 		0
 	}
 	packages := app.services.packages.get_most_downloadable() or { []models.Package{} }
-	return $vweb.html()
+	return app.text(.ok, nr_packages.str() + packages.str())
 }
