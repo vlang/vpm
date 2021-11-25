@@ -5,7 +5,6 @@ import pg
 // Helper tables
 const (
 	version_dependencies_table = 'version_dependencies'
-	package_keywords_table     = 'package_keywords'
 )
 
 // Helper views
@@ -15,7 +14,7 @@ const (
 
 pub struct Repositories {
 pub:
-	keywords Keywords
+	tags     Tags
 	packages Packages
 	// tokens     &Tokens
 	users    Users
@@ -24,7 +23,7 @@ pub:
 
 pub fn new_repositories(db pg.DB) Repositories {
 	return Repositories{
-		keywords: new_keywords(db)
+		tags: new_tags(db)
 		packages: new_packages(db)
 		// tokens: new_tokens(db)
 		users: new_users(db)

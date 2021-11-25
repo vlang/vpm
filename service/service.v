@@ -4,7 +4,7 @@ import repository
 
 pub struct Services {
 pub:
-	keywords Keywords
+	tags     Tags
 	packages Packages
 	users    Users
 }
@@ -17,7 +17,7 @@ pub:
 
 pub fn new_services(deps Deps) Services {
 	return Services{
-		keywords: new_keywords(deps.repos.keywords, deps.repos.packages)
+		tags: new_tags(deps.repos.tags, deps.repos.packages)
 		packages: new_packages(deps.repos.packages, deps.repos.versions)
 		users: new_users(deps.repos.users, deps.repos.packages)
 	}
