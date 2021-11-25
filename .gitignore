@@ -1,27 +1,18 @@
-# Web
-.DS_Store
-node_modules
-/build
-/.svelte-kit
-/package
-
 # Binary
 /vpm
+/cmd/cli/cli
+/cmd/vpm/vpm
 /test.bin
 
-# temp folders
-/temp
-/tmp
-
-# ide folders
+# IDE folders (but guys, seriously, add your ide folders to global .gitignore)
 .idea
 .vscode
-.lite_workspace.lua
-*.code-workspace
 
-# config files
-/.env
+# Config files
 /config.toml
 
-# documentation
+# Documentation
 /_docs
+
+# VLS log
+/vls.log
