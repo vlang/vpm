@@ -1,4 +1,4 @@
-create or replace view most_downloadable_packages(
+create view most_downloadable_packages(
        id,
        author_id,
        name,
