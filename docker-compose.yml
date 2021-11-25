@@ -14,8 +14,8 @@ services:
     restart: always
     ports:
       - 8080:8080
-    volume:
+    volumes:
       - "./config.toml:/app/config.toml"
-      
+
 volumes:
   database: {}
