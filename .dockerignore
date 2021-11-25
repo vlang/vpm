@@ -1,0 +1,22 @@
+# Binary
+/vpm
+/cmd/cli/cli
+/cmd/vpm/vpm
+/test.bin
+
+# Config files
+/config.toml
+
+# Documentation
+/_docs
+
+# VLS log
+/vls.log
+
+# Migrations
+/migrations
+
+# Folders with dot
+/.git
+/.idea
+/.vscode

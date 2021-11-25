@@ -1,5 +1,5 @@
 [package]
-name = 'vpm'
+name = "vpm"
 author = "Anton Terisback <terisbackno@gmail.com>"
 description = "Package manager for V Language"
 license = "MIT"

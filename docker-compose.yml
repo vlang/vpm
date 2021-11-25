@@ -1,14 +1,5 @@
 version: "3.9"
 services:
-  db:
-    image: postgres
-    restart: always
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_PASSWORD: ''
-      POSTGRES_HOST_AUTH_METHOD: trust
-
   vpm:
     build: .
     restart: always
@@ -16,6 +7,19 @@ services:
       - 8080:8080
     volumes:
       - "./config.toml:/app/config.toml"
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - database:/var/lib/postgresql/data
 
 volumes:
   database: {}
