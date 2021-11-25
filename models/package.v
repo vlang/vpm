@@ -64,7 +64,7 @@ pub fn row2package(row utils.Row) ?Package {
 		repository: i.next() ?
 		stars: i.next() ?.int()
 		downloads: i.next() ?.int()
-		downloaded_at: time.unix(i.next() ?.i64())
+		downloaded_at: time.parse(i.next() ?) ?
 		created_at: time.parse(i.next() ?) ?
 		updated_at: time.parse(i.next() ?) ?
 	}

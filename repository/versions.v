@@ -80,8 +80,8 @@ pub fn (repo Versions) get_by_ids(ids ...int) ?[]models.Version {
 	return pkgs
 }
 
-pub fn (repo Versions) add_download(id int) ?models.Version {
-	row := repo.db.exec_one('UPDATE $models.versions_table SET downloads = downloads + 1 WHERE id = $id RETURNING $models.version_fields;') ?
+pub fn (repo Versions) add_download(package_id int) ?models.Version {
+	row := repo.db.exec_one('UPDATE $models.versions_table SET downloads = downloads + 1 WHERE package_id = $package_id RETURNING $models.version_fields ;') ?
 	return models.row2version(row)
 }
 

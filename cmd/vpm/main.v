@@ -7,5 +7,6 @@ const (
 )
 
 fn main() {
+	println('Starting...')
 	app.run(config_file) ?
 }
