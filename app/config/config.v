@@ -37,7 +37,7 @@ pub fn parse_file(path string) ?Config {
 	}
 
 	data := os.read_file(path) ?
-	return parse(data) ?
+	return parse(data)
 }
 
 pub fn parse(data string) ?Config {

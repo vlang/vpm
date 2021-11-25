@@ -8,12 +8,12 @@ pub const (
 	tag_fields = 'id, slug, name, packages'
 )
 
-pub struct Tags {
+pub struct Tag {
 pub:
 	id       int
 	slug     string
 	name     string
-	packages ints
+	packages int
 }
 
 // Converts database row into Tag.

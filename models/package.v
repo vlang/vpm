@@ -9,6 +9,10 @@ pub const (
 	package_fields = 'id, author_id, name, description, documentation, repository, stars, downloads, downloaded_at, created_at, updated_at'
 )
 
+pub const (
+	package_tags_table = 'package_tags'
+)
+
 pub struct Package {
 pub:
 	id        int
