@@ -2,7 +2,6 @@ module config
 
 import os
 import toml
-import utils
 
 pub struct Config {
 pub mut:
@@ -49,14 +48,14 @@ pub fn parse(data string) ?Config {
 			secret: cfg.value('github.secret').string()
 		}
 		http: HTTPConfig{
-			port: utils.default(cfg.value('http.port').int(), 8080)
+			port: cfg.value('http.port').default_to(8080).int()
 		}
 		pg: PGConfig{
-			host: utils.default(cfg.value('postgres.host').string(), 'localhost')
-			port: utils.default(cfg.value('postgres.port').int(), 5432)
-			user: utils.default(cfg.value('postgres.user').string(), 'postgres')
-			password: utils.default(cfg.value('postgres.password').string(), 'postgres')
-			db_name: utils.default(cfg.value('postgres.db_name').string(), 'vpm')
+			host: cfg.value('postgres.host').default_to('localhost').string()
+			port: cfg.value('postgres.port').default_to(5432).int()
+			user: cfg.value('postgres.user').default_to('postgres').string()
+			password: cfg.value('postgres.password').default_to('postgres').string()
+			db_name: cfg.value('postgres.db_name').default_to('vpm').string()
 		}
 	}
 }
