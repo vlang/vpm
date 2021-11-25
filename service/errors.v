@@ -6,6 +6,7 @@ fn s_err(err IError) string {
 	return '[$err.code] $err.msg'
 }
 
+[noinit]
 pub struct NotFoundError {
 pub:
 	msg  string = "doesn't exists"
@@ -30,6 +31,7 @@ fn not_found(entity string) IError {
 }
 
 // *alias to ConsraintError from repository module
+[noinit]
 pub struct AlreadyExists {
 pub:
 	msg  string = 'already exists'
@@ -47,6 +49,7 @@ fn from_repo_already_exists(err repository.ConstraintError) IError {
 	})
 }
 
+[noinit]
 pub struct IncorrectInputError {
 pub:
 	msg  string = 'input is fucked up'

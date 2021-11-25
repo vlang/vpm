@@ -2,7 +2,7 @@ module utils
 
 // If empty return default.
 // Currently works only with int and string types.
-pub fn default(might_be_empty T, default_value T) T {
+pub fn default<T>(might_be_empty T, default_value T) T {
 	$if T is int {
 		return if might_be_empty != 0 { might_be_empty } else { default_value }
 	}
