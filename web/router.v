@@ -59,7 +59,10 @@ pub fn new<T>(app T, config ...Config) ?Router<T> {
 }
 
 pub fn (mut router Router<T>) serve_static(mount_at string, dir string) ? {
-	return error('not implemented')
+	files := scan_static_directory(mount_at, dir) ?
+	concat_static_files(mut router.static_files, files)
+	println(router.static_files)
+	return
 }
 
 [manualfree]
@@ -125,7 +128,7 @@ fn handle_connection<T>(mut router Router<T>, mut conn net.TcpConn, mut app T) {
 	}
 
 	// STATIC
-	if router.serve_if_static<T>(mut app, url) {
+	if router.serve_if_static<T>(mut conn, url) {
 		// successfully served a static file
 		return
 	}
@@ -195,6 +198,8 @@ fn handle_connection<T>(mut router Router<T>, mut conn net.TcpConn, mut app T) {
 			}
 		}
 	}
+
 	// Route not found
+	println('Route not found')
 	conn.write(http_404.bytes()) or {}
 }

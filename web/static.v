@@ -26,6 +26,7 @@ fn (router Router<T>) serve_if_static(mut conn net.TcpConn, url urllib.URL) bool
 
 	// TODO: Open file stream, send chunked
 	data := os.read_file(static_file.path) or {
+		println('File `$static_file.path` not found for route `$url.path`')
 		conn.write(http_404.bytes()) or {}
 		return true
 	}
@@ -40,7 +41,11 @@ fn (router Router<T>) serve_if_static(mut conn net.TcpConn, url urllib.URL) bool
 			http.CommonHeader.connection:   'close'
 		})
 		text: data
-	).bytes()) or { return false }
+	).bytes()) or {
+		println("Can't send static - $err")
+		return false
+	}
+
 	return true
 }
 
@@ -54,7 +59,7 @@ fn scan_static_directory(mount_at string, dir string) ?map[string]StaticFile {
 
 	for file in files {
 		full_path := os.join_path(dir, file)
-		new_mount := mount_at + '/' + file
+		new_mount := '/' + (mount_at + '/' + file).split('/').filter(it.len > 0).join('/')
 		if os.is_dir(full_path) {
 			concat_static_files(mut static_files, scan_static_directory(new_mount, full_path) ?)
 		} else if file.contains('.') && !file.starts_with('.') && !file.ends_with('.') {

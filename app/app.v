@@ -17,19 +17,14 @@ pub mut:
 }
 
 fn new(services service.Services) App {
-	mut app := App{
+	return App{
 		services: services
 	}
-
-	// if !app.handle_static('./static', true) {
-	// 	panic('`static` folder does not exist')
-	// }
-
-	return app
 }
 
 pub fn run(config_file string) ? {
 	cfg := config.parse_file(config_file) ?
+
 	db := pg.connect(pg.Config{
 		host: cfg.pg.host
 		port: cfg.pg.port
@@ -42,14 +37,14 @@ pub fn run(config_file string) ? {
 	app := new(services)
 
 	mut router := web.new(app, web.Config{}) ?
+	router.serve_static('/', './static') ?
 	router.listen(':$cfg.http.port') ?
 }
 
 fn (mut app App) index() web.Result {
-	nr_packages := app.services.packages.get_packages_count() or {
-		println(err)
-		0
+	// Workaround for $tmpl bug :\
+	mut rendered := $embed_file('./templates/index.html')
+	unsafe {
+		return app.html(.ok, tos(rendered.data(), rendered.len))
 	}
-	packages := app.services.packages.get_most_downloadable() or { []models.Package{} }
-	return app.text(.ok, nr_packages.str() + packages.str())
 }
