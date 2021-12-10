@@ -14,7 +14,7 @@
   - 0 < `limit` < 100, default is 6
 - **GET** `/api/package/:name` - Returns json of [package struct](#Package-Struct) or 404.
 - **GET** `/api/package/:name/versions` - Returns json **array** of [version struct](#Version-Struct) or 404.
-- **POST** `/api/package?repo=...` - Returns json of [package struct](#Package-Struct) on success or 401, 404.
+<!-- - **POST** `/api/package?repo=...` - Returns json of [package struct](#Package-Struct) on success or 401, 404. -->
 
 ### Tag Endpoints
 
@@ -35,8 +35,9 @@
 
 ```v
 struct Package {
-    id        int
-    author_id int
+    id         int
+    author_id  int
+    gh_repo_id int
 
     name          string
     description   string
@@ -87,13 +88,9 @@ struct Version {
     id         int
     package_id int
 
-    // semver tag
-    tag       string
+    semver    string
     downloads int
-
-    commit_hash  string
-    // Github release page
-    release_url  string
+    download_url string
     release_date time.Time
 }
 ```
