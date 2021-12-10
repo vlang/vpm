@@ -1,57 +1,444 @@
-@include 'header'
+<!DOCTYPE html>
+<html lang="en">
 
-.content {
-  .title {
-    <span>Package Manager for the <span id="v-letter">V</span> Language</span>
-  }
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vpm.vlang.io</title>
+    <link rel="icon" href="/vpm.svg">
+    <link rel="stylesheet" href="vpm.css">
+</head>
 
-  .row {
-    .buttons {
-      <a id="browse-button" class="button" href="/browse">
-        <span class="icon">
-          <img src="/browse.svg" width="32" height="32" />
-        </span>
-        <span>
-          Browse packages
-        </span>
-      </a>
-      <a id="new-button" class="button" href="/create">
-        <span class="icon">
-          <img src="/new.svg" width="32" height="32" />
-        </span>
-        <span>
-          Submit a module
-        </span>
-      </a>
-    }
-  
-    <span class="packages-nr-info">
-      <span class="highlight">
-        @nr_packages
-      </span>
-      <span>
-        packages
-      </span>
-    </span>
-  }
+<body>
+    <div class="header">
+        <div class="header-wrapper">
+            <a class="logo" href="/">
+                <img src="/vpm.svg" />
+                <span class="logo-text primary-color">vpm</span>
+            </a>
 
-  .packages {
-    .packages-column {
-      <span>New packages</span>
-      @for downloadable_package in packages
-        <a class="package" href="@downloadable_package.repository">
-          .package-info {
-            <span class="name">@downloadable_package.name</span>
-            <span class="version">@{app.fpackage(downloadable_package.id).version}</span>
-          }
+            <form class="search" action="/search">
+                <label>
+                    <input name="q" type="search" placeholder="Search" autocomplete="on" pattern="[A-Za-z0-9-.]{1,100}"
+                        title="Must match rules for github repo naming">
+                </label>
+            </form>
 
-          .package-icon {
-            <img src="/arrow.svg" height="35" />
-          }
-        </a>
-      @end
-    }
-  }
-}
+            <div class="profile">
+                <a class="button github-login" href="/authorized.html">Login</a>
+            </div>
+        </div>
+    </div>
 
-@include 'footer'
+    <main class="content">
+        <div class="content-block">
+            <div class="content-section">
+                <h1>
+                    Package Manager for the <span class="primary-color">V</span> Language
+                </h1>
+                <p class="content-paragraph">
+                    Instantly publish your packages and install them.
+                    Use the API to interact and find out more information about available packages.
+                    Become a contributor and enhance the site with your work.
+                </p>
+            </div>
+            <div class="after-info">
+                <div class="buttons">
+                    <a class="button button-browse" href="/browse.html">Browse packages</a>
+                    <a class="button button-submit" href="/submit.html">Submit package</a>
+                </div>
+                <span>232 packages</span>
+            </div>
+        </div>
+        <div class="block">
+            <h2>Popular tags</h2>
+            <div class="panel tags">
+                <a class="tag" href="#tag">
+                    web<sup>23</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    cli<sup>98</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    database<sup>41</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    gamedev<sup>48</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    graphics<sup>4</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    wrapper<sup>198</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    binding<sup>56</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    parsing<sup>3</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    http<sup>19</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    io<sup>69</sup>
+                </a>
+                <a class="tag" href="#tag">
+                    http-router<sup>3</sup>
+                </a>
+            </div>
+        </div>
+
+        <div class="packages">
+            <section class="block">
+                <h2>New packages</h2>
+                <div class="panel">
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name" href="#package">libsodium</a>
+                                <p class="package-description">Libsodium wrapper</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent">8 hours ago</span>
+                                <span class="info-stars">891</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name" href="#package">treplo</a>
+                                <p class="package-description">Logrus like logging</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent">7 minutes ago</span>
+                                <span class="info-stars">191</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name" href="#package">discord.v</a>
+                                <p class="package-description">Discord Bot Framework</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">10 hours ago</span>
+                                <span class="info-stars" title="Stars">65</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name" href="#package">crystallib</a>
+                                <p class="package-description">Big set of libraries, like lodash</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">5 days ago</span>
+                                <span class="info-stars" title="Stars">9</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name" href="#package">vape</a>
+                                <p class="package-description">The functional web micro-framework!</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">1 week ago</span>
+                                <span class="info-stars" title="Stars">23</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name" href="#package">vex</a>
+                                <p class="package-description">Easy-to-use, modular web framework built for V</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">3 weeks ago</span>
+                                <span class="info-stars" title="Stars">182</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                </div>
+            </section>
+            <div class="block">
+                <h2>Most downloaded</h2>
+                <div class="panel">
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-stars" title="Stars">891</span>
+                                <span class="info-downloads" title="Downloads">12391</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-stars" title="Stars">891</span>
+                                <span class="info-downloads" title="Downloads">12391</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-stars" title="Stars">891</span>
+                                <span class="info-downloads" title="Downloads">12391</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-stars" title="Stars">891</span>
+                                <span class="info-downloads" title="Downloads">12391</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-stars" title="Stars">891</span>
+                                <span class="info-downloads" title="Downloads">12391</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-stars" title="Stars">891</span>
+                                <span class="info-downloads" title="Downloads">12391</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="block">
+                <h2>Recently updated</h2>
+                <div class="panel">
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">8 hours ago</span>
+                                <span class="info-tag" title="Latest version">0.1.0</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">8 hours ago</span>
+                                <span class="info-tag" title="Latest version">0.1.0</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">8 hours ago</span>
+                                <span class="info-tag" title="Latest version">0.1.0</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">8 hours ago</span>
+                                <span class="info-tag" title="Latest version">0.1.0</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">8 hours ago</span>
+                                <span class="info-tag" title="Latest version">0.1.0</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                    <div class="package">
+                        <div class="package-content">
+                            <div class="package-text-wrapper">
+                                <a class="package-name"
+                                    href="#package">libsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodiumlibsodium</a>
+                                <p class="package-description">There is a lot of asdasdsa text, so whasdasd sad as dsa
+                                    dsat the
+                                    fuck I gonna do about
+                                    it?</p>
+                            </div>
+
+                            <div class="package-info">
+                                <span class="info-recent" title="Updated at">8 hours ago</span>
+                                <span class="info-tag" title="Latest version">0.1.0</span>
+                            </div>
+                        </div>
+                        <a class="package-link" href="#package" tabindex="-1"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="footer">
+        <div class="footer-wrapper">
+            <ul class="links">
+                <li><a href="#api">API</a></li>
+                <li><a href="#docs">Docs</a></li>
+            </ul>
+
+            <ul class="socials">
+                <li>
+                    <a class="socials--twitter" href="https://twitter.com/v_language" target="_blank"
+                        aria-label="Twitter">
+                    </a>
+                </li>
+                <li>
+                    <a class="socials--github" href="https://github.com/vlang" target="_blank" aria-label="Github">
+                    </a>
+                </li>
+                <li>
+                    <a class="socials--discord" href="https://discord.gg/gVJc6zngFj" target="_blank"
+                        aria-label="Discord">
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="links justify-end">
+                <li><a href="https://modules.vlang.io">vlib</a></li>
+                <li><a href="https://vlang.io">vlang.io</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>
