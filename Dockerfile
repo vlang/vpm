@@ -14,6 +14,7 @@ WORKDIR /app
 
 RUN apk --no-cache --update-cache add gc-dev postgresql-dev
 COPY ./static ./static
+COPY ./app/templates ./templates
 COPY --from=build /app/vpm ./vpm
 
 EXPOSE 8080
