@@ -15,7 +15,7 @@ pub fn new_packages(db pg.DB) Packages {
 	}
 }
 
-pub fn (repo Packages) create(package dto.Package) ?models.Package {
+pub fn (repo Packages) create(package dto.NewPackage) ?models.Package {
 	query := 'INSERT INTO $models.packages_table (author_id, name, description, repository) ' +
 		'VALUES' + '(' + package.author_id.str() + ", '" +
 		[package.name, package.description, package.repository].join("', '") +

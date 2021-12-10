@@ -17,7 +17,7 @@ pub fn new_packages(repo repository.Packages, versions repository.Versions) Pack
 	}
 }
 
-pub fn (service Packages) create(package dto.Package) ?models.Package {
+pub fn (service Packages) create(package dto.NewPackage) ?models.Package {
 	return service.repo.create(package) or { return wrap_err(err) }
 }
 

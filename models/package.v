@@ -6,7 +6,7 @@ import utils
 // Package fields for Postgres SELECT and RETURNING
 pub const (
 	packages_table = 'packages'
-	package_fields = 'id, author_id, name, description, documentation, repository, stars, downloads, downloaded_at, created_at, updated_at'
+	package_fields = 'id, author_id, gh_repo_id, name, description, documentation, repository, stars, downloads, downloaded_at, created_at, updated_at'
 )
 
 pub const (
@@ -15,8 +15,9 @@ pub const (
 
 pub struct Package {
 pub:
-	id        int
-	author_id int
+	id         int
+	author_id  int
+	gh_repo_id int
 
 	name          string
 	description   string
@@ -58,6 +59,7 @@ pub fn row2package(row utils.Row) ?Package {
 	return Package{
 		id: i.next() ?.int()
 		author_id: i.next() ?.int()
+		gh_repo_id: i.next() ?.int()
 		name: i.next() ?
 		description: i.next() ?
 		documentation: i.next() ?
