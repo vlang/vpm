@@ -198,7 +198,6 @@ fn handle_connection<T>(mut router Router<T>, mut conn net.TcpConn, mut app T) {
 			}
 		}
 	}
-
 	// Route not found
 	println('Route not found')
 	conn.write(http_404.bytes()) or {}

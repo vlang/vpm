@@ -2,7 +2,7 @@ module dto
 
 pub struct NewPackage {
 pub:
-	author_id int
+	author_id  int
 	gh_repo_id int
 
 	name        string

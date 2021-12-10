@@ -11,31 +11,31 @@ const (
 )
 
 const (
-	default_migrations_table = "schema_migrations"
+	default_migrations_table = 'schema_migrations'
 )
 
 fn main() {
 	mut latest_version := false
 
 	mut fp := flag.new_flag_parser(os.args)
-    fp.application('vpm migration tool')
-    fp.version('v0.1.0')
-    fp.limit_free_args_to_exactly(1) ?
-    fp.description('Stupidly simple migration tool.')
-    fp.skip_executable()
+	fp.application('vpm migration tool')
+	fp.version('v0.1.0')
+	fp.limit_free_args_to_exactly(1) ?
+	fp.description('Stupidly simple migration tool.')
+	fp.skip_executable()
 	fp.arguments_description('migrations folder')
-    forced_version := fp.int_opt('version', `v`, 'force specific version') or {
+	forced_version := fp.int_opt('version', `v`, 'force specific version') or {
 		latest_version = true
 		0
 	}
-    // dbname := fp.string('dbname', 'd', '', 'postgres database name')
+	// dbname := fp.string('dbname', 'd', '', 'postgres database name')
 	args := fp.finalize() or {
-        eprintln(err)
-        println(fp.usage())
-        return
-    }
+		eprintln(err)
+		println(fp.usage())
+		return
+	}
 
-	println("Checking migrations...")
+	println('Checking migrations...')
 	up, down := migrations(args.first()) ?
 	println('Reading configuration...')
 	cfg := config.parse_file(config_file) ?
@@ -53,7 +53,7 @@ fn main() {
 struct Migration {
 	version i64
 
-	path string
+	path    string
 	content string
 }
 
@@ -95,5 +95,5 @@ fn migrations(folder_path string) ?([]Migration, []Migration) {
 }
 
 fn current_version(mut db pg.DB, migrations_table string) ?int {
-	return db.q_int("SELECT version FROM $migrations_table;")
+	return db.q_int('SELECT version FROM $migrations_table;')
 }

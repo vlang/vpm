@@ -26,8 +26,7 @@ pub fn (repo Versions) create(version models.Version) ?models.Version {
 	row := repo.db.exec_one('INSERT INTO $models.versions_table ' +
 		'(package_id, release_date, semver, download_url) ' + 'VALUES' + '(' +
 		version.package_id.str() + ',' + version.release_date.unix_time().str() + ", '" +
-		[version.semver, version.download_url].join("', '") +
-		"') RETURNING $models.version_fields;") ?
+		[version.semver, version.download_url].join("', '") + "') RETURNING $models.version_fields;") ?
 	return models.row2version(row)
 }
 
