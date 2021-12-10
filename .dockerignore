@@ -9,6 +9,7 @@
 
 # Documentation
 /_docs
+/docs
 
 # VLS log
 /vls.log
