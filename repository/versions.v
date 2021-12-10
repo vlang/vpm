@@ -24,9 +24,9 @@ fn (repo Versions) dependencies(id int) ?[]int {
 
 pub fn (repo Versions) create(version models.Version) ?models.Version {
 	row := repo.db.exec_one('INSERT INTO $models.versions_table ' +
-		'(package_id, release_date, tag, release_url, commit_hash) ' + 'VALUES' + '(' +
+		'(package_id, release_date, semver, download_url) ' + 'VALUES' + '(' +
 		version.package_id.str() + ',' + version.release_date.unix_time().str() + ", '" +
-		[version.tag, version.release_url, version.commit_hash].join("', '") +
+		[version.semver, version.download_url].join("', '") +
 		"') RETURNING $models.version_fields;") ?
 	return models.row2version(row)
 }
