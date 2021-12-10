@@ -1,7 +1,10 @@
 version: "3.9"
 services:
-  vpm:
-    build: .
+  app:
+    build:
+      dockerfile: Dockerfile
+      args:
+        args: -cc gcc -gc boehm
     restart: always
     ports:
       - 8080:8080
