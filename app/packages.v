@@ -12,7 +12,7 @@ pub:
 
 pub fn (mut app App) fpackage(id int) Package {
 	package := app.services.packages.get_by_id(id) or { models.Package{} }
-	version := app.services.packages.get_lastest_version(id) or { models.Version{} }
+	version := app.services.packages.get_latest_version(id) or { models.Version{} }
 	return Package{package, version.semver}
 }
 

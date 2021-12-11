@@ -42,10 +42,10 @@ pub:
 	nr_downloads int
 }
 
-pub fn (package Package) get_old_package() OldPackage {
+pub fn (package Package) get_old_package(login string) OldPackage {
 	return OldPackage{
 		id: package.id
-		name: package.name
+		name: login + '.' + package.name
 		url: package.repository
 		nr_downloads: package.downloads
 	}

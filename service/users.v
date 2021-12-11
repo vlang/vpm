@@ -6,14 +6,12 @@ import repository
 
 pub struct Users {
 	repo repository.Users
-	pkgs repository.Packages
 	// TODO: auth token manager
 }
 
-pub fn new_users(repo repository.Users, pkgs repository.Packages) Users {
+pub fn new_users(repo repository.Users) Users {
 	return Users{
 		repo: repo
-		pkgs: pkgs
 	}
 }
 
@@ -31,10 +29,6 @@ pub fn (service Users) get_by_github_id(id int) ?models.User {
 
 pub fn (service Users) get_by_login(login string) ?models.User {
 	return service.repo.get_by_login(login) or { return wrap_err(err) }
-}
-
-pub fn (service Users) get_packages(id int) ?[]models.Package {
-	return service.pkgs.get_by_author(id) or { return wrap_err(err) }
 }
 
 pub fn (service Users) update(input dto.User) ?models.User {

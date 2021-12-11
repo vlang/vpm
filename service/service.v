@@ -18,7 +18,7 @@ pub:
 pub fn new_services(deps Deps) Services {
 	return Services{
 		tags: new_tags(deps.repos.tags, deps.repos.packages)
-		packages: new_packages(deps.repos.packages, deps.repos.versions)
-		users: new_users(deps.repos.users, deps.repos.packages)
+		packages: new_packages(deps.repos.packages, deps.repos.versions, deps.repos.users)
+		users: new_users(deps.repos.users)
 	}
 }
