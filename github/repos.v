@@ -1,9 +1,11 @@
 module github
 
 import time
+import x.json2
+import utils
 
 pub struct License {
-pub:
+pub mut:
 	key  string
 	name string
 	url  string
@@ -13,8 +15,12 @@ pub:
 	html_url string
 }
 
+pub fn (mut l License) from_json(obj json2.Any) {
+	utils.from_json(mut l, obj.as_map())
+}
+
 pub struct Permissions {
-pub:
+pub mut:
 	admin    bool
 	pull     bool
 	triage   bool
@@ -22,17 +28,21 @@ pub:
 	maintain bool
 }
 
+pub fn (mut p Permissions) from_json(obj json2.Any) {
+	utils.from_json(mut p, obj.as_map())
+}
+
 [heap]
 pub struct Repository {
-pub:
+pub mut:
 	id             i64
 	node_id        string
 	name           string
 	full_name      string
 	license        License
-	organization   &User
+	organization   User
 	permissions    Permissions
-	owner          &User
+	owner          User
 	description    string      [omitempty]
 	topics         []string
 	default_branch string
@@ -65,9 +75,9 @@ pub:
 	allow_auto_merge       bool
 	delete_branch_on_merge bool
 
-	is_template         bool
-	template_repository &Repository
-	temp_clone_token    string      [omitempty]
+	is_template bool
+	// template_repository &Repository
+	temp_clone_token string [omitempty]
 
 	starred_at time.Time
 	pushed_at  time.Time
@@ -117,4 +127,25 @@ pub:
 	mirror_url        string [omitempty]
 	hooks_url         string
 	svn_url           string
+}
+
+pub fn (mut r Repository) from_json(obj json2.Any) {
+	json_obj := obj.as_map()
+	utils.from_json(mut r, json_obj)
+
+	if field := json_obj['license'] {
+		r.license.from_json(field)
+	}
+
+	if field := json_obj['organization'] {
+		r.organization.from_json(field)
+	}
+
+	if field := json_obj['permissions'] {
+		r.permissions.from_json(field)
+	}
+
+	if field := json_obj['owner'] {
+		r.owner.from_json(field)
+	}
 }

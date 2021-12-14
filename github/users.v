@@ -1,6 +1,8 @@
 module github
 
 import time
+import x.json2
+import utils
 
 [heap]
 pub struct User {
@@ -28,4 +30,8 @@ pub:
 	repos_url           string
 	events_url          string
 	received_events_url string
+}
+
+pub fn (mut u User) from_json(obj json2.Any) {
+	utils.from_json(mut u, obj.as_map())
 }

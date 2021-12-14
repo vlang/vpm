@@ -1,10 +1,12 @@
 module github
 
 import time
+import x.json2
+import utils
 
 [heap]
 pub struct Installation {
-pub:
+pub mut:
 	id                        i64
 	node_id                   string
 	app_id                    i64
@@ -19,17 +21,34 @@ pub:
 	repository_selection      string
 	events                    []string
 	single_file_paths         []string
-	permissions               &InstallationPermissions
+	permissions               InstallationPermissions
 	created_at                time.Time
 	updated_at                time.Time
 	has_multiple_single_files bool
-	suspended_by              &User
+	suspended_by              User
 	suspended_at              time.Time
+}
+
+pub fn (mut i Installation) from_json(obj json2.Any) {
+	json_obj := obj.as_map()
+	utils.from_json(mut i, json_obj)
+
+	if field := json_obj['account'] {
+		i.account.from_json(field)
+	}
+
+	if field := json_obj['permissions'] {
+		i.permissions.from_json(field)
+	}
+
+	if field := json_obj['suspended_by'] {
+		i.suspended_by.from_json(field)
+	}
 }
 
 [heap]
 pub struct InstallationPermissions {
-pub:
+pub mut:
 	actions                          string
 	administration                   string
 	blocking                         string
@@ -65,4 +84,8 @@ pub:
 	team_discussions                 string
 	vulnerability_alerts             string
 	workflows                        string
+}
+
+pub fn (mut i InstallationPermissions) from_json(obj json2.Any) {
+	utils.from_json(mut i, obj.as_map())
 }
