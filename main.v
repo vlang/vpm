@@ -97,7 +97,7 @@ pub fn (mut app App) create_module() {
 	url := app.vweb.form['url'].replace('<', '&lt;')
 	println('CREATE url="$url"')
 	if !url.starts_with('github.com/') && !url.starts_with('http://github.com/') && !url.starts_with('https://github.com/') {
-		println('NOT GITHUb')
+		println('NOT GITHUB')
 		app.vweb.redirect('/')
 		return
 	}
