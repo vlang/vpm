@@ -21,3 +21,6 @@
 /.git
 /.idea
 /.vscode
+
+# Frontend
+/frontend
