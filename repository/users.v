@@ -17,7 +17,7 @@ pub fn new_users(db pg.DB) Users {
 pub fn (repo Users) create(user dto.User) ?models.User {
 	row := repo.db.exec_one('INSERT INTO $models.users_table ' +
 		'(gh_id, gh_login, gh_avatar, name, access_token) ' + 'VALUES' + "($user.gh_id, '" +
-		[user.gh_login, user.gh_avatar, user.name, user.gh_access_token].join("', '") +
+		[user.login, user.avatar, user.name, user.access_token].join("', '") +
 		"') RETURNING $models.user_fields;") ?
 	return models.row2user(row)
 }
@@ -39,8 +39,8 @@ pub fn (repo Users) get_by_login(login string) ?models.User {
 
 // Please fetch user before updating
 pub fn (repo Users) update(user dto.User) ?models.User {
-	if user.gh_id != 0 && user.name != '' && user.gh_login != '' && user.gh_avatar != '' {
-		row := repo.db.exec_one("UPDATE $models.users_table SET name = '$user.name', gh_login = '$user.gh_login', gh_avatar = '$user.gh_avatar' WHERE gh_id = $user.gh_id RETURNING $models.user_fields;") ?
+	if user.gh_id != 0 && user.name != '' && user.login != '' && user.avatar != '' {
+		row := repo.db.exec_one("UPDATE $models.users_table SET name = '$user.name', gh_login = '$user.login', gh_avatar = '$user.avatar' WHERE gh_id = $user.gh_id RETURNING $models.user_fields;") ?
 		return models.row2user(row)
 	}
 

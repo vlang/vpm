@@ -48,7 +48,7 @@ pub fn (service Packages) get_old_package(name string) ?models.OldPackage {
 	packages := service.repo.get_by_author(author.id) ?
 	for p in packages {
 		if p.name == package_name {
-			return p.get_old_package(author.gh_login)
+			return p.get_old_package(author.login)
 		}
 	}
 

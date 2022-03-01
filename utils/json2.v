@@ -8,7 +8,7 @@ pub fn from_json<T>(mut dest T, obj map[string]json2.Any) {
 		mut json_name := field.name
 		for attr in field.attrs {
 			if attr.starts_with('json: ') {
-				json_name = attr.trim_prefix('json: ')
+				json_name = attr.trim_string_left('json: ')
 			}
 		}
 		if val := obj[json_name] {

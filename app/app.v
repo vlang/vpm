@@ -40,11 +40,3 @@ pub fn run(config_file string) ? {
 	router.serve_static('/', './static') ?
 	router.listen(':$cfg.http.port') ?
 }
-
-fn (mut app App) index() web.Result {
-	// Workaround for $tmpl bug :\
-	mut rendered := $embed_file('./templates/index.html')
-	unsafe {
-		return app.html(.ok, tos(rendered.data(), rendered.len))
-	}
-}

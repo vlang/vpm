@@ -61,7 +61,6 @@ pub fn new<T>(app T, config ...Config) ?Router<T> {
 pub fn (mut router Router<T>) serve_static(mount_at string, dir string) ? {
 	files := scan_static_directory(mount_at, dir) ?
 	concat_static_files(mut router.static_files, files)
-	println(router.static_files)
 	return
 }
 

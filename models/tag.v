@@ -5,14 +5,13 @@ import utils
 // Tags fields for Postgres SELECT and RETURNING
 pub const (
 	tags_table = 'tags'
-	tag_fields = 'id, slug, name, packages'
+	tag_fields = 'id, slug, packages'
 )
 
 pub struct Tag {
 pub:
 	id       int
 	slug     string
-	name     string
 	packages int
 }
 
@@ -24,7 +23,6 @@ pub fn row2tag(row utils.Row) ?Tag {
 	return Tag{
 		id: i.next() ?.int()
 		slug: i.next() ?
-		name: i.next() ?
 		packages: i.next() ?.int()
 	}
 }

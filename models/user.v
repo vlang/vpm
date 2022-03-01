@@ -5,18 +5,18 @@ import utils
 // User fields for Postgres SELECT and RETURNING
 pub const (
 	users_table = 'users'
-	user_fields = 'id, gh_id, gh_login, gh_avatar, name, access_token, is_blocked, block_reason, is_admin'
+	user_fields = 'id, gh_id, login, avatar, name, access_token, is_blocked, block_reason, is_admin'
 )
 
 pub struct User {
 pub:
-	id        int
-	gh_id     int
-	gh_login  string
-	gh_avatar string
-	name      string
+	id     int
+	gh_id  int
+	login  string
+	avatar string
+	name   string
 
-	access_token string
+	access_token string [skip]
 
 	is_blocked   bool
 	block_reason string
@@ -31,8 +31,8 @@ pub fn row2user(row utils.Row) ?User {
 	return User{
 		id: i.next() ?.int()
 		gh_id: i.next() ?.int()
-		gh_login: i.next() ?
-		gh_avatar: i.next() ?
+		login: i.next() ?
+		avatar: i.next() ?
 		name: i.next() ?
 		access_token: i.next() ?
 		is_blocked: i.next() ?.bool()

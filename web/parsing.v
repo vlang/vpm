@@ -33,9 +33,7 @@ fn parse_attrs(name string, attrs []string) ?([]http.Method, string) {
 		i++
 	}
 	if x.len > 0 {
-		return IError(http.UnexpectedExtraAttributeError{
-			msg: 'Encountered unexpected extra attributes: $x'
-		})
+		return error('Encountered unexpected extra attributes: $x')
 	}
 	if methods.len == 0 {
 		methods = [http.Method.get]
@@ -49,8 +47,8 @@ fn parse_attrs(name string, attrs []string) ?([]http.Method, string) {
 
 fn parse_query_from_url(url urllib.URL) map[string]string {
 	mut query := map[string]string{}
-	for k, v in url.query().data {
-		query[k] = v.data[0]
+	for k, v in url.query().to_map() {
+		query[k] = v[0]
 	}
 	return query
 }
