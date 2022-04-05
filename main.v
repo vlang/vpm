@@ -5,9 +5,10 @@ import pg
 import json
 // import rand
 // import rand.seed
+import os
 
 const (
-	port = 8090
+	port = 8091
 )
 
 struct ModsRepo {
@@ -25,46 +26,48 @@ pub mut:
 fn main() {
 	// s := seed.time_seed_array(2)
 	// s.seed([seed[0], seed[1]])
+	js := os.read_file('dbconf.json') ?
+	dbconf := json.decode(DbConfig, js) ?
+	// dbconf := json.decode(DbConfig, os.read_file('dbconf.json') ?) ?
 	mut app := &App{
 		db: pg.connect(pg.Config{
-			host: 'localhost'
-			dbname: 'vpm'
-			user: 'admin'
+			host: dbconf.host
+			dbname: dbconf.dbname
+			user: dbconf.user
 		}) or { panic(err) }
 		// app.db = db
 		// app.cur_user = User{}
 	}
 	app.mods_repo = ModsRepo{app.db}
 
+	// app.serve_static('/img/github.png', 'img/github.png')
 	vweb.run(app, port)
 }
 
-pub fn (mut app App) init_once() {
-	println('pg.connect()')
-	// app.serve_static('/img/github.png', 'img/github.png')
+struct DbConfig {
+	host     string
+	dbname   string
+	user     string
+	password string
 }
 
 pub fn (mut app App) init() {
 }
 
-pub fn (mut app App) index() {
+pub fn (mut app App) index() vweb.Result {
 	app.set_cookie(
 		name: 'vpm'
 		value: '777'
 	)
 	mods := app.find_all_mods()
 	println(123) // TODO remove, won't work without it
-	$vweb.html()
-}
-
-pub fn (mut app App) reset() {
+	return $vweb.html()
 }
 
 pub fn (mut app App) new() {
 	app.auth()
 	logged_in := app.cur_user.name != ''
 	println('new() loggedin: $logged_in')
-	println(123) // TODO remove, won't work without it
 	$vweb.html()
 }
 
