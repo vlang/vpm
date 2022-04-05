@@ -26,8 +26,12 @@ pub mut:
 fn main() {
 	// s := seed.time_seed_array(2)
 	// s.seed([seed[0], seed[1]])
-	js := os.read_file('dbconf.json') ?
-	dbconf := json.decode(DbConfig, js) ?
+	txt := os.read_file('dbconf.json') ?
+	println(txt)
+	dbconf := json.decode(DbConfig, txt) or {
+		println('failed to decode dbconf.json: $err')
+		return
+	}
 	// dbconf := json.decode(DbConfig, os.read_file('dbconf.json') ?) ?
 	mut app := &App{
 		db: pg.connect(pg.Config{
@@ -45,10 +49,10 @@ fn main() {
 }
 
 struct DbConfig {
-	host     string
-	dbname   string
-	user     string
-	password string
+	host   string
+	dbname string
+	user   string
+	// password string
 }
 
 pub fn (mut app App) init() {
@@ -64,11 +68,11 @@ pub fn (mut app App) index() vweb.Result {
 	return $vweb.html()
 }
 
-pub fn (mut app App) new() {
+pub fn (mut app App) new() vweb.Result {
 	app.auth()
 	logged_in := app.cur_user.name != ''
 	println('new() loggedin: $logged_in')
-	$vweb.html()
+	return $vweb.html()
 }
 
 const (
@@ -89,7 +93,7 @@ fn is_valid_mod_name(s string) bool {
 }
 
 [post]
-pub fn (mut app App) create_module(name string, vcs string) vweb.Result {
+pub fn (mut app App) create_module(name string, description string, vcs string) vweb.Result {
 	app.auth()
 	name_lower := name.to_lower()
 	println('CREATE name="$name"')

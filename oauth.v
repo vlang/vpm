@@ -4,6 +4,7 @@ import rand
 import net.http
 import json
 import os
+import vweb
 
 const (
 	client_id     = os.getenv('VPM_GITHUB_CLIENT_ID')
@@ -27,14 +28,16 @@ fn random_string(len int) string {
 	return buf.str()
 }
 
-fn (mut app App) oauth_cb() {
+fn (mut app App) oauth_cb() vweb.Result {
 	code := app.req.url.all_after('code=')
 	println(code)
 	if code == '' {
-		return
+		return app.redirect('/')
 	}
 	d := 'client_id=$client_id&client_secret=$client_secret&code=$code'
-	resp := http.post('https://github.com/login/oauth/access_token', d) or { return }
+	resp := http.post('https://github.com/login/oauth/access_token', d) or {
+		return app.redirect('/')
+	}
 	println('resp text=' + resp.text)
 	token := resp.text.find_between('access_token=', '&')
 	println('token =$token')
@@ -47,21 +50,20 @@ fn (mut app App) oauth_cb() {
 	) or { panic(err) }
 	gh_user := json.decode(GitHubUser, user_js.text) or {
 		println('cant decode')
-		return
+		return app.redirect('/')
 	}
 	login := gh_user.login.replace(' ', '')
 	if login.len < 2 {
-		app.redirect('/new')
-		return
+		return app.redirect('/new')
 	}
 	println('login =$login')
 	mut random_id := random_string(20)
 	app.db.exec_param2('insert into users (name, random_id) values ($1, $2)', login, random_id) or {
-		return
+		return app.redirect('/')
 	}
 	// Fetch the new or already existing user and set cookies
-	user_id := app.db.q_int('select id from users where name=\'$login\' ') or { panic(err) }
-	random_id = app.db.q_string('select random_id from users where name=\'$login\' ') or {
+	user_id := app.db.q_int("select id from users where name='$login' ") or { panic(err) }
+	random_id = app.db.q_string("select random_id from users where name='$login' ") or {
 		panic(err)
 	}
 	app.set_cookie(
@@ -73,7 +75,7 @@ fn (mut app App) oauth_cb() {
 		value: random_id
 	)
 	println('redirecting to /new')
-	app.redirect('/new')
+	return app.redirect('/new')
 }
 
 fn (mut app App) auth() {
