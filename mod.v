@@ -19,42 +19,19 @@ fn (mut app App) find_all_mods() []Mod {
 		select from Mod order by nr_downloads desc
 	}
 	return mods
-	/*
-	rows := app.db.exec('select name, url, nr_downloads,vcs from modules order by nr_downloads desc') or {
-		panic(err)
-	}
-	mut mods := []Mod{}
-	for row in rows {
-		mods << Mod{
-			name: row.vals[0]
-			url: row.vals[1]
-			nr_downloads: row.vals[2].int()
-			vcs: row.vals[3]
-		}
-	}
-	return mods
-	*/
 }
 
 fn (repo ModsRepo) retrieve(name string) ?Mod {
-	rows := repo.db.exec_param('select name, url, nr_downloads from modules where name=$1',
-		name) or { return err }
-	if rows.len == 0 {
-		return error('Found no module with name "$name"')
-	}
-	row := rows[0]
-	mod := Mod{
-		name: row.vals[0]
-		url: row.vals[1]
-		nr_downloads: row.vals[2].int()
-		vcs: row.vals[3]
+	mod := sql repo.db {
+		select from Mod where name == name limit 1
 	}
 	return mod
 }
 
 fn (repo ModsRepo) inc_nr_downloads(name string) {
-	repo.db.exec_param('update modules set nr_downloads=nr_downloads+1 where name=$1',
-		name) or { return }
+	sql repo.db {
+		update Mod set nr_downloads = nr_downloads + 1 where name == name
+	}
 }
 
 fn (repo ModsRepo) insert_module(name string, url string, vcs string) {
@@ -69,8 +46,14 @@ fn (repo ModsRepo) insert_module(name string, url string, vcs string) {
 	if vcs !in supported_vcs_systems {
 		return
 	}
-	repo.db.exec_param_many('insert into modules (name, url, vcs) values ($1, $2, $3)',
-		[name, url, vcs]) or { return }
+	mod := Mod{
+		name: name
+		url: url
+		vcs: vcs
+	}
+	sql repo.db {
+		insert mod into Mod
+	}
 }
 
 fn clean_url(s string) string {
