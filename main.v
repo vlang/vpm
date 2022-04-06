@@ -131,15 +131,12 @@ pub fn (mut app App) mod(name string) vweb.Result {
 }
 
 ['/jsmod/:name']
-pub fn (mut app App) jsmod() {
-	name := app.req.url.replace('jsmod/', '')[1..]
-	println('MOD name=$name')
+pub fn (mut app App) jsmod(name string) vweb.Result {
+	// name := app.req.url.replace('jsmod/', '')[1..]
+	println('jsMOD name=$name')
 	app.mods_repo.inc_nr_downloads(name)
-	mod := app.retrieve(name) or {
-		app.json('404')
-		return
-	}
-	app.json(json.encode(mod))
+	mod := app.retrieve(name) or { return app.json('404') }
+	return app.json(json.encode(mod))
 }
 
 // "/post/:id/:title"
