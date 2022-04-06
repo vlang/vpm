@@ -130,6 +130,7 @@ pub fn (mut app App) mod(name string) vweb.Result {
 	return $vweb.html()
 }
 
+['/jsmod/:name']
 pub fn (mut app App) jsmod() {
 	name := app.req.url.replace('jsmod/', '')[1..]
 	println('MOD name=$name')
