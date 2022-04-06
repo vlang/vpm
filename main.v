@@ -119,8 +119,9 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 	return app.redirect('/')
 }
 
-pub fn (mut app App) mod() vweb.Result {
-	name := app.get_mod_name()
+['/mod/:name']
+pub fn (mut app App) mod(name string) vweb.Result {
+	// name := app.get_mod_name()
 	println('mod name=$name')
 	mymod := app.mods_repo.retrieve(name) or { return app.redirect('/') }
 	// comments := app.find_comments(id)
