@@ -47,7 +47,7 @@ fn (mut app App) oauth_cb() vweb.Result {
 		// url: 'https://api.github.com/user?access_token=$token'
 		url: 'https://api.github.com/user'
 		method: .get
-		header: http.new_header(key: .authorization, value: token)
+		header: http.new_header(key: .authorization, value: 'token $token')
 		// header: {
 		//'User-Agent': 'V http client'
 		//}
