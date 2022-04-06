@@ -74,8 +74,10 @@ fn (mut app App) oauth_cb() vweb.Result {
 	app.db.exec_param2('insert into "User" (name, random_id) values ($1, $2)', login,
 		random_id) or {}
 	// Fetch the new or already existing user and set cookies
-	user_id := app.db.q_int("select id from User where name='$login' ") or { panic(err) }
-	random_id = app.db.q_string("select random_id from User where name='$login' ") or { panic(err) }
+	user_id := app.db.q_int("select id from \"User\" where name='$login' ") or { panic(err) }
+	random_id = app.db.q_string("select random_id from \"User\" where name='$login' ") or {
+		panic(err)
+	}
 	app.set_cookie(
 		name: 'id'
 		value: user_id.str()
