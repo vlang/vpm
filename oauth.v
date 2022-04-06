@@ -44,8 +44,10 @@ fn (mut app App) oauth_cb() vweb.Result {
 	token := resp.text.find_between('access_token=', '&')
 	println('token =$token')
 	user_js := http.fetch(
-		url: 'https://api.github.com/user?access_token=$token'
+		// url: 'https://api.github.com/user?access_token=$token'
+		url: 'https://api.github.com/user'
 		method: .get
+		header: http.new_header(key: .authorization, value: token)
 		// header: {
 		//'User-Agent': 'V http client'
 		//}
