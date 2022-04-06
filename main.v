@@ -123,7 +123,8 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 pub fn (mut app App) mod(name string) vweb.Result {
 	// name := app.get_mod_name()
 	println('mod name=$name')
-	mymod := app.mods_repo.retrieve(name) or { return app.redirect('/') }
+	mymod := app.retrieve(name) or { return app.redirect('/') }
+	xx := mymod // TODO weird tmpl bug
 	// comments := app.find_comments(id)
 	// show_form := true
 	return $vweb.html()
@@ -133,7 +134,7 @@ pub fn (mut app App) jsmod() {
 	name := app.req.url.replace('jsmod/', '')[1..]
 	println('MOD name=$name')
 	app.mods_repo.inc_nr_downloads(name)
-	mod := app.mods_repo.retrieve(name) or {
+	mod := app.retrieve(name) or {
 		app.json('404')
 		return
 	}
