@@ -22,9 +22,25 @@ fn (mut app App) find_all_mods() []Mod {
 }
 
 fn (repo ModsRepo) retrieve(name string) ?Mod {
+	rows := repo.db.exec_param('select name, url, nr_downloads, description from "Mod" where name=$1',
+		name) or { return err }
+	if rows.len == 0 {
+		return error('Found no module with name "$name"')
+	}
+	row := rows[0]
+	mod := Mod{
+		name: row.vals[0]
+		url: row.vals[1]
+		nr_downloads: row.vals[2].int()
+		vcs: row.vals[3]
+		description: row.vals[4]
+	}
+
+	/*
 	mod := sql repo.db {
 		select from Mod where name == name limit 1
 	}
+	*/
 	return mod
 }
 
