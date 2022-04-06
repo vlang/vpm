@@ -1,20 +1,26 @@
 module main
 
 const (
-	banned_names          = ['NotNite']
+	banned_names          = ['xxx']
 	supported_vcs_systems = ['git', 'hg']
 )
 
 struct Mod {
 	id           int
 	name         string
+	description  string
 	url          string
 	nr_downloads int
 	vcs          string = 'git'
 }
 
 fn (mut app App) find_all_mods() []Mod {
-	rows := app.db.exec('select name, url, nr_downloads, vcs from modules order by nr_downloads desc') or {
+	mods := sql app.db {
+		select from Mod order by nr_downloads desc
+	}
+	return mods
+	/*
+	rows := app.db.exec('select name, url, nr_downloads,vcs from modules order by nr_downloads desc') or {
 		panic(err)
 	}
 	mut mods := []Mod{}
@@ -27,6 +33,7 @@ fn (mut app App) find_all_mods() []Mod {
 		}
 	}
 	return mods
+	*/
 }
 
 fn (repo ModsRepo) retrieve(name string) ?Mod {
