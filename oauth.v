@@ -34,10 +34,12 @@ fn (mut app App) oauth_cb() vweb.Result {
 	if code == '' {
 		return app.redirect('/')
 	}
-	d := 'client_id=$client_id&client_secret=$client_secret&code=$code'
-	resp := http.post('https://github.com/login/oauth/access_token', d) or {
-		return app.redirect('/')
-	}
+	// d := 'client_id=$client_id&client_secret=$client_secret&code=$code'
+	resp := http.post_form('https://github.com/login/oauth/access_token', {
+		'client_id':     client_id
+		'client_secret': client_secret
+		'code':          code
+	}) or { return app.redirect('/') }
 	println('resp text=' + resp.text)
 	token := resp.text.find_between('access_token=', '&')
 	println('token =$token')
