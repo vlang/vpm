@@ -45,8 +45,8 @@ fn (app &App) retrieve(name string) ?Mod {
 	return mod
 }
 
-fn (repo ModsRepo) inc_nr_downloads(name string) {
-	sql repo.db {
+fn (app &App) inc_nr_downloads(name string) {
+	sql app.db {
 		update Mod set nr_downloads = nr_downloads + 1 where name == name
 	}
 }
