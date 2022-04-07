@@ -136,5 +136,5 @@ pub fn (mut app App) jsmod(name string) vweb.Result {
 	println('jsMOD name=$name')
 	app.inc_nr_downloads(name)
 	mod := app.retrieve(name) or { return app.json('404') }
-	return app.json(json.encode(mod))
+	return app.json(mod)
 }
