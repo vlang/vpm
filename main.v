@@ -114,7 +114,7 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		println('Unsupported vcs: $vcs')
 		return app.redirect('/')
 	}
-	app.mods_repo.insert_module(app.cur_user.name + '.' + name.limit(max_name_len), url.limit(50),
+	app.insert_module(app.cur_user.name + '.' + name.limit(max_name_len), url.limit(50),
 		vcs_.limit(3))
 	return app.redirect('/')
 }
