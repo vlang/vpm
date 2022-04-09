@@ -3,13 +3,15 @@ module main
 import rand
 import net.http
 import json
-import os
+// import os
 import vweb
 
+/*
 const (
 	client_id     = os.getenv('VPM_GITHUB_CLIENT_ID')
 	client_secret = os.getenv('VPM_GITHUB_SECRET')
 )
+*/
 
 struct GitHubUser {
 	login string
@@ -36,8 +38,8 @@ fn (mut app App) oauth_cb() vweb.Result {
 	}
 	// d := 'client_id=$client_id&client_secret=$client_secret&code=$code'
 	resp := http.post_form('https://github.com/login/oauth/access_token', {
-		'client_id':     client_id
-		'client_secret': client_secret
+		'client_id':     app.gh_client_id
+		'client_secret': app.gh_client_secret
 		'code':          code
 	}) or { return app.redirect('/') }
 	println('resp text=' + resp.text)

@@ -17,6 +17,8 @@ struct ModsRepo {
 
 struct App {
 	vweb.Context
+	gh_client_id     string
+	gh_client_secret string
 pub mut:
 	db        pg.DB
 	cur_user  User
@@ -39,6 +41,8 @@ fn main() {
 			dbname: dbconf.dbname
 			user: dbconf.user
 		}) or { panic(err) }
+		gh_client_id: dbconf.github_client_id
+		gh_client_secret: dbconf.github_client_secret
 		// app.db = db
 		// app.cur_user = User{}
 	}
@@ -49,9 +53,11 @@ fn main() {
 }
 
 struct DbConfig {
-	host   string
-	dbname string
-	user   string
+	host                 string
+	dbname               string
+	user                 string
+	github_client_id     string
+	github_client_secret string
 	// password string
 }
 
