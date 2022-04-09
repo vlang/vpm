@@ -6,7 +6,7 @@ const (
 )
 
 struct Mod {
-	id           int
+	id           int    [primary; sql: serial]
 	name         string
 	description  string
 	url          string
