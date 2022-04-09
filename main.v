@@ -17,8 +17,8 @@ struct ModsRepo {
 
 struct App {
 	vweb.Context
-	gh_client_id     string
-	gh_client_secret string
+	gh_client_id     string [vweb_global]
+	gh_client_secret string [vweb_global]
 pub mut:
 	db        pg.DB
 	cur_user  User
