@@ -1,0 +1,29 @@
+<header class="flex-shrink-0 h-28 flex justify-center items-center bg-white border-b-2 border-solid border-off-white">
+	<div class="px-4 w-page h-16 flex gap-4 justify-between">
+		<div class="flex-1 flex items-center">
+			<a href="/">
+				<svg xmlns="http://www.w3.org/2000/svg" width="145" height="64">
+					<use href="#vpm_logo"></use>
+				</svg>
+			</a>
+		</div>
+		<form class="flex basis-[36.25rem] rounded-2xl focus-within:outline bg-off-white" action="/search">
+			<label class="flex-1 px-5 py-4 box-border flex gap-4 items-center text-grey">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+					<use href="#search_icon"></use>
+				</svg>
+				<input class="flex-1 appearance-none focus:border-0 focus:outline-none bg-transparent svelte-owv6jv" name="q"
+					type="search" placeholder="Search" autocomplete="on" pattern="[A-Za-z0-9-.]{(1, 100)}"
+					title="Must match rules of github repo naming"></label>
+		</form>
+		<div class="flex-1 flex justify-end items-center">
+			<a class="button bg-general text-white hover:no-underline flex justify-center gap-2" rel="external"
+				href="/api/authorize" aria-label="Login with Github">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+					<use href="#github_login_icon"></use>
+				</svg>
+				Login
+			</a>
+		</div>
+	</div>
+</header>
