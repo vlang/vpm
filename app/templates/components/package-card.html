@@ -1,0 +1,32 @@
+<div id="package-card" class="basis-[5.625rem] flex gap-4 items-center">
+	<div class="min-w-0 flex-auto">
+		<a id="package-card__title"
+			class="mb-1 block font-bold text-medium text-primary overflow-hidden whitespace-nowrap overflow-ellipsis"
+			href="/package/@pkg.name">
+			@pkg.name
+		</a>
+		<p id="package-card__description"
+			class="mb-2 block text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">
+			@pkg.description
+		</p>
+		<div class="flex gap-4 items-center text-sub overflow-hidden">
+			<div id="package-card__last-update" class="flex gap-2 whitespace-nowrap">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+					<use href="#clock_icon"></use>
+				</svg>
+				@pkg.downloads
+			</div>
+			<div id="package-card__stars" class="flex gap-2 whitespace-nowrap">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+					<use href="#star_icon"></use>
+				</svg>
+				@pkg.stars
+			</div>
+		</div>
+	</div>
+	<a class="text-primary" href="/package/@pkg.name" tabindex="-1">
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+			<use href="#chevron_right_icon"></use>
+		</svg>
+	</a>
+</div>

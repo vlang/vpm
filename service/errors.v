@@ -3,7 +3,7 @@ module service
 import repository
 
 fn s_err(err IError) string {
-	return '[$err.code] $err.msg'
+	return '[${err.code()}] ${err.msg()}'
 }
 
 [noinit]
@@ -11,6 +11,14 @@ pub struct NotFoundError {
 pub:
 	msg  string = "doesn't exists"
 	code int
+}
+
+pub fn (err NotFoundError) msg() string {
+	return err.msg
+}
+
+pub fn (err NotFoundError) code() int {
+	return err.code
 }
 
 pub fn (err NotFoundError) str() string {
@@ -38,6 +46,14 @@ pub:
 	code int
 }
 
+pub fn (err AlreadyExists) msg() string {
+	return err.msg
+}
+
+pub fn (err AlreadyExists) code() int {
+	return err.code
+}
+
 pub fn (err AlreadyExists) str() string {
 	return s_err(err)
 }
@@ -54,6 +70,14 @@ pub struct IncorrectInputError {
 pub:
 	msg  string = 'input is fucked up'
 	code int
+}
+
+pub fn (err IncorrectInputError) msg() string {
+	return err.msg
+}
+
+pub fn (err IncorrectInputError) code() int {
+	return err.code
 }
 
 pub fn (err IncorrectInputError) str() string {

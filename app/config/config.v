@@ -4,30 +4,32 @@ import os
 import toml
 
 pub struct Config {
-pub mut:
-	gh   GHConfig
-	http HTTPConfig
-	pg   PGConfig
+pub:
+	root_url string
+	gh   Github
+	http HTTP
+	pg   Postgres
 }
 
-pub struct GHConfig {
+pub struct Github {
 pub mut:
 	client_id string
 	secret    string
 }
 
-pub struct HTTPConfig {
+pub struct HTTP {
 pub mut:
-	port int = 8080
+	root_url string
+	port int
 }
 
-pub struct PGConfig {
+pub struct Postgres {
 pub mut:
-	host     string = 'localhost'
-	port     int    = 5432
-	user     string = 'postgres'
-	password string = 'postgres'
-	db_name  string = 'vpm'
+	host     string 
+	port     int  
+	user     string
+	password string 
+	db_name  string
 }
 
 pub fn parse_file(path string) ?Config {
@@ -40,17 +42,20 @@ pub fn parse_file(path string) ?Config {
 }
 
 pub fn parse(data string) ?Config {
-	cfg := toml.parse_text(data) ?
+	cfg := toml.parse_text(data) or {
+		return error('failed to parse toml: $err')
+	}
 
 	return Config{
-		gh: GHConfig{
+		root_url: cfg.value('http.root_url').default_to('http://localhost:8080').string()
+		gh: Github{
 			client_id: cfg.value('github.client_id').string()
 			secret: cfg.value('github.secret').string()
 		}
-		http: HTTPConfig{
+		http: HTTP{
 			port: cfg.value('http.port').default_to(8080).int()
 		}
-		pg: PGConfig{
+		pg: Postgres{
 			host: cfg.value('postgres.host').default_to('localhost').string()
 			port: cfg.value('postgres.port').default_to(5432).int()
 			user: cfg.value('postgres.user').default_to('postgres').string()

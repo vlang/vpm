@@ -14,11 +14,11 @@ const (
 
 pub struct Repositories {
 pub:
-	tags     Tags
-	packages Packages
+	tags     Tags [required]
+	packages Packages [required]
 	// tokens     &Tokens
-	users    Users
-	versions Versions
+	users    Users [required]
+	versions Versions [required]
 }
 
 pub fn new_repositories(db pg.DB) Repositories {

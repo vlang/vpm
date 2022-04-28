@@ -7,6 +7,7 @@ import x.json2
 
 pub const api = 'https://api.github.com'
 
+// Request repo by id
 pub fn get_repo_by_id(id int) ?Repository {
 	res := http.fetch(method: .get, url: github.api + '/repositories/$id', user_agent: 'vpm') ?
 	return json2.decode<Repository>(res.text) or { return err }

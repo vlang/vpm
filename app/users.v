@@ -1,45 +1,46 @@
 module app
 
-import web
-import json
+import vweb
 
 ['/api/user/:login'; get]
-fn (mut app App) api_user(login string) web.Result {
-	user := app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }
+fn (mut app App) api_user(login string) vweb.Result {
+	user := rlock app.services{ app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }}
 
-	return app.json(.ok, json.encode(user))
+	return app.json(user)
 }
 
 ['/api/bans/:login'; post]
-fn (mut app App) api_admin_create_user_ban(login string) web.Result {
+fn (mut app App) api_admin_create_user_ban(login string) vweb.Result {
 	if !app.authorized() {
-		return app.send_status(.unauthorized)
+		return send_status(mut app, .unauthorized)
 	}
 
 	if !app.user.is_admin {
-		return app.send_status(.forbidden)
+		return send_status(mut app, .forbidden)
 	}
 
-	user := app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }
+	lock app.services {
+		user := app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }
+		app.services.users.set_blocked(user.id, true) or { return wrap_service_error(mut app, err) }
+	}
 
-	app.services.users.set_blocked(user.id, true) or { return wrap_service_error(mut app, err) }
-
-	return app.send_status(.ok)
+	return send_status(mut app, .ok)
 }
 
 ['/api/bans/:login'; delete]
-fn (mut app App) api_admin_delete_user_ban(login string) web.Result {
+fn (mut app App) api_admin_delete_user_ban(login string) vweb.Result {
 	if !app.authorized() {
-		return app.send_status(.unauthorized)
+		return send_status(mut app, .unauthorized)
 	}
 
 	if !app.user.is_admin {
-		return app.send_status(.forbidden)
+		return send_status(mut app, .forbidden)
 	}
 
-	user := app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }
+	lock app.services {
+		user := app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }
+		app.services.users.set_blocked(user.id, false) or { return wrap_service_error(mut app, err) }
+	}
 
-	app.services.users.set_blocked(user.id, false) or { return wrap_service_error(mut app, err) }
-
-	return app.send_status(.ok)
+	return send_status(mut app, .ok)
 }

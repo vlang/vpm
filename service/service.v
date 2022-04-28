@@ -4,14 +4,14 @@ import repository
 
 pub struct Services {
 pub:
-	tags     Tags
-	packages Packages
-	users    Users
+	tags     Tags [required]
+	packages Packages [required]
+	users    Users [required]
 }
 
 pub struct Deps {
 pub:
-	repos repository.Repositories
+	repos repository.Repositories [required]
 	// TODO: auth token manager
 }
 

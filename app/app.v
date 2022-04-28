@@ -1,25 +1,21 @@
 module app
 
 import pg
-import web
+import vweb
 import app.config
 import models
 import repository
 import service
 
+[heap]
 struct App {
-	web.Context
+	vweb.Context
 pub mut:
-	services service.Services [frak_concurrency]
+	config config.Config [vweb_global]
+	services shared service.Services
 	user     models.User
 	// github integration
 	// auth token manager
-}
-
-fn new(services service.Services) App {
-	return App{
-		services: services
-	}
 }
 
 pub fn run(config_file string) ? {
@@ -34,9 +30,10 @@ pub fn run(config_file string) ? {
 	}) ?
 	repos := repository.new_repositories(db)
 	services := service.new_services(repos: repos)
-	app := new(services)
-
-	mut router := web.new(app, web.Config{}) ?
-	router.serve_static('/', './static') ?
-	router.listen(':$cfg.http.port') ?
+	mut app := &App{
+		config: cfg
+		services: services
+	}
+	app.serve_static('/', './static')
+	vweb.run(app, cfg.http.port)
 }

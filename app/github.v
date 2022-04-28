@@ -1,15 +1,15 @@
 module app
 
 import github
-import web
+import vweb
 
-['/webhook/gh'; get]
-fn (mut app App) github_webhook() web.Result {
-	event := github.parse_event(app.request) or {
+['/webhook/gh'; post]
+fn (mut app App) github_webhook() vweb.Result {
+	event := github.parse_event(app.req) or {
 		println(err)
-		return app.send_status(.ok)
+		return send_status(mut app, .bad_request)
 	}
 
 	println('Got event $event')
-	return app.send_status(.ok)
+	return send_status(mut app, .ok)
 }

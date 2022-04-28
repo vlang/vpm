@@ -35,7 +35,7 @@ pub fn (service Packages) get_by_author(author_id int) ?[]models.Package {
 	return service.repo.get_by_author(author_id) or { return wrap_err(err) }
 }
 
-pub fn (service Packages) get_old_package(name string) ?models.OldPackage {
+pub fn (service Packages) get_package_old(name string) ?models.OldPackage {
 	parts := name.split_nth('.', 2)
 	if parts.len != 2 {
 		return IError(IncorrectInputError{

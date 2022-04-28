@@ -19,8 +19,6 @@
 
 # Folders with dot
 /.git
+/.github
 /.idea
 /.vscode
-
-# Frontend
-/frontend
