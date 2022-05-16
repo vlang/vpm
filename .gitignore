@@ -1,10 +1,9 @@
 # Binary
 /vpm
-/cmd/cli/cli
 /cmd/vpm/vpm
 /test.bin
 
-# IDE folders (but guys, seriously, add your ide folders to global .gitignore)
+# IDE folders (but guys, seriously, add your ide folders to your global .gitignore)
 .idea
 .vscode
 
@@ -16,3 +15,6 @@
 
 # VLS log
 /vls.log
+
+# Database files
+/data
