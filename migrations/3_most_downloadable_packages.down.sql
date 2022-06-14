@@ -1,1 +1,0 @@
-drop view if exists most_downloadable_packages;

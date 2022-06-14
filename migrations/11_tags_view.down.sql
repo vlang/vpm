@@ -1,1 +1,0 @@
-drop view if exists tags_view;
