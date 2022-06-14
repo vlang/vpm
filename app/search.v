@@ -2,6 +2,7 @@ module app
 
 import vweb
 
+// Search frontend
 ['/search'; get]
 fn (mut app App) search() vweb.Result {
 	content := $tmpl('./templates/pages/search.html')

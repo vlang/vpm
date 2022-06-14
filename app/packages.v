@@ -9,6 +9,7 @@ pub:
 	version string
 }
 
+// Module frontend
 ['/package/:name'; get]
 fn (mut app App) package(name string) vweb.Result {
 	content := $tmpl('./templates/pages/package.html')
@@ -16,7 +17,7 @@ fn (mut app App) package(name string) vweb.Result {
 	return app.html(layout)
 }
 
-pub fn (mut app App) get_package(id int) Package {
+fn (mut app App) get_package(id int) Package {
 	package := rlock app.services {app.services.packages.get_by_id(id) or { models.Package{} }}
 	version := rlock app.services {app.services.packages.get_latest_version(id) or { models.Version{} }}
 	return Package{package, version.semver}

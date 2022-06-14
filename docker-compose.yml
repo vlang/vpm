@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   app:
+    container_name: vpm
     image: vpm
     build:
       dockerfile: Dockerfile
@@ -10,9 +11,10 @@ services:
     volumes:
       - "./config.toml:/app/config.toml"
     depends_on:
-      - db
+      - database
 
-  db:
+  database:
+    container_name: database
     image: postgres:14
     restart: always
     ports:
@@ -21,8 +23,9 @@ services:
       POSTGRES_DB: vpm
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - database:/var/lib/postgresql/data
+      - ./data/database:/var/lib/postgresql/data
 
-volumes:
-  database: {}
+networks:
+  vpm:

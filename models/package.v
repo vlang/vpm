@@ -3,7 +3,7 @@ module models
 import time
 import utils
 
-// Package fields for Postgres SELECT and RETURNING
+// Package fields for DB query
 pub const (
 	packages_table = 'packages'
 	package_fields = 'id, author_id, gh_repo_id, name, description, documentation, repository, stars, downloads, downloaded_at, created_at, updated_at'
@@ -54,20 +54,7 @@ pub fn (package Package) get_old_package(login string) OldPackage {
 // Converts database row into Package.
 // Row values must match with `package_fields` otherwise it will panic
 pub fn row2package(row utils.Row) ?Package {
-	mut i := utils.row_iterator(row)
-
-	return Package{
-		id: i.next() ?.int()
-		author_id: i.next() ?.int()
-		gh_repo_id: i.next() ?.int()
-		name: i.next() ?
-		description: i.next() ?
-		documentation: i.next() ?
-		repository: i.next() ?
-		stars: i.next() ?.int()
-		downloads: i.next() ?.int()
-		downloaded_at: time.parse(i.next() ?) ?
-		created_at: time.parse(i.next() ?) ?
-		updated_at: time.parse(i.next() ?) ?
-	}
+	mut pkg := Package{}
+	utils.from_row(mut pkg, row) ?
+	return pkg
 }

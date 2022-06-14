@@ -3,6 +3,7 @@ module app
 import vweb
 import models
 
+// Homepage frontend
 ['/'; get]
 fn (mut app App) index() vweb.Result {
 	search_tags := [

@@ -3,7 +3,6 @@ module app
 import pg
 import vweb
 import app.config
-import models
 import repository
 import service
 
@@ -13,14 +12,9 @@ struct App {
 pub mut:
 	config config.Config [vweb_global]
 	services shared service.Services
-	user     models.User
-	// github integration
-	// auth token manager
 }
 
-pub fn run(config_file string) ? {
-	cfg := config.parse_file(config_file) ?
-
+pub fn run(cfg config.Config) ? {
 	db := pg.connect(pg.Config{
 		host: cfg.pg.host
 		port: cfg.pg.port

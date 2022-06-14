@@ -2,7 +2,7 @@ module models
 
 import utils
 
-// User fields for Postgres SELECT and RETURNING
+// User fields for DB query
 pub const (
 	users_table = 'users'
 	user_fields = 'id, gh_id, login, avatar, name, access_token, is_blocked, block_reason, is_admin'
@@ -26,17 +26,7 @@ pub:
 // Converts database row into User.
 // Row values must match with `user_fields` otherwise it will panic
 pub fn row2user(row utils.Row) ?User {
-	mut i := utils.row_iterator(row)
-
-	return User{
-		id: i.next() ?.int()
-		gh_id: i.next() ?.int()
-		login: i.next() ?
-		avatar: i.next() ?
-		name: i.next() ?
-		access_token: i.next() ?
-		is_blocked: i.next() ?.bool()
-		block_reason: i.next() ?
-		is_admin: i.next() ?.bool()
-	}
+	mut usr := User{}
+	utils.from_row(mut usr, row) ?
+	return usr
 }

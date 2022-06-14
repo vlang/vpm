@@ -3,6 +3,14 @@ module app
 import vweb
 import net.http
 import service
+// import models
+
+// fn retrieve_session(mut app App) ?models.User {
+// 	session_id := app.get_cookie("session-id") ?
+// 	session := rlock app.services {
+// 		app.services.sessions.get(session_id) ?
+// 	}
+// }
 
 fn wrap_service_error(mut app App, err IError) vweb.Result {
 	match err {

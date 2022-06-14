@@ -1,65 +1,65 @@
-<div class="flex gap-4 flex-col">
-    <h1 class="text-display-large font-bold">
-        Package Manager for the <span class="text-primary">V</span> Language
-    </h1>
+<header class="flex gap-4 flex-col">
+	<h1 class="text-display-large font-bold">
+		Package Manager for the <span class="text-primary">V</span> Language
+	</h1>
 
-    <p class="text-large text-sub">
-        Instantly publish your packages and install them. Use the API to interact and find out more
-        information about available packages. Become a contributor and enhance the site with your work.
-    </p>
-</div>
+	<p class="text-large text-sub">
+		Instantly publish your packages and install them. Use the API to interact and find out more
+		information about available packages. Become a contributor and enhance the site with your work.
+	</p>
+</header>
 
 <div class="flex gap-8 items-center">
-    <div class="flex gap-4"><a href="/search" class="button text-white hover:no-underline bg-primary flex gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                <use href="#download_icon"></use>
-            </svg>
-            Browse packages
-        </a>
-        <a href="/submit" class="button text-white hover:no-underline bg-primary flex gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                <use href="#plus_icon"></use>
-            </svg>
-            Submit package
-        </a>
-    </div>
-    <span>@total_packages packages</span>
+	<div class="flex gap-4"><a href="/search" class="button text-white hover:no-underline bg-primary flex gap-2">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+				<use href="#download_icon"></use>
+			</svg>
+			Browse packages
+		</a>
+		<a href="/submit" class="button text-white hover:no-underline bg-primary flex gap-2">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+				<use href="#plus_icon"></use>
+			</svg>
+			Submit package
+		</a>
+	</div>
+	<span>@total_packages packages</span>
 </div>
 
 <div>
-    <h2 class="mb-4 text-large font-bold">Popular tags</h2>
-    <div class="flex flex-wrap gap-2 panel">
-        @for tag in search_tags
-        <a class="tag" href="/search?tags=@tag.slug">@tag.slug<sup>@tag.packages</sup></a>
-        @end
-    </div>
+	<h2 class="mb-4 text-large font-bold">Popular tags</h2>
+	<div class="flex flex-wrap gap-2 panel">
+		@for tag in search_tags
+		<a class="tag" href="/search?tags=@tag.slug">@tag.slug<sup>@tag.packages</sup></a>
+		@end
+	</div>
 </div>
 
 <div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-between">
-        <div class="flex-auto">
-            <h2 class="mb-4 text-large font-bold">New packages</h2>
-            <div class="flex flex-col gap-4 panel">
-                @for pkg in new_packages
-                @include '../components/package-card.html'
-                @end
-            </div>
-        </div>
-        <div class="flex-auto">
-            <h2 class="mb-4 text-large font-bold">Most downloaded</h2>
-            <div class="flex flex-col gap-4 panel">
-                @for pkg in most_downloaded_packages
-                @include '../components/package-card.html'
-                @end
-            </div>
-        </div>
-        <div class="flex-auto">
-            <h2 class="mb-4 text-large font-bold">Recently updated</h2>
-            <div class="flex flex-col gap-4 panel">
-                @for pkg in recently_updated_packages
-                @include '../components/package-card.html'
-                @end
-            </div>
-        </div>
-    </div>
+	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-between">
+		<div class="flex-auto">
+			<h2 class="mb-4 text-large font-bold">New packages</h2>
+			<div class="flex flex-col gap-4 panel">
+				@for pkg in new_packages
+				@include '../components/package-card.html'
+				@end
+			</div>
+		</div>
+		<div class="flex-auto">
+			<h2 class="mb-4 text-large font-bold">Most downloaded</h2>
+			<div class="flex flex-col gap-4 panel">
+				@for pkg in most_downloaded_packages
+				@include '../components/package-card.html'
+				@end
+			</div>
+		</div>
+		<div class="flex-auto">
+			<h2 class="mb-4 text-large font-bold">Recently updated</h2>
+			<div class="flex flex-col gap-4 panel">
+				@for pkg in recently_updated_packages
+				@include '../components/package-card.html'
+				@end
+			</div>
+		</div>
+	</div>
 </div>
