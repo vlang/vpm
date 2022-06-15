@@ -4,9 +4,9 @@ import repository
 
 pub struct Services {
 pub:
-	tags     Tags [required]
+	tags     Tags     [required]
 	packages Packages [required]
-	users    Users [required]
+	users    Users    [required]
 }
 
 pub struct Deps {

@@ -24,23 +24,23 @@ pub:
 // Get link for web authorization
 pub fn (i OAuthLink) web_flow() string {
 	mut values := urllib.new_values()
-	values.add("client_id", i.client_id)
-	values.add("allow_signup", i.allow_signup.str())
+	values.add('client_id', i.client_id)
+	values.add('allow_signup', i.allow_signup.str())
 
 	if i.redirect_uri.len > 0 {
-		values.add("redirect_uri", i.redirect_uri)
+		values.add('redirect_uri', i.redirect_uri)
 	}
 
 	if i.login.len > 0 {
-		values.add("login", i.login)
+		values.add('login', i.login)
 	}
 
 	if i.scope.len > 0 {
-		values.add("scope", i.scope)
+		values.add('scope', i.scope)
 	}
 
 	if i.state.len > 0 {
-		values.add("state", i.state)
+		values.add('state', i.state)
 	}
 
 	return 'https://github.com/login/oauth/authorize?' + values.encode()
@@ -49,10 +49,10 @@ pub fn (i OAuthLink) web_flow() string {
 // Get link for device authorization
 pub fn (i OAuthLink) device_flow() string {
 	mut values := urllib.new_values()
-	values.add("client_id", i.client_id)
+	values.add('client_id', i.client_id)
 
 	if i.scope.len > 0 {
-		values.add("scope", i.scope)
+		values.add('scope', i.scope)
 	}
 
 	return 'https://github.com/login/device/code?' + values.encode()
@@ -60,8 +60,8 @@ pub fn (i OAuthLink) device_flow() string {
 
 pub struct OAuthToken {
 pub:
-	token_type string
-	scope string
+	token_type   string
+	scope        string
 	access_token string
 }
 
@@ -70,17 +70,17 @@ pub fn (mut i OAuthToken) from_json(obj json2.Any) {
 	utils.from_json(mut i, json_obj)
 }
 
-// Requests access token 
+// Requests access token
 pub fn exchange_code(client_id string, secret string, code string) ?OAuthToken {
-	res := http.post_form("https://github.com/login/oauth/access_token", {
-		"client_id": client_id,
-		"client_secret": secret, 
-		"code": code,
-	}) ?
+	res := http.post_form('https://github.com/login/oauth/access_token', {
+		'client_id':     client_id
+		'client_secret': secret
+		'code':          code
+	})?
 
 	if res.status() != .ok {
-		return error('request returned with bad status: ${res.status()}')
+		return error('request returned with bad status: $res.status()')
 	}
 
-	return json2.decode<OAuthToken>(res.text)
+	return json2.decode<OAuthToken>(res.body)
 }

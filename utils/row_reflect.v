@@ -4,11 +4,11 @@ import time
 
 pub fn from_row<T>(mut dest T, row Row, selected_fields ...string) ? {
 	mut iter := row_iterator(row)
-	mut item := ""
+	mut item := ''
 
 	$for field in T.fields {
 		mut row_field := field.name
-		
+
 		for attr in field.attrs {
 			if attr.starts_with('row: ') {
 				row_field = attr.trim_string_left('json: ')
@@ -16,7 +16,7 @@ pub fn from_row<T>(mut dest T, row Row, selected_fields ...string) ? {
 		}
 
 		if selected_fields.len == 0 || row_field in selected_fields {
-			item = iter.next() ?
+			item = iter.next()?
 
 			$if field.typ is string {
 				dest.$(field.name) = item.str()
@@ -35,6 +35,6 @@ pub fn from_row<T>(mut dest T, row Row, selected_fields ...string) ? {
 					}
 				}
 			}
-		} 
+		}
 	}
 }

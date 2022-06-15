@@ -10,7 +10,7 @@ import service
 struct App {
 	vweb.Context
 pub mut:
-	config config.Config [vweb_global]
+	config   config.Config           [vweb_global]
 	services shared service.Services
 }
 
@@ -21,7 +21,7 @@ pub fn run(cfg config.Config) ? {
 		user: cfg.pg.user
 		password: cfg.pg.password
 		dbname: cfg.pg.db_name
-	}) ?
+	})?
 	repos := repository.new_repositories(db)
 	services := service.new_services(repos: repos)
 	mut app := &App{

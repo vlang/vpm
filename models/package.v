@@ -55,6 +55,6 @@ pub fn (package Package) get_old_package(login string) OldPackage {
 // Row values must match with `package_fields` otherwise it will panic
 pub fn row2package(row utils.Row) ?Package {
 	mut pkg := Package{}
-	utils.from_row(mut pkg, row) ?
+	utils.from_row(mut pkg, row)?
 	return pkg
 }

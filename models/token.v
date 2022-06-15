@@ -26,6 +26,6 @@ pub:
 // Row values must match with `token_fields` otherwise it will panic
 pub fn row2token(row utils.Row) ?ApiToken {
 	mut tkn := ApiToken{}
-	utils.from_row(mut tkn, row) ?
+	utils.from_row(mut tkn, row)?
 	return tkn
 }

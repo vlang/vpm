@@ -27,6 +27,6 @@ pub:
 // Row values must match with `user_fields` otherwise it will panic
 pub fn row2user(row utils.Row) ?User {
 	mut usr := User{}
-	utils.from_row(mut usr, row) ?
+	utils.from_row(mut usr, row)?
 	return usr
 }

@@ -14,10 +14,10 @@ const (
 
 pub struct Repositories {
 pub:
-	tags     Tags [required]
+	tags     Tags     [required]
 	packages Packages [required]
 	// tokens     &Tokens
-	users    Users [required]
+	users    Users    [required]
 	versions Versions [required]
 }
 

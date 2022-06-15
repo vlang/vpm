@@ -12,7 +12,7 @@ fn main() {
 		println(err)
 		exit(1)
 	}
-	
+
 	app.run(cfg) or {
 		println(err)
 		exit(1)

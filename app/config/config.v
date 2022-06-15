@@ -6,9 +6,9 @@ import toml
 pub struct Config {
 pub:
 	root_url string
-	gh   Github
-	http HTTP
-	pg   Postgres
+	gh       Github
+	http     HTTP
+	pg       Postgres
 }
 
 pub struct Github {
@@ -20,15 +20,15 @@ pub mut:
 pub struct HTTP {
 pub mut:
 	root_url string
-	port int
+	port     int
 }
 
 pub struct Postgres {
 pub mut:
-	host     string 
-	port     int  
+	host     string
+	port     int
 	user     string
-	password string 
+	password string
 	db_name  string
 }
 
@@ -37,14 +37,12 @@ pub fn parse_file(path string) ?Config {
 		return error('config file does not exist')
 	}
 
-	data := os.read_file(path) ?
+	data := os.read_file(path)?
 	return parse(data)
 }
 
 pub fn parse(data string) ?Config {
-	cfg := toml.parse_text(data) or {
-		return error('failed to parse toml: $err')
-	}
+	cfg := toml.parse_text(data) or { return error('failed to parse toml: $err') }
 
 	return Config{
 		root_url: cfg.value('http.root_url').default_to('http://localhost:8080').string()

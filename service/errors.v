@@ -3,7 +3,7 @@ module service
 import repository
 
 fn s_err(err IError) string {
-	return '[${err.code()}] ${err.msg()}'
+	return '[$err.code()] $err.msg()'
 }
 
 [noinit]

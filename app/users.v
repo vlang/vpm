@@ -4,7 +4,9 @@ import vweb
 
 ['/api/user/:login'; get]
 fn (mut app App) api_user(login string) vweb.Result {
-	user := rlock app.services{ app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }}
+	user := rlock app.services {
+		app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }
+	}
 
 	return app.json(user)
 }
@@ -20,8 +22,12 @@ fn (mut app App) api_admin_create_user_ban(login string) vweb.Result {
 	// }
 
 	lock app.services {
-		user := app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }
-		app.services.users.set_blocked(user.id, true) or { return wrap_service_error(mut app, err) }
+		user := app.services.users.get_by_login(login) or {
+			return wrap_service_error(mut app, err)
+		}
+		app.services.users.set_blocked(user.id, true) or {
+			return wrap_service_error(mut app, err)
+		}
 	}
 
 	return send_status(mut app, .ok)
@@ -38,8 +44,12 @@ fn (mut app App) api_admin_delete_user_ban(login string) vweb.Result {
 	// }
 
 	lock app.services {
-		user := app.services.users.get_by_login(login) or { return wrap_service_error(mut app, err) }
-		app.services.users.set_blocked(user.id, false) or { return wrap_service_error(mut app, err) }
+		user := app.services.users.get_by_login(login) or {
+			return wrap_service_error(mut app, err)
+		}
+		app.services.users.set_blocked(user.id, false) or {
+			return wrap_service_error(mut app, err)
+		}
 	}
 
 	return send_status(mut app, .ok)

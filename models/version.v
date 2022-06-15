@@ -24,6 +24,6 @@ pub:
 // Row values must match with `version_fields` otherwise it will panic
 pub fn row2version(row utils.Row) ?Version {
 	mut vrs := Version{}
-	utils.from_row(mut vrs, row) ?
+	utils.from_row(mut vrs, row)?
 	return vrs
 }

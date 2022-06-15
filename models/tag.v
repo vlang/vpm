@@ -19,6 +19,6 @@ pub:
 // Row values must match with `tags_fields` otherwise it will panic
 pub fn row2tag(row utils.Row) ?Tag {
 	mut tag := Tag{}
-	utils.from_row(mut tag, row) ?
+	utils.from_row(mut tag, row)?
 	return tag
 }

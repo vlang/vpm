@@ -6,7 +6,7 @@ import x.json2
 import utils
 
 pub fn parse_event(req http.Request) ?WebhookEvent {
-	event := req.header.get_custom('X-GitHub-Event', exact: false) ?
+	event := req.header.get_custom('X-GitHub-Event', exact: false)?
 
 	match event {
 		'create' {
