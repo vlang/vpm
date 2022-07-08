@@ -42,8 +42,8 @@ fn (mut app App) oauth_cb() vweb.Result {
 		'client_secret': app.gh_client_secret
 		'code':          code
 	}) or { return app.redirect('/') }
-	println('resp text=' + resp.text)
-	token := resp.text.find_between('access_token=', '&')
+	println('resp text=' + resp.body)
+	token := resp.body.find_between('access_token=', '&')
 	println('token =$token')
 	user_js := http.fetch(
 		// url: 'https://api.github.com/user?access_token=$token'
@@ -54,7 +54,7 @@ fn (mut app App) oauth_cb() vweb.Result {
 		//'User-Agent': 'V http client'
 		//}
 	) or { panic(err) }
-	gh_user := json.decode(GitHubUser, user_js.text) or {
+	gh_user := json.decode(GitHubUser, user_js.body) or {
 		println('cant decode')
 		return app.redirect('/')
 	}
