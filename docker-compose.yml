@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  app:
+  vpm:
     container_name: vpm
     image: vpm
     build:
@@ -9,7 +9,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - "./config.toml:/app/config.toml"
+      - "./config.toml:/vpm/config.toml"
     depends_on:
       - database
 
@@ -21,11 +21,8 @@ services:
       - 5432:5432
     environment:
       POSTGRES_DB: vpm
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: vpm
+      # POSTGRES_PASSWORD: vpm
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - ./data/database:/var/lib/postgresql/data
-
-networks:
-  vpm:
+      - ./data:/var/lib/postgresql/data

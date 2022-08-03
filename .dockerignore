@@ -1,6 +1,5 @@
 # Binary
 /vpm
-/cmd/cli/cli
 /cmd/vpm/vpm
 /test.bin
 
@@ -22,3 +21,13 @@
 /.github
 /.idea
 /.vscode
+
+# Database files
+/data
+
+# Dot files/folders
+.*
+
+# Markdown files
+README.md
+

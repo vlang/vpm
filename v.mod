@@ -1,9 +1,9 @@
 Module{
 	name: 'vpm'
 	author: 'vlang'
-	version: '0.1.0'
+	version: '0.2.0'
 	repo_url: 'https://github.com/vlang/vpm'
-	description: 'Package manager for V Language'
+	description: 'V Package Manager'
 	license: 'GPL-3.0'
-	dependencies: ['elitru.jwt']
+	dependencies: []
 }

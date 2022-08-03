@@ -2,16 +2,59 @@ module app
 
 import pg
 import vweb
-import app.config
-import repository
-import service
+import config
+import entity
+import lib.log
+import repo
+import usecase.package
+import usecase.user
+
+interface PackageUseCase {
+	create(url string) ?entity.Package
+	categories() ?[]entity.Category
+	category(slug string, order_by package.OrderBy, page int) ?([]entity.FullPackage)
+	old_package(username string, package string) ?entity.OldPackage
+	full_package(username string, package string) ?entity.FullPackage
+	packages_view() ?entity.PackagesView
+	search(query string, order_by package.OrderBy, page int) ?([]entity.FullPackage, int)
+	update(url string) ?entity.Package
+}
+
+interface UserUseCase {
+	authenticate(access_token string) ?entity.User
+	get_by_username(username string) ?entity.User
+}
 
 [heap]
-struct App {
+struct Ctx {
 	vweb.Context
-pub mut:
+mut:
+	// Config
 	config   config.Config           [vweb_global]
-	services shared service.Services
+
+	// Use cases
+	package  package.UseCase [vweb_global]
+	user     user.UseCase [vweb_global]
+pub mut:
+	// Decoded jwt claims, if there is
+	claims &JWTClaims = voidptr(0)
+
+	// Added in some page templates
+	message string
+	// Added to end of meta, when html is rendered through `layout.html`
+	to_meta string
+	// Added to end of body, when html is rendered through `layout.html`
+	to_body string
+}
+
+pub fn (mut ctx Ctx) before_request() {
+	log.info()
+		.add('method', ctx.req.method.str())
+		.add_map('params', ctx.query)
+		.add('url', ctx.req.url.split_nth('?',2)[0])
+		.msg('request')
+
+	ctx.claims = ctx.authorize()
 }
 
 pub fn run(cfg config.Config) ? {
@@ -20,14 +63,23 @@ pub fn run(cfg config.Config) ? {
 		port: cfg.pg.port
 		user: cfg.pg.user
 		password: cfg.pg.password
-		dbname: cfg.pg.db_name
+		dbname: cfg.pg.db
 	})?
-	repos := repository.new_repositories(db)
-	services := service.new_services(repos: repos)
-	mut app := &App{
+
+	auth_repo := repo.new_auth_repo(db)
+	category_repo := repo.new_category_repo(db)
+	package_repo := repo.new_package_repo(db)
+	tag_repo := repo.new_tag_repo(db)
+	user_repo := repo.new_user_repo(db)
+
+	package_use_case := package.new_use_case(cfg.gh, category_repo, package_repo, tag_repo, user_repo)
+	user_use_case := user.new_use_case(cfg.gh, auth_repo, user_repo)
+
+	mut ctx := &Ctx{
 		config: cfg
-		services: services
+		package: package_use_case
+		user: user_use_case
 	}
-	app.serve_static('/', './static')
-	vweb.run(app, cfg.http.port)
+	ctx.handle_static('./app/static', true)
+	vweb.run(ctx, cfg.http.port)
 }

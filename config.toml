@@ -1,5 +1,8 @@
+[jwt]
+secret = "some_very_secure_secret"
+
 [github]
-client_id = "0db1855e4922a7bb0eb5"
+client_id = "Iv1.66c79997379fa72e"
 secret = "someverysecuretoken"
 
 [http]
@@ -8,6 +11,6 @@ port = 8080
 [postgres]
 host = "localhost"
 port = 5432
-user = "postgres"
-password = "postgres"
-db_name = "vpm"
+user = "vpm"
+password = "vpm"
+db = "vpm"

@@ -1,0 +1,16 @@
+<header class="flex gap-4 flex-col">
+	<h1 class="text-display-large font-bold">
+		Add package from github
+	</h1>
+
+	<p class="text-large text-sub">
+		If you don’t see your repo here, you may not have configured your «v.mod» file, please see
+		<a href="#">How to submit package</a> guide.
+	</p>
+</header>
+
+<div class="flex flex-col gap-4 panel">
+	@for pkg in results
+	@include '../components/search-entry.html'
+	@end
+</div>

@@ -1,1 +1,72 @@
-<h1>Package indeed</h1>
+<div class="flex flex-wrap gap-5">
+	<div class="basis-[48.75rem] panel">
+		<!-- Buttons Row -->
+		<div class="flex gap-4">
+			<button id="v-install-copy" class="button text-dark-grey hover:no-underline bg-off-white flex gap-2">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+					<use href="#copy_icon"></use>
+				</svg>
+				v install @pkg.format_name()
+			</button>
+			@if pkg.documentation.len > 0
+			<a href="$pkg.documentation" target="_blank" class="button text-white hover:no-underline bg-primary flex gap-2">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+					<use href="#docs_icon"></use>
+				</svg>
+				Documentation
+			</a>
+			@end
+			<a href="$pkg.repository" target="_blank" class="button text-white hover:no-underline bg-primary flex gap-2">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+					<use href="#repo_icon"></use>
+				</svg>
+				Repository
+			</a>
+		</div>
+
+		<!-- Markdown -->
+		<div class="mt-8">
+			There will be a nice rendering of README, just not today...
+		</div>
+	</div>
+	<div class="panel">
+		<h3>About</h3>
+		<p>@pkg.description</p>
+		<h3>Tags</h3>
+		<p>@pkg.tags</p>
+		<h3>Author</h3>
+		<p>@pkg.author.username</p>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/notyf@@3/notyf.min.js"></script>
+<script>
+	// Thing that creates notifications
+	var notyf = new Notyf({
+		duration: 3000,
+		types: [{
+			type: 'success',
+			className: 'notification-toast',
+			background: '#559FFF',
+			icon: `
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+				<use href="#clipboard_icon"></use>
+			</svg>
+			`
+		}]
+	});
+
+	var copyButton = document.querySelector('#v-install-copy');
+	var cmdInstall = "v install @pkg.format_name()";
+
+	copyButton.addEventListener('click', function (event) {
+		navigator.clipboard.writeText(cmdInstall).then(function () {
+			// Display a success notification
+			notyf.success('Copied to clipboard!');
+			console.log('Copied ' + cmdInstall + " to clipboard");
+		}, function (err) {
+			notyf.error('Failed copy :(');
+			console.error('Failed to write clipboard: ', err);
+		});
+	});
+</script>

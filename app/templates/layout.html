@@ -4,17 +4,21 @@
 @include 'components/meta.html'
 
 <body>
-    <div class="h-screen min-h-screen flex flex-col gap-20">
-        @include 'components/header.html'
-        <div class="px-4 flex-auto flex justify-center">
-            <main class="w-page flex flex-col gap-12">
-                @content
-            </main>
-        </div>
-        @include 'components/footer.html'
-    </div>
+	<div class="min-h-screen flex flex-col gap-20">
+		@include 'components/header.html'
+		<div class="px-4 flex-auto flex justify-center">
+			<main class="w-page flex flex-col gap-12">
+				@content
+			</main>
+		</div>
+		@include 'components/footer.html'
+	</div>
 
-    @include 'assets/icons.html'
+	@include 'assets/icons.html'
+
+	@if ctx.to_body.len > 0
+	@ctx.to_body
+	@end
 </body>
 
 </html>

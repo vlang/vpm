@@ -1,7 +1,7 @@
 module main
 
 import app
-import app.config
+import config
 
 const (
 	config_file = './config.toml'

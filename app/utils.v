@@ -1,51 +1,44 @@
 module app
 
-import vweb
 import net.http
-import service
-// import models
+import vweb
 
-// fn retrieve_session(mut app App) ?models.User {
-// 	session_id := app.get_cookie("session-id") ?
-// 	session := rlock app.services {
-// 		app.services.sessions.get(session_id) ?
-// 	}
-// }
+struct JsonError {
+pub mut:
+	message string
+}
 
-fn wrap_service_error(mut app App, err IError) vweb.Result {
-	match err {
-		service.NotFoundError {
-			return send_status(mut app, .not_found)
-		}
-		// Also known as constraint error
-		service.AlreadyExists {
-			return send_status(mut app, .unprocessable_entity)
-		}
-		else {
-			return send_status(mut app, .internal_server_error)
-		}
+fn json_error(message string) JsonError {
+	return JsonError{
+		message: message
 	}
 }
 
 // Set status
-fn set_status(mut app App, status http.Status) {
-	app.set_status(status.int(), status.str())
+fn set_status(mut ctx Ctx, status http.Status) &Ctx {
+	ctx.set_status(status.int(), status.str())
+	return ctx
 }
 
-// Send status
-fn send_status(mut app App, status http.Status) vweb.Result {
-	// ! It's workaround, don't do that, use vex
-	status_text := status.str()
-	app.set_status(status.int(), status_text)
-	return app.text(status_text)
+// Send status text `text/plain` with status
+fn send_status(mut ctx Ctx, status http.Status) vweb.Result {
+	return send_text(mut ctx, status, status.str())
 }
 
-// Send text with status
-fn send_text(mut app App, status http.Status, text string) vweb.Result {
-	app.set_status(status.int(), status.str())
-	return app.text(text)
+// Send `text/html` with status
+fn send_html(mut ctx Ctx, status http.Status, html string) vweb.Result {
+	set_status(mut ctx, status)
+	return ctx.html(html)
 }
 
-// fn errout(req &ctx.Req, err IError) {
-// 	eprintln('[ERR][$time.now().hhmmss()] $req.method $req.path : $err')
-// }
+// Send `text/plain` with status
+fn send_text(mut ctx Ctx, status http.Status, text string) vweb.Result {
+	set_status(mut ctx, status)
+	return ctx.text(text)
+}
+
+// Send `application/json` with status
+fn send_json<T>(mut ctx Ctx, status http.Status, obj T) vweb.Result {
+	set_status(mut ctx, status)
+	return ctx.json(obj)
+}

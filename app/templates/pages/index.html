@@ -4,33 +4,33 @@
 	</h1>
 
 	<p class="text-large text-sub">
-		Instantly publish your packages and install them. Use the API to interact and find out more
-		information about available packages. Become a contributor and enhance the site with your work.
+		Instantly publish your packages and install them. Become a contributor and enhance our community your work.
+		Use the API to interact and find out more information about available packages.
 	</p>
 </header>
 
 <div class="flex gap-8 items-center">
 	<div class="flex gap-4"><a href="/search" class="button text-white hover:no-underline bg-primary flex gap-2">
 			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-				<use href="#download_icon"></use>
+				<use href="#browse_icon"></use>
 			</svg>
 			Browse packages
 		</a>
-		<a href="/submit" class="button text-white hover:no-underline bg-primary flex gap-2">
+		<a href="/new" class="button text-white hover:no-underline bg-primary flex gap-2">
 			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 				<use href="#plus_icon"></use>
 			</svg>
 			Submit package
 		</a>
 	</div>
-	<span>@total_packages packages</span>
+	<span>@view.total_count packages</span>
 </div>
 
 <div>
-	<h2 class="mb-4 text-large font-bold">Popular tags</h2>
+	<h2 class="mb-4 text-large font-bold">Popular categories</h2>
 	<div class="flex flex-wrap gap-2 panel">
-		@for tag in search_tags
-		<a class="tag" href="/search?tags=@tag.slug">@tag.slug<sup>@tag.packages</sup></a>
+		@for category in categories
+		<a class="category" href="/search?categories=@category.slug">@category.slug<sup>@category.packages</sup></a>
 		@end
 	</div>
 </div>
@@ -40,7 +40,7 @@
 		<div class="flex-auto">
 			<h2 class="mb-4 text-large font-bold">New packages</h2>
 			<div class="flex flex-col gap-4 panel">
-				@for pkg in new_packages
+				@for pkg in view.new_packages
 				@include '../components/package-card.html'
 				@end
 			</div>
@@ -48,7 +48,7 @@
 		<div class="flex-auto">
 			<h2 class="mb-4 text-large font-bold">Most downloaded</h2>
 			<div class="flex flex-col gap-4 panel">
-				@for pkg in most_downloaded_packages
+				@for pkg in view.most_downloaded_packages
 				@include '../components/package-card.html'
 				@end
 			</div>
@@ -56,7 +56,7 @@
 		<div class="flex-auto">
 			<h2 class="mb-4 text-large font-bold">Recently updated</h2>
 			<div class="flex flex-col gap-4 panel">
-				@for pkg in recently_updated_packages
+				@for pkg in view.recently_updated_packages
 				@include '../components/package-card.html'
 				@end
 			</div>

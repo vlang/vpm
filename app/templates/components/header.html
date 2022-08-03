@@ -12,18 +12,22 @@
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 					<use href="#search_icon"></use>
 				</svg>
-				<input class="flex-1 appearance-none focus:border-0 focus:outline-none bg-transparent svelte-owv6jv" name="q"
-					type="search" placeholder="Search" autocomplete="on" pattern="[A-Za-z0-9-.]{(1, 100)}"
+				<input class="flex-1 appearance-none focus:border-0 focus:outline-none bg-transparent" name="q" type="search"
+					placeholder="Search" autocomplete="on" pattern="[A-Za-z0-9-.]{(1, 100)}"
 					title="Must match rules of github repo naming"></label>
 		</form>
 		<div class="flex-1 flex justify-end items-center">
-			<a class="button bg-general text-white hover:no-underline flex justify-center gap-2" rel="external"
-				href="/api/authorize" aria-label="Login with Github">
+			@if isnil(ctx.claims)
+			<a class="button bg-general text-white hover:no-underline flex justify-center gap-2" rel="external" href="/login"
+				aria-label="Login with Github">
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 					<use href="#github_login_icon"></use>
 				</svg>
 				Login
 			</a>
+			@else
+			<span>hi, @ctx.claims.user.username</span>
+			@end
 		</div>
 	</div>
 </header>
