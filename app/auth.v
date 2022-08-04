@@ -17,14 +17,14 @@ fn (ctx Ctx) authorize() &JWTClaims {
 	token := ctx.get_cookie('Authorization') or { ctx.get_header('Authorization') }
 
 	if token.len == 0 {
-		return voidptr(0)
+		return unsafe { nil }
 	}
 
 	claims := jwt.verify<JWTClaims>(token, jwt.new_algorithm(.hs256), ctx.config.jwt.secret) or {
 		log.info()
 			.add('error', err.str())
 			.msg('token is invalid')
-		return voidptr(0)
+		return unsafe { nil }
 	}
 
 	return &claims

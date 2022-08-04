@@ -37,7 +37,7 @@ mut:
 	user    user.UseCase    [vweb_global]
 pub mut:
 	// Decoded jwt claims, if there is
-	claims &JWTClaims = voidptr(0)
+	claims &JWTClaims = unsafe { nil }
 	// Added in some page templates
 	message string
 	// Added to end of meta, when html is rendered through `layout.html`
