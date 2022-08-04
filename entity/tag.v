@@ -7,9 +7,9 @@ pub mut:
 	id         int
 	package_id int
 
-	name       string
+	name string
 
-	downloads    int
+	downloads     int
 	downloaded_at time.Time = time.now()
 
 	created_at time.Time = time.now()

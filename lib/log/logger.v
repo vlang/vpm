@@ -9,7 +9,7 @@ pub const logging_level = level_from_str(os.getenv('VPM_LOG'))
 
 [noinit]
 pub struct Logger {
-	level Level
+	level  Level
 	fields []Field
 }
 
@@ -57,15 +57,18 @@ pub fn (logger Logger) add_map<T>(key string, value map[string]T) Logger {
 
 pub fn (logger Logger) add_json(key string, value j2.Any) Logger {
 	mut fields := logger.fields
-	fields << Field{key: key, value: value}
-	return Logger {
+	fields << Field{
+		key: key
+		value: value
+	}
+	return Logger{
 		...logger
 		fields: fields
 	}
 }
 
 pub fn (logger Logger) msg(message string) {
-	if int(logging_level) < int(logger.level) {
+	if int(log.logging_level) < int(logger.level) {
 		return
 	}
 

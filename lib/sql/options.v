@@ -9,20 +9,20 @@ pub enum Order {
 
 pub fn (o Order) str() string {
 	return match o {
-		.ascending { "ASC" }
-		.descending { "DESC" }
+		.ascending { 'ASC' }
+		.descending { 'DESC' }
 	}
 }
 
 pub struct OrderBy {
 	column string
-	order Order = Order.ascending
+	order  Order = Order.ascending
 }
 
 pub struct Options {
 	order_by OrderBy
-	offset int
-	limit int [required]
+	offset   int
+	limit    int     [required]
 }
 
 pub fn (opt Options) to_sql() ?string {

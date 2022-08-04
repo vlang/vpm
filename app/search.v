@@ -1,53 +1,53 @@
 module app
 
 import vweb
-import vpm.entity
-import vpm.lib.log
+import entity
+import lib.log
 
 const search_results_mock = [
-		entity.FullPackage{
-			id: 1
-			name: 'treplo'
-			description: 'Logging lib'
-			stars: 3
-		},
-		entity.FullPackage{
-			id: 1
-			name: 'treplo'
-			description: 'Logging lib'
-			stars: 3
-		},
-		entity.FullPackage{
-			id: 1
-			name: 'treplo'
-			description: 'Logging lib'
-			stars: 3
-		},
-		entity.FullPackage{
-			id: 1
-			name: 'treplo'
-			description: 'Logging lib'
-			stars: 3
-		},
-		entity.FullPackage{
-			id: 1
-			name: 'treplo'
-			description: 'Logging lib'
-			stars: 3
-		},
-		entity.FullPackage{
-			id: 1
-			name: 'treplo'
-			description: 'Logging lib'
-			stars: 3
-		},
-	]
+	entity.FullPackage{
+		id: 1
+		name: 'treplo'
+		description: 'Logging lib'
+		stars: 3
+	},
+	entity.FullPackage{
+		id: 1
+		name: 'treplo'
+		description: 'Logging lib'
+		stars: 3
+	},
+	entity.FullPackage{
+		id: 1
+		name: 'treplo'
+		description: 'Logging lib'
+		stars: 3
+	},
+	entity.FullPackage{
+		id: 1
+		name: 'treplo'
+		description: 'Logging lib'
+		stars: 3
+	},
+	entity.FullPackage{
+		id: 1
+		name: 'treplo'
+		description: 'Logging lib'
+		stars: 3
+	},
+	entity.FullPackage{
+		id: 1
+		name: 'treplo'
+		description: 'Logging lib'
+		stars: 3
+	},
+]
 
 // Rendered search template
 ['/search'; get]
 fn (mut ctx Ctx) search() vweb.Result {
 	query := ctx.query['q']
-	results := search_results_mock.clone()
+	results := app.search_results_mock.clone()
 	total := 243
 
 	title := 'Search results for «$query» ($total)'
@@ -60,7 +60,7 @@ fn (mut ctx Ctx) search() vweb.Result {
 pub struct APISearchResponse {
 pub mut:
 	results []entity.FullPackage
-	total int
+	total   int
 }
 
 ['/api/search'; get]
@@ -69,8 +69,7 @@ fn (mut ctx Ctx) api_search() vweb.Result {
 	page := ctx.query['page'].int()
 
 	if query.len <= 2 {
-		return send_json(mut ctx, .bad_request,
-			json_error("`q` length must be greater that 2 and should only contain ASCII alphanumerics, hyphens (-), underscores (_) and periods (.)"))
+		return send_json(mut ctx, .bad_request, json_error('`q` length must be greater that 2 and should only contain ASCII alphanumerics, hyphens (-), underscores (_) and periods (.)'))
 	}
 
 	results, total := ctx.package.search(query, .most_downloaded, page) or {
@@ -80,7 +79,7 @@ fn (mut ctx Ctx) api_search() vweb.Result {
 			.add('error', err.str())
 			.msg('tried to search')
 
-		return send_json(mut ctx, .internal_server_error, json_error("internal server error"))
+		return send_json(mut ctx, .internal_server_error, json_error('internal server error'))
 	}
 
 	return ctx.json(APISearchResponse{

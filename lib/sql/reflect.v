@@ -67,7 +67,6 @@ pub fn to_idents<T>() []string {
 
 		idents << obj_field
 	}
-
 	return idents
 }
 
@@ -93,7 +92,6 @@ pub fn to_values<T>(obj T, idents []string) []string {
 			}
 		}
 	}
-
 	return values
 }
 
@@ -106,5 +104,4 @@ pub fn to_set(idents []string, values []string) []string {
 }
 
 pub fn value_to_sql<T>(value T) string {
-
 }

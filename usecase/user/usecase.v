@@ -1,25 +1,29 @@
 module user
 
-import vpm.config
-import vpm.lib.github
-import vpm.lib.log
-import vpm.repo
-import vpm.entity
+import config
+import lib.github
+import lib.log
+import repo
+import entity
 
 pub struct UseCase {
-	cfg config.Github
+	cfg  config.Github
 	auth repo.AuthRepo
 	user repo.UserRepo
 }
 
 pub fn new_use_case(cfg config.Github, auth repo.AuthRepo, user repo.UserRepo) UseCase {
-	return UseCase{cfg: cfg, auth: auth, user: user}
+	return UseCase{
+		cfg: cfg
+		auth: auth
+		user: user
+	}
 }
 
 // Authenticate via github
 pub fn (u UseCase) authenticate(access_token string) ?entity.User {
 	c := github.new_client(access_token)
-	gh_user := c.current_user() ?
+	gh_user := c.current_user()?
 
 	log.info()
 		.add('username', gh_user.login)
@@ -33,21 +37,21 @@ pub fn (u UseCase) authenticate(access_token string) ?entity.User {
 
 	// Upserting user
 	if mut upd := u.user.get_by_username(user.username) {
-		upd.username= user.username
-		upd.name= user.name
-		upd.avatar_url= user.avatar_url
+		upd.username = user.username
+		upd.name = user.name
+		upd.avatar_url = user.avatar_url
 
 		log.info()
 			.add('username', user.username)
 			.msg('updating user at auth')
 
-		user = u.user.update(upd) ?
+		user = u.user.update(upd)?
 	} else {
 		log.info()
 			.add('username', user.username)
 			.msg('creating new user')
 
-		user = u.user.create(user) ?
+		user = u.user.create(user)?
 	}
 
 	if mut auth := u.auth.get_by_username(user.username) {
@@ -58,7 +62,7 @@ pub fn (u UseCase) authenticate(access_token string) ?entity.User {
 			.add('kind', auth.kind)
 			.msg('updating user auth')
 
-		u.auth.update(auth) ?
+		u.auth.update(auth)?
 	} else {
 		log.info()
 			.add('error', err.str())
@@ -74,7 +78,7 @@ pub fn (u UseCase) authenticate(access_token string) ?entity.User {
 			.add('kind', auth.kind)
 			.msg('creating user auth')
 
-		u.auth.create(auth) ?
+		u.auth.create(auth)?
 	}
 
 	return user
@@ -82,7 +86,7 @@ pub fn (u UseCase) authenticate(access_token string) ?entity.User {
 
 // Get
 pub fn (u UseCase) get_by_username(username string) ?entity.User {
-	user := u.user.get_by_username(username) ?
+	user := u.user.get_by_username(username)?
 
 	log.info()
 		.add('username', user.username)

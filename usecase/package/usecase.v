@@ -1,24 +1,30 @@
 module package
 
-import vpm.config
-import vpm.entity
-import vpm.repo
-import vpm.lib.sql
-import vpm.lib.log
+import config
+import entity
+import repo
+import lib.sql
+import lib.log
 
 // Used in search and packages view (index page)
 pub const per_page = 6
 
 pub struct UseCase {
-	cfg config.Github
+	cfg      config.Github
 	category repo.CategoryRepo
-	package repo.PackageRepo
-	tag repo.TagRepo
-	user repo.UserRepo
+	package  repo.PackageRepo
+	tag      repo.TagRepo
+	user     repo.UserRepo
 }
 
 pub fn new_use_case(cfg config.Github, category repo.CategoryRepo, package repo.PackageRepo, tag repo.TagRepo, user repo.UserRepo) UseCase {
-	return UseCase{cfg: cfg, category: category, package: package, tag: tag, user: user}
+	return UseCase{
+		cfg: cfg
+		category: category
+		package: package
+		tag: tag
+		user: user
+	}
 }
 
 pub fn (u UseCase) create(url string) ?entity.Package {
@@ -27,7 +33,7 @@ pub fn (u UseCase) create(url string) ?entity.Package {
 }
 
 pub fn (u UseCase) categories() ?[]entity.Category {
-	categories := u.category.get_all() ?
+	categories := u.category.get_all()?
 
 	log.info()
 		.add('count', categories.len)
@@ -37,14 +43,14 @@ pub fn (u UseCase) categories() ?[]entity.Category {
 }
 
 pub fn (u UseCase) category(slug string, order_by OrderBy, page int) ?([]entity.FullPackage, int) {
-	category := u.category.get_by_slug(slug) ?
+	category := u.category.get_by_slug(slug)?
 	// TODO: paginate
-	packages := u.package.get_by_category_id(category.id) ?
+	packages := u.package.get_by_category_id(category.id)?
 
-	offset := page * per_page
-	mut full_packages := []entity.FullPackage{cap: per_page}
-	for _, package in packages[offset .. offset + per_page] {
-		full_packages << u.to_full_package(package) ?
+	offset := page * package.per_page
+	mut full_packages := []entity.FullPackage{cap: package.per_page}
+	for _, package in packages[offset..offset + package.per_page] {
+		full_packages << u.to_full_package(package)?
 	}
 
 	log.info()
@@ -58,7 +64,7 @@ pub fn (u UseCase) category(slug string, order_by OrderBy, page int) ?([]entity.
 }
 
 pub fn (u UseCase) old_package(username string, package string) ?entity.OldPackage {
-	pkg := u.package.get(username, package) ?
+	pkg := u.package.get(username, package)?
 	name := if pkg.is_flatten { pkg.name } else { '${pkg.author}.$pkg.name' }
 
 	log.info()
@@ -78,7 +84,7 @@ pub fn (u UseCase) old_package(username string, package string) ?entity.OldPacka
 }
 
 pub fn (u UseCase) full_package(username string, package string) ?entity.FullPackage {
-	pkg := u.package.get(username, package) ?
+	pkg := u.package.get(username, package)?
 
 	log.info()
 		.add('author', pkg.author)
@@ -95,9 +101,9 @@ pub fn (u UseCase) packages_view() ?entity.PackagesView {
 
 pub fn (u UseCase) search(query string, order_by OrderBy, page int) ?([]entity.FullPackage, int) {
 	packages, total := u.package.search(
-		query: query,
-		offset: per_page * page,
-		limit: per_page,
+		query: query
+		offset: package.per_page * page
+		limit: package.per_page
 		order_by: sql.OrderBy{
 			column: order_by.str()
 			order: sql.Order.descending
@@ -106,7 +112,7 @@ pub fn (u UseCase) search(query string, order_by OrderBy, page int) ?([]entity.F
 
 	mut full_packages := []entity.FullPackage{cap: packages.len}
 	for _, package in packages {
-		full_packages << u.to_full_package(package) ?
+		full_packages << u.to_full_package(package)?
 	}
 
 	log.info()
@@ -123,4 +129,3 @@ pub fn (u UseCase) update(package entity.Package) ?entity.Package {
 	// TODO: repeat process of create method
 	return error('not implemented')
 }
-

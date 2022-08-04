@@ -1,6 +1,6 @@
 module user
 
-import vpm.entity
+import entity
 
 pub interface AuthRepo {
 	get_by_user(username string) ?entity.Auth

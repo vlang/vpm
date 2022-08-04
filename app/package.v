@@ -1,7 +1,7 @@
 module app
 
 import vweb
-import vpm.lib.log
+import lib.log
 
 // Backward compatibility for V <=0.3
 ['/jsmod/:name'; get]
@@ -19,7 +19,7 @@ fn (mut ctx Ctx) jsmod(name string) vweb.Result {
 			.add('error', err.str())
 			.msg('tried to get module')
 
-		return send_json(mut ctx, .not_found, json_error("not found"))
+		return send_json(mut ctx, .not_found, json_error('not found'))
 	}
 
 	return ctx.json(old_package)
@@ -70,7 +70,7 @@ fn (mut ctx Ctx) api_package(username string, package string) vweb.Result {
 			.add('error', err.str())
 			.msg('tried to get package')
 
-		return send_json(mut ctx, .not_found, json_error("not found"))
+		return send_json(mut ctx, .not_found, json_error('not found'))
 	}
 
 	return ctx.json(pkg)

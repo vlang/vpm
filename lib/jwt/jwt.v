@@ -18,18 +18,18 @@ pub fn encode<T>(claims T, algorithm Algorithm, secretOrKey string, exp int) ?st
 	mut claims_final := json2.raw_decode(json.encode(claims))?.as_map()
 
 	if exp != 0 {
-		claims_final["exp"] = time.now().unix_time() + exp
+		claims_final['exp'] = time.now().unix_time() + exp
 	}
 
 	claims_b64 := base64.url_encode(claims_final.str().bytes())
 
 	// concatenate header & claimns and sign them
-	contents := '${header_b64}.${claims_b64}'
+	contents := '${header_b64}.$claims_b64'
 
 	// sign with AlgorithmType
 	signature := algorithm.sign(contents, secretOrKey)?
 
-	return '${contents}.${signature}'
+	return '${contents}.$signature'
 }
 
 // verify is a function that verifies a given token and returns the decoded claims

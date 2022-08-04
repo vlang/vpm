@@ -4,13 +4,10 @@ module jwt
 // you can also implement your own signing algorithm -> just implement this interface
 pub interface Algorithm {
 	// the name of the algorithm used for creating the signature (is contained inside the JWT Header (Property: `alg`))
-	name string
-
-	// sign creates the signed JWT
+	name string // sign creates the signed JWT
 	// `contents` actual data of the JWT (Header & Claims)
 	// `secretOrKey` the secret or private for creating the signature
 	sign(contents string, secretOrKey string) ?string
-
 	// verify decodes and validates a given token
 	// `token` the token to be decoded
 	// `secretOrKey` the secret or private which was used for creating the signature

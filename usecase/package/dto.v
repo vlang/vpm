@@ -3,9 +3,9 @@ module package
 pub struct CreateTagDTO {
 pub mut:
 	package_id int
-	name string
-	vcs string = 'git'
-	url string
+	name       string
+	vcs        string = 'git'
+	url        string
 }
 
 pub enum OrderBy {
@@ -16,8 +16,8 @@ pub enum OrderBy {
 
 pub fn (o OrderBy) str() string {
 	return match o {
-		.most_downloaded { "most_downloaded" }
-		.recently_updated { "recently_updated" }
-		.recently_published { "recently_published" }
+		.most_downloaded { 'most_downloaded' }
+		.recently_updated { 'recently_updated' }
+		.recently_published { 'recently_published' }
 	}
 }

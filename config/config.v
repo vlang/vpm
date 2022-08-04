@@ -6,7 +6,7 @@ import toml
 pub struct Config {
 pub mut:
 	root_url string
-	jwt JWT
+	jwt      JWT
 	gh       Github
 	http     HTTP
 	pg       Postgres
@@ -35,7 +35,7 @@ pub mut:
 	port     int
 	user     string
 	password string
-	db  string
+	db       string
 }
 
 pub fn parse_file(path string) ?Config {

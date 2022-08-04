@@ -3,7 +3,7 @@ module github
 import net.http
 import net.urllib
 import x.json2
-import vpm.lib.json2 as ju
+import lib.json2 as ju
 
 pub struct OAuthLink {
 pub:
@@ -79,13 +79,17 @@ pub fn exchange_code(client_id string, secret string, code string) ?OAuthToken {
 			value: 'application/json'
 		})
 		url: 'https://github.com/login/oauth/access_token'
-		params: {'client_id': client_id, 'client_secret': secret, 'code': code}
-		) ?
+		params: {
+			'client_id':     client_id
+			'client_secret': secret
+			'code':          code
+		}
+	)?
 	if res.status() != .ok {
 		return error('request returned with bad status: $res.status()')
 	}
 
-	token := json2.decode<OAuthToken>(res.body) ?
+	token := json2.decode<OAuthToken>(res.body)?
 
 	if token.access_token.len == 0 {
 		return error('token is empty, $res.body')

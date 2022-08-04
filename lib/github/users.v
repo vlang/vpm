@@ -2,7 +2,7 @@ module github
 
 import time
 import x.json2
-import vpm.lib.json2 as ju
+import lib.json2 as ju
 
 [heap]
 pub struct User {

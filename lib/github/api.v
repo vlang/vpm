@@ -33,12 +33,12 @@ pub fn (c Client) auth_header() http.HeaderConfig {
 	}
 }
 
-pub fn (c Client) current_user() ?User{
+pub fn (c Client) current_user() ?User {
 	res := http.fetch(
 		method: .get
 		header: http.new_header(c.auth_header())
-		url: api+"/user"
-	) ?
+		url: github.api + '/user'
+	)?
 	if res.status() != .ok {
 		return error('status not ok: $res.status(), $res.body')
 	}

@@ -3,7 +3,7 @@ module github
 import time
 import net.http
 import x.json2
-import vpm.lib.json2 as ju
+import lib.json2 as ju
 
 pub fn parse_event(req http.Request) ?WebhookEvent {
 	event := req.header.get_custom('X-GitHub-Event', exact: false)?

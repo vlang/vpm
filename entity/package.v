@@ -4,14 +4,14 @@ import time
 
 pub struct Package {
 pub mut:
-	id         int
-	author  string
+	id     int
+	author string
 
 	name          string
 	description   string
 	documentation string
 	repository    string
-	license string
+	license       string
 
 	vcs string
 	url string
@@ -19,7 +19,6 @@ pub mut:
 	stars         int
 	downloads     int
 	downloaded_at time.Time = time.now()
-
 	// Do not feature it on homepage
 	is_hidden bool
 	// No need to mention author of package, example `ui`
@@ -30,22 +29,22 @@ pub mut:
 }
 
 pub fn (package Package) format_name() string {
-	return '${package.author}.${package.name}'
+	return '${package.author}.$package.name'
 }
 
 pub struct FullPackage {
 	Package
 pub mut:
-	author User
+	author     User
 	categories []Category
-	tags []Tag
+	tags       []Tag
 }
 
 pub struct PackagesView {
 pub mut:
-	total_count int
-	new_packages []FullPackage
-	most_downloaded_packages []FullPackage
+	total_count               int
+	new_packages              []FullPackage
+	most_downloaded_packages  []FullPackage
 	recently_updated_packages []FullPackage
 }
 

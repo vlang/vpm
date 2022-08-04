@@ -2,10 +2,10 @@ module app
 
 import time
 import vweb
-import vpm.entity
-import vpm.lib.github
-import vpm.lib.jwt
-import vpm.lib.log
+import entity
+import lib.github
+import lib.jwt
+import lib.log
 
 pub struct JWTClaims {
 pub:
@@ -14,9 +14,7 @@ pub:
 
 // Checks for 'Authorization' header or 'Authorization' cookie and decodes token into JWTClaims
 fn (ctx Ctx) authorize() &JWTClaims {
-	token := ctx.get_cookie('Authorization') or {
-		ctx.get_header('Authorization')
-	}
+	token := ctx.get_cookie('Authorization') or { ctx.get_header('Authorization') }
 
 	if token.len == 0 {
 		return voidptr(0)
@@ -61,7 +59,7 @@ fn (mut ctx Ctx) authenticate() vweb.Result {
 			.add('error', err.str())
 			.msg('failed to exchange github code')
 
-		ctx.message = "Failed to proceed github authentication"
+		ctx.message = 'Failed to proceed github authentication'
 		content := $tmpl('./templates/pages/error.html')
 		layout := $tmpl('./templates/layout.html')
 		return send_html(mut ctx, .bad_request, layout)
@@ -72,7 +70,7 @@ fn (mut ctx Ctx) authenticate() vweb.Result {
 			.add('error', err.str())
 			.msg('failed to save user authentication')
 
-		ctx.message = "Unable to authenticate"
+		ctx.message = 'Unable to authenticate'
 		content := $tmpl('./templates/pages/error.html')
 		layout := $tmpl('./templates/layout.html')
 		return send_html(mut ctx, .internal_server_error, layout)
@@ -88,16 +86,16 @@ fn (mut ctx Ctx) authenticate() vweb.Result {
 			.add('error', err.str())
 			.msg('failed to encode jwt')
 
-		ctx.message = "Unable to authenticate"
+		ctx.message = 'Unable to authenticate'
 		content := $tmpl('./templates/pages/error.html')
 		layout := $tmpl('./templates/layout.html')
 		return send_html(mut ctx, .internal_server_error, layout)
 	}
 
 	// If client waits for json, return json
-	accepts := ctx.req.header.get(.accept) or { 'application/json'}
+	accepts := ctx.req.header.get(.accept) or { 'application/json' }
 	if accepts == 'application/json' {
-		return ctx.json(APIAuthenticateResponse{token: token})
+		return ctx.json(APIAuthenticateResponse{ token: token })
 	}
 
 	// Setting Authorization cookie

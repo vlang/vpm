@@ -1,8 +1,8 @@
 module app
 
 import vweb
-import vpm.entity
-import vpm.lib.log
+import entity
+import lib.log
 
 ['/:username'; get]
 fn (mut ctx Ctx) user(username string) vweb.Result {
@@ -13,7 +13,7 @@ fn (mut ctx Ctx) user(username string) vweb.Result {
 	// 	return send_html(mut ctx, .not_found, layout)
 	// }
 
-	if username != "Terisback" {
+	if username != 'Terisback' {
 		ctx.message = 'User `$username` does not exist'
 		content := $tmpl('./templates/pages/not_found.html')
 		layout := $tmpl('./templates/layout.html')
@@ -21,9 +21,9 @@ fn (mut ctx Ctx) user(username string) vweb.Result {
 	}
 
 	user := entity.FullUser{
-		username: "Terisback"
-		name: "Anton Zavodchikov"
-		avatar_url: "https://teris.dev/Anton_Zavodchikov.jpg"
+		username: 'Terisback'
+		name: 'Anton Zavodchikov'
+		avatar_url: 'https://teris.dev/Anton_Zavodchikov.jpg'
 	}
 
 	current_user := if isnil(ctx.claims) {
@@ -45,7 +45,7 @@ fn (mut ctx Ctx) api_user(username string) vweb.Result {
 			.add('error', err.str())
 			.msg('tried to get user')
 
-		return send_json(mut ctx, .not_found, json_error("not found"))
+		return send_json(mut ctx, .not_found, json_error('not found'))
 	}
 
 	return ctx.json(user)

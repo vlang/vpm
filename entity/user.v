@@ -4,8 +4,8 @@ import time
 
 pub struct User {
 pub mut:
-	username  string
-	name   string
+	username   string
+	name       string
 	avatar_url string
 
 	is_blocked   bool
@@ -19,6 +19,6 @@ pub mut:
 pub struct FullUser {
 	User
 pub mut:
-	packages []FullPackage
+	packages        []FullPackage
 	total_downloads int
 }

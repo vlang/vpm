@@ -1,7 +1,7 @@
 module package
 
-import vpm.repo
-import vpm.entity
+import repo
+import entity
 
 pub interface CategoryRepo {
 	create(category entity.Category) ?entity.Category
