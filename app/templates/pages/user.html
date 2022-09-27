@@ -4,8 +4,8 @@
 	<div class="flex gap-8 items-center">
 		<div class="panel flex gap-4 items-center">
 			<img class="w-14 aspect-square rounded-xl" src="@user.avatar_url" />
-			<div class="w-64 flex flex-col">
-				<span class="text-medium text-bold">@user.name</span>
+			<div class="min-w-64 flex flex-col">
+				<span class="text-medium font-bold">@user.name</span>
 				<span class="text-small text-sub">@user.username</span>
 			</div>
 			@if is_current_user
