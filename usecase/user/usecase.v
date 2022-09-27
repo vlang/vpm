@@ -54,11 +54,11 @@ pub fn (u UseCase) authenticate(access_token string) ?entity.User {
 		user = u.user.create(user)?
 	}
 
-	if mut auth := u.auth.get_by_username(user.username) {
+	if mut auth := u.auth.get(user.id) {
 		auth.value = access_token
 
 		log.info()
-			.add('username', auth.username)
+			.add('user_id', auth.user_id)
 			.add('kind', auth.kind)
 			.msg('updating user auth')
 
@@ -69,12 +69,12 @@ pub fn (u UseCase) authenticate(access_token string) ?entity.User {
 			.msg('if not found auth, fine')
 
 		auth := entity.Auth{
-			username: user.username
+			user_id: user.id
 			value: access_token
 		}
 
 		log.info()
-			.add('username', auth.username)
+			.add('user_id', auth.user_id)
 			.add('kind', auth.kind)
 			.msg('creating user auth')
 

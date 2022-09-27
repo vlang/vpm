@@ -4,7 +4,7 @@ import time
 
 pub struct Auth {
 pub mut:
-	username string
+	user_id int
 	// Currently only one kind - `github_oauth`
 	kind  string = 'github_oauth'
 	value string

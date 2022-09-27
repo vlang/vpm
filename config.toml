@@ -3,7 +3,7 @@ secret = "some_very_secure_secret"
 
 [github]
 client_id = "Iv1.66c79997379fa72e"
-secret = "someverysecuretoken"
+secret = "c343754363951801004de03eba667cf8db7285be"
 
 [http]
 port = 8080

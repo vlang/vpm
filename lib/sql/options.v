@@ -1,7 +1,5 @@
 module sql
 
-import strings
-
 pub enum Order {
 	ascending
 	descending
@@ -25,24 +23,24 @@ pub struct Options {
 	limit    int     [required]
 }
 
-pub fn (opt Options) to_sql() ?string {
-	mut b := strings.new_builder(64)
+pub fn (opt Options) to_sql() ?[]string {
+	mut options := []string{}
 
 	if opt.order_by.column.len > 0 {
-		b.write_string('order by $opt.order_by.column $opt.order_by.order ')
+		options << 'order by $opt.order_by.column $opt.order_by.order'
 	}
 
 	if opt.offset >= 0 {
-		b.write_string('offset $opt.offset ')
+		options << 'offset $opt.offset'
 	} else {
 		return error('options: offset is negative')
 	}
 
 	if opt.limit >= 1 {
-		b.write_string('limit $opt.limit ')
+		options << 'limit $opt.limit'
 	} else {
 		return error('options: limit is zero or negative')
 	}
 
-	return b.str()
+	return options
 }

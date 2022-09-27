@@ -1,35 +1,38 @@
 module app
 
+import arrays
 import vweb
 import entity
 import lib.log
 
 ['/:username'; get]
 fn (mut ctx Ctx) user(username string) vweb.Result {
-	// user := ctx.user.get_by_username(username) or {
-	// 	ctx.message = 'User `$username` does not exist'
-	// 	content := $tmpl('./templates/pages/not_found.html')
-	// 	layout := $tmpl('./templates/layout.html')
-	// 	return send_html(mut ctx, .not_found, layout)
-	// }
-
-	if username != 'Terisback' {
+	user := ctx.user.get_by_username(username) or {
 		ctx.message = 'User `$username` does not exist'
 		content := $tmpl('./templates/pages/not_found.html')
 		layout := $tmpl('./templates/layout.html')
 		return send_html(mut ctx, .not_found, layout)
 	}
 
-	user := entity.FullUser{
-		username: 'Terisback'
-		name: 'Anton Zavodchikov'
-		avatar_url: 'https://teris.dev/Anton_Zavodchikov.jpg'
+	packages := ctx.package.get_by_author(user.id) or {
+		log.error()
+			.add('error', err.str())
+			.msg('tried to get packages by author')
+
+		[]entity.FullPackage{}
 	}
 
-	current_user := if isnil(ctx.claims) {
+	total_downloads := arrays.fold(packages, 0,
+		fn (downloads int, pkg entity.FullPackage) int {
+			return downloads + pkg.downloads
+		}
+	)
+
+	// Helper
+	is_current_user := if isnil(ctx.claims) {
 		false
 	} else {
-		user.username == ctx.claims.user.username
+		user.id == ctx.claims.user.id
 	}
 
 	content := $tmpl('./templates/pages/user.html')

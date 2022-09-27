@@ -4,6 +4,8 @@ import time
 
 pub struct User {
 pub mut:
+	id         int
+	github_id  int
 	username   string
 	name       string
 	avatar_url string
@@ -14,11 +16,4 @@ pub mut:
 
 	created_at time.Time = time.now()
 	updated_at time.Time = time.now()
-}
-
-pub struct FullUser {
-	User
-pub mut:
-	packages        []FullPackage
-	total_downloads int
 }

@@ -13,16 +13,14 @@ pub struct UseCase {
 	cfg      config.Github
 	category repo.CategoryRepo
 	package  repo.PackageRepo
-	tag      repo.TagRepo
 	user     repo.UserRepo
 }
 
-pub fn new_use_case(cfg config.Github, category repo.CategoryRepo, package repo.PackageRepo, tag repo.TagRepo, user repo.UserRepo) UseCase {
+pub fn new_use_case(cfg config.Github, category repo.CategoryRepo, package repo.PackageRepo, user repo.UserRepo) UseCase {
 	return UseCase{
 		cfg: cfg
 		category: category
 		package: package
-		tag: tag
 		user: user
 	}
 }
@@ -63,13 +61,30 @@ pub fn (u UseCase) category(slug string, order_by OrderBy, page int) ?([]entity.
 	return full_packages, packages.len
 }
 
-pub fn (u UseCase) old_package(username string, package string) ?entity.OldPackage {
-	pkg := u.package.get(username, package)?
-	name := if pkg.is_flatten { pkg.name } else { '${pkg.author}.$pkg.name' }
+pub fn (u UseCase) get_by_author(author_id int) ?[]entity.FullPackage {
+	packages := u.package.get_by_author(author_id) ?
+
+	mut full_packages := []entity.FullPackage{cap: packages.len}
+	for _, package in packages {
+		full_packages << u.to_full_package(package)?
+	}
 
 	log.info()
-		.add('author', pkg.author)
-		.add('package', pkg.author)
+		.add('author', author_id)
+		.add('count', packages.len)
+		.msg('packages by author')
+
+	return full_packages
+}
+
+pub fn (u UseCase) old_package(username string, package string) ?entity.OldPackage {
+	usr := u.user.get_by_username(username)?
+	pkg := u.package.get(usr.id, package)?
+	name := if pkg.is_flatten { pkg.name } else { '${usr.username}.$pkg.name' }
+
+	log.info()
+		.add('author', usr.id)
+		.add('package', pkg.id)
 		.add('is_flatten', pkg.is_flatten)
 		.add('name', name)
 		.msg('old package')
@@ -84,11 +99,12 @@ pub fn (u UseCase) old_package(username string, package string) ?entity.OldPacka
 }
 
 pub fn (u UseCase) full_package(username string, package string) ?entity.FullPackage {
-	pkg := u.package.get(username, package)?
+	usr := u.user.get_by_username(username)?
+	pkg := u.package.get(usr.id, package)?
 
 	log.info()
-		.add('author', pkg.author)
-		.add('package', pkg.author)
+		.add('author', usr.id)
+		.add('package', pkg.id)
 		.add('is_flatten', pkg.is_flatten)
 		.msg('full package')
 
@@ -99,7 +115,7 @@ pub fn (u UseCase) packages_view() ?entity.PackagesView {
 	return error('not implemented')
 }
 
-pub fn (u UseCase) search(query string, order_by OrderBy, page int) ?([]entity.FullPackage, int) {
+pub fn (u UseCase) search(query string, category string, order_by OrderBy, page int) ?([]entity.FullPackage, int) {
 	packages, total := u.package.search(
 		query: query
 		offset: package.per_page * page
@@ -128,4 +144,15 @@ pub fn (u UseCase) search(query string, order_by OrderBy, page int) ?([]entity.F
 pub fn (u UseCase) update(package entity.Package) ?entity.Package {
 	// TODO: repeat process of create method
 	return error('not implemented')
+}
+
+fn (u UseCase) to_full_package(package entity.Package) ?entity.FullPackage {
+	author := u.user.get(package.author_id)?
+	categories := u.category.get_by_package_id(package.id)?
+
+	return entity.FullPackage{
+		Package: package
+		author: author
+		categories: categories
+	}
 }

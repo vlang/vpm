@@ -5,7 +5,7 @@ import time
 pub struct Category {
 pub mut:
 	id int
-	// For paths `/category/:slug`
+	// For paths `/search?category=slug`
 	slug string
 	// Packages count
 	packages int

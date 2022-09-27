@@ -1,13 +1,5 @@
 module package
 
-pub struct CreateTagDTO {
-pub mut:
-	package_id int
-	name       string
-	vcs        string = 'git'
-	url        string
-}
-
 pub enum OrderBy {
 	most_downloaded
 	recently_updated

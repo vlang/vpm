@@ -3,12 +3,12 @@
 
 	<div class="flex gap-8 items-center">
 		<div class="panel flex gap-4 items-center">
-			<img class="w-14 aspect-square rounded-xl" src="@user.avatar_url"></img>
+			<img class="w-14 aspect-square rounded-xl" src="@user.avatar_url" />
 			<div class="w-64 flex flex-col">
 				<span class="text-medium text-bold">@user.name</span>
 				<span class="text-small text-sub">@user.username</span>
 			</div>
-			@if current_user
+			@if is_current_user
 			<a href="/logout" class="text-error">
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 					<use href="#logout_icon"></use>
@@ -18,31 +18,37 @@
 		</div>
 
 		<span class="text-small">
-			@user.total_downloads total downloads
+			@total_downloads total downloads
 		</span>
 	</div>
 </div>
 
 <div class="flex flex-col gap-8">
 	<div>
-		<h1>Packages ($user.packages.len)</h1>
+		<h1>Packages ($packages.len)</h1>
 
 		<p class="mt-8 text-large text-sub">All your published packages will show up there.</p>
 	</div>
 
 	<div class="flex flex-col gap-4 panel">
-		@if user.packages.len == 0
-		<p class="text-sub">It's a little empty around here...</p>
+		@if packages.len == 0
+
+		<p class="text-sub">It's a bit empty around here...</p>
+		@if is_current_user
 		<a href="/new" class="button text-white hover:no-underline bg-primary flex gap-2 self-start">
 			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 				<use href="#plus_icon"></use>
 			</svg>
 			Submit package
 		</a>
+		@end
+
 		@else
-		@for pkg in user.packages
+
+		@for pkg in packages
 		@include '../components/search-entry.html'
 		@end
+
 		@end
 	</div>
 </div>

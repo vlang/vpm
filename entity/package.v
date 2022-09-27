@@ -4,8 +4,9 @@ import time
 
 pub struct Package {
 pub mut:
-	id     int
-	author string
+	id        int
+	author_id int
+	github_id int
 
 	name          string
 	description   string
@@ -28,16 +29,15 @@ pub mut:
 	updated_at time.Time = time.now()
 }
 
-pub fn (package Package) format_name() string {
-	return '${package.author}.$package.name'
-}
-
 pub struct FullPackage {
 	Package
 pub mut:
 	author     User
 	categories []Category
-	tags       []Tag
+}
+
+pub fn (package FullPackage) format_name() string {
+	return if package.is_flatten {package.name} else {'${package.author.username}.$package.name'}
 }
 
 pub struct PackagesView {

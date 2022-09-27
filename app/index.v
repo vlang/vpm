@@ -7,26 +7,41 @@ const packages_view_mock = entity.PackagesView{
 	total_count: 248
 	new_packages: [
 		entity.FullPackage{
-			id: 1
-			name: 'treplo'
-			description: 'Logging lib'
-			stars: 3
+			Package: entity.Package {
+				id: 1
+				name: 'treplo'
+				description: 'Logging lib'
+				stars: 3
+			}
+			author: entity.User {
+				username: 'Terisback'
+			}
 		},
 	]
 	most_downloaded_packages: [
 		entity.FullPackage{
-			id: 1
-			name: 'treplo'
-			description: 'Logging lib'
-			stars: 3
+			Package: entity.Package {
+				id: 1
+				name: 'treplo'
+				description: 'Logging lib'
+				stars: 3
+			}
+			author: entity.User {
+				username: 'Terisback'
+			}
 		},
 	]
 	recently_updated_packages: [
 		entity.FullPackage{
-			id: 1
-			name: 'treplo'
-			description: 'Logging lib'
-			stars: 3
+			Package: entity.Package {
+				id: 1
+				name: 'treplo'
+				description: 'Logging lib'
+				stars: 3
+			}
+			author: entity.User {
+				username: 'Terisback'
+			}
 		},
 	]
 }

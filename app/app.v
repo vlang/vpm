@@ -68,11 +68,9 @@ pub fn run(cfg config.Config) ? {
 	auth_repo := repo.new_auth_repo(db)
 	category_repo := repo.new_category_repo(db)
 	package_repo := repo.new_package_repo(db)
-	tag_repo := repo.new_tag_repo(db)
 	user_repo := repo.new_user_repo(db)
 
-	package_use_case := package.new_use_case(cfg.gh, category_repo, package_repo, tag_repo,
-		user_repo)
+	package_use_case := package.new_use_case(cfg.gh, category_repo, package_repo, user_repo)
 	user_use_case := user.new_use_case(cfg.gh, auth_repo, user_repo)
 
 	mut ctx := &Ctx{

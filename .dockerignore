@@ -3,9 +3,6 @@
 /cmd/vpm/vpm
 /test.bin
 
-# Config files
-/config.toml
-
 # Documentation
 /_docs
 /docs
@@ -13,21 +10,10 @@
 # VLS log
 /vls.log
 
-# Migrations
-/migrations
-
 # Folders with dot
 /.git
-/.github
 /.idea
 /.vscode
 
 # Database files
 /data
-
-# Dot files/folders
-.*
-
-# Markdown files
-README.md
-

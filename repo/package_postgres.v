@@ -1,6 +1,7 @@
 module repo
 
 import pg
+import time
 import entity
 import lib.sql
 
@@ -30,22 +31,36 @@ pub fn (r PackageRepo) create(package entity.Package) ?entity.Package {
 	return sql.from_row_to<entity.Package>(row.vals, all)
 }
 
-pub fn (r PackageRepo) get(author string, name string) ?entity.Package {
+pub fn (r PackageRepo) get(author_id int, name string) ?entity.Package {
 	all := sql.to_idents<entity.Package>()
 
 	query := 'select ${all.join(', ')} from $repo.packages_table ' +
-		"where author = '$author' and name = '$name';"
+		"where author_id = $author_id and name = '$name';"
 
 	row := r.db.exec_one(query)?
 	return sql.from_row_to<entity.Package>(row.vals, all)
 }
 
-pub fn (r PackageRepo) get_by_category_id(id int) ?[]entity.Package {
+pub fn (r PackageRepo) get_by_author(author_id int) ?[]entity.Package {
+	all := sql.to_idents<entity.Package>()
+
+	query := 'select ${all.join(', ')} from $repo.packages_table ' +
+		"where author_id = $author_id;"
+
+	rows := r.db.exec(query)?
+	mut packages := []entity.Package{cap: rows.len}
+	for _, row in rows {
+		packages << sql.from_row_to<entity.Package>(row.vals, all)?
+	}
+	return packages
+}
+
+pub fn (r PackageRepo) get_by_category_id(category_id int) ?[]entity.Package {
 	all := sql.to_idents<entity.Package>()
 
 	query := 'select ${all.join(', ')} from $repo.packages_table ' +
 		'join $categories_packages_table cp on ${repo.packages_table}.id = cp.package_id ' +
-		'where cp.category_id = $id;'
+		'where cp.category_id = $category_id;'
 
 	rows := r.db.exec(query)?
 	mut packages := []entity.Package{cap: rows.len}
@@ -59,7 +74,7 @@ pub struct SearchOptions {
 	sql.Options
 pub mut:
 	query string
-	// Hidden from home page
+	category string
 	show_hidden bool = true
 }
 
@@ -67,31 +82,48 @@ pub mut:
 pub fn (r PackageRepo) search(options SearchOptions) ?([]entity.Package, int) {
 	all := sql.to_idents<entity.Package>()
 
-	mut hidden := 'and is_hidden = false '
+	mut where_clause := []string{}
 
-	if options.show_hidden {
-		hidden = ''
+	if options.query.len > 0 {
+		where_clause << "name like '%$options.query%'"
+	}
+
+	if options.category.len > 0 {
+		where_clause << "c.slug = '$options.category'"
+	}
+
+	if !options.show_hidden {
+		where_clause << 'is_hidden = false'
 	}
 
 	// TODO: full text search through description
-	// TODO: categories
-	query := 'select ${all.join(', ')} from $repo.packages_table ' +
-		"where name like '%$options.query%' " + hidden + '$options.to_sql();'
+	query := 'select ${all.map('p.$it').join(', ')}, count(*) over() as total from $repo.packages_table p ' +
+		if options.category.len > 0 {
+			'join categories_packages cp on p.id = cp.package_id ' +
+       		'join categories c on c.id = cp.category_id '
+		} else { '' } +
+		"where " + where_clause.join(' and ') + '$options.to_sql();'
 
+	mut total := 0
 	rows := r.db.exec(query)?
 	mut packages := []entity.Package{cap: rows.len}
 	for _, row in rows {
 		packages << sql.from_row_to<entity.Package>(row.vals, all)?
+		if total > 0 {
+			total = row.vals.last().int()
+		}
 	}
 
-	// TODO: total count for paginate
-	return packages, packages.len
+	return packages, total
 }
 
 pub fn (r PackageRepo) update(package entity.Package) ?entity.Package {
 	all := sql.to_idents<entity.Package>()
-	idents := all.filter(it !in ['id', 'created_at', 'updated_at'])
-	values := sql.to_values(package, idents)
+	idents := all.filter(it !in ['id', 'created_at'])
+	values := sql.to_values(entity.Package{
+		...package,
+		updated_at: time.now()
+	}, idents)
 	set := sql.to_set(idents, values)
 
 	query := 'update $repo.packages_table ' + 'set ${set.join(', ')} ' + 'where id = $package.id ' +

@@ -67,12 +67,13 @@ pub mut:
 fn (mut ctx Ctx) api_search() vweb.Result {
 	query := ctx.query['q']
 	page := ctx.query['page'].int()
+	category := ctx.query['category']
 
 	if query.len <= 2 {
 		return send_json(mut ctx, .bad_request, json_error('`q` length must be greater that 2 and should only contain ASCII alphanumerics, hyphens (-), underscores (_) and periods (.)'))
 	}
 
-	results, total := ctx.package.search(query, .most_downloaded, page) or {
+	results, total := ctx.package.search(query, category, .most_downloaded, page) or {
 		log.error()
 			.add('query', query)
 			.add('page', page)

@@ -1,7 +1,7 @@
 <header class="flex-shrink-0 h-28 flex justify-center items-center bg-white border-b-2 border-solid border-off-white">
 	<div class="px-4 w-page h-16 flex gap-4 justify-between">
 		<div class="flex-1 flex items-center">
-			<a href="/">
+			<a class="clip-zero w-16 lg:w-full" href="/">
 				<svg xmlns="http://www.w3.org/2000/svg" width="145" height="64">
 					<use href="#vpm_logo"></use>
 				</svg>
@@ -13,10 +13,9 @@
 					<use href="#search_icon"></use>
 				</svg>
 				<input class="flex-1 appearance-none focus:border-0 focus:outline-none bg-transparent" name="q" type="search"
-					placeholder="Search" autocomplete="on" pattern="[A-Za-z0-9-.]{(1, 100)}"
-					title="Must match rules of github repo naming"></label>
+					placeholder="Search" pattern="[A-Za-z0-9-.]{(1, 100)}" title="Must match rules of github repo naming"></label>
 		</form>
-		<div class="flex-1 flex justify-end items-center">
+		<div class="flex-1 flex justify-end items-center gap-6">
 			@if isnil(ctx.claims)
 			<a class="button bg-general text-white hover:no-underline flex justify-center gap-2" rel="external" href="/login"
 				aria-label="Login with Github">
@@ -26,7 +25,15 @@
 				Login
 			</a>
 			@else
-			<span>hi, @ctx.claims.user.username</span>
+			<a href="/new" class="text-general">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+					<use href="#plus_icon"></use>
+				</svg>
+			</a>
+			<a href="/@ctx.claims.user.username">
+				<img class="w-12 h-12 rounded-full" title="@ctx.claims.user.name" alt="@ctx.claims.user.name"
+					src="@ctx.claims.user.avatar_url" />
+			</a>
 			@end
 		</div>
 	</div>

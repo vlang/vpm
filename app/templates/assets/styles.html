@@ -106,7 +106,13 @@
 		}
 
 		.notification-toast {
-			@apply rounded-lg font-bold text-small;
+			@apply pl-8 pr-6 rounded-lg font-bold text-small;
+		}
+	}
+
+	@layer utilities {
+		.clip-zero {
+			clip-path: inset(0 0 0 0);
 		}
 	}
 </style>
