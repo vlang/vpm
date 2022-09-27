@@ -56,7 +56,7 @@ pub fn (logger Logger) add_map<T>(key string, value map[string]T) Logger {
 }
 
 pub fn (logger Logger) add_json(key string, value j2.Any) Logger {
-	mut fields := logger.fields
+	mut fields := logger.fields.clone()
 	fields << Field{
 		key: key
 		value: value
