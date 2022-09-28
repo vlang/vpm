@@ -5,9 +5,11 @@ import vweb
 import entity
 import lib.log
 
-['/:username'; get]
+['/~:username'; get]
 fn (mut ctx Ctx) user(username string) vweb.Result {
-	user := ctx.user.get_by_username(username) or {
+	unescaped_username := username.trim_left('@~')
+
+	user := ctx.user.get_by_username(unescaped_username) or {
 		ctx.message = 'User `$username` does not exist'
 		content := $tmpl('./templates/pages/not_found.html')
 		layout := $tmpl('./templates/layout.html')

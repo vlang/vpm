@@ -38,7 +38,7 @@ fn (mut ctx Ctx) new_package_page() vweb.Result {
 	return ctx.html(layout)
 }
 
-['/:username/:package'; get]
+['/~:username/:package'; get]
 fn (mut ctx Ctx) package(username string, package string) vweb.Result {
 	usr := username.trim_left('@~')
 
