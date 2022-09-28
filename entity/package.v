@@ -30,7 +30,7 @@ pub mut:
 }
 
 pub struct FullPackage {
-	Package
+	Package [json: 'package']
 pub mut:
 	author     User
 	categories []Category

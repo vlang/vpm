@@ -96,22 +96,28 @@ pub fn (r PackageRepo) search(options SearchOptions) ?([]entity.Package, int) {
 		where_clause << 'is_hidden = false'
 	}
 
+	opts := options.to_sql() ?
+
 	// TODO: full text search through description
 	query := 'select ${all.map('p.$it').join(', ')}, count(*) over() as total from $repo.packages_table p ' +
 		if options.category.len > 0 {
 			'join categories_packages cp on p.id = cp.package_id ' +
        		'join categories c on c.id = cp.category_id '
 		} else { '' } +
-		"where " + where_clause.join(' and ') + '$options.to_sql();'
+		if where_clause.len > 0 {
+			"where " + where_clause.join(' and ')
+		} else { '' } +
+		opts.join(' ') + ';'
 
 	mut total := 0
 	rows := r.db.exec(query)?
 	mut packages := []entity.Package{cap: rows.len}
 	for _, row in rows {
-		packages << sql.from_row_to<entity.Package>(row.vals, all)?
-		if total > 0 {
+		if total == 0 {
 			total = row.vals.last().int()
 		}
+
+		packages << sql.from_row_to<entity.Package>(row.vals#[0..-1], all)?
 	}
 
 	return packages, total

@@ -8,8 +8,8 @@ pub enum OrderBy {
 
 pub fn (o OrderBy) str() string {
 	return match o {
-		.most_downloaded { 'most_downloaded' }
-		.recently_updated { 'recently_updated' }
-		.recently_published { 'recently_published' }
+		.most_downloaded { 'downloaded_at' }
+		.recently_updated { 'updated_at' }
+		.recently_published { 'created_at' }
 	}
 }

@@ -69,7 +69,7 @@ fn (mut ctx Ctx) api_search() vweb.Result {
 	page := ctx.query['page'].int()
 	category := ctx.query['category']
 
-	if query.len <= 2 {
+	if query.len > 0 && query.len <= 2 {
 		return send_json(mut ctx, .bad_request, json_error('`q` length must be greater that 2 and should only contain ASCII alphanumerics, hyphens (-), underscores (_) and periods (.)'))
 	}
 
