@@ -3,27 +3,10 @@ module app
 import pg
 import vweb
 import config
-import entity
 import lib.log
 import repo
 import usecase.package
 import usecase.user
-
-interface PackageUseCase {
-	create(url string) ?entity.Package
-	categories() ?[]entity.Category
-	category(slug string, order_by package.OrderBy, page int) ?[]entity.FullPackage
-	old_package(username string, package string) ?entity.OldPackage
-	full_package(username string, package string) ?entity.FullPackage
-	packages_view() ?entity.PackagesView
-	search(query string, order_by package.OrderBy, page int) ?([]entity.FullPackage, int)
-	update(url string) ?entity.Package
-}
-
-interface UserUseCase {
-	authenticate(access_token string) ?entity.User
-	get_by_username(username string) ?entity.User
-}
 
 [heap]
 struct Ctx {
