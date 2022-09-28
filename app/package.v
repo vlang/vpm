@@ -61,6 +61,29 @@ fn (mut ctx Ctx) package(username string, package string) vweb.Result {
 	return ctx.html(layout)
 }
 
+['/api/users/:username/packages'; get]
+fn (mut ctx Ctx) api_packages(username string) vweb.Result {
+	user := ctx.user.get_by_username(username) or {
+		log.error()
+			.add('username', username)
+			.add('error', err.str())
+			.msg('tried to get user')
+
+		return send_json(mut ctx, .not_found, json_error('not found'))
+	}
+
+	pkgs := ctx.package.get_by_author(user.id) or {
+		log.error()
+			.add('username', username)
+			.add('error', err.str())
+			.msg('tried to get packages by author')
+
+		return send_json(mut ctx, .not_found, json_error('not found'))
+	}
+
+	return ctx.json(pkgs)
+}
+
 ['/api/users/:username/packages/:package'; get]
 fn (mut ctx Ctx) api_package(username string, package string) vweb.Result {
 	pkg := ctx.package.full_package(username, package) or {
