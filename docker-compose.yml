@@ -6,8 +6,6 @@ services:
     image: vpm
     build:
       dockerfile: Dockerfile
-      args:
-        - args=-prod
     restart: always
     ports:
       - "8080:8080"
