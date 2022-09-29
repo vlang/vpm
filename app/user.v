@@ -5,7 +5,7 @@ import vweb
 import entity
 import lib.log
 
-['/~:username'; get]
+['/:username'; get]
 fn (mut ctx Ctx) user(username string) vweb.Result {
 	unescaped_username := username.trim_left('@~')
 

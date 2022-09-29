@@ -1,6 +1,7 @@
 ## Migrations
 
 Currently using [migrate](https://github.com/golang-migrate/migrate). Simply as -
+
 ```sh
 migrate -source file://migrations -database "postgres://vpm@localhost:5432/vpm?sslmode=disable" up 
 ```

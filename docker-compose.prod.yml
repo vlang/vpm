@@ -1,6 +1,13 @@
 version: "3.9"
 
 services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: on-failure:5
+    environment:
+      - TUNNEL_TOKEN=$TUNNEL_TOKEN
+    command: tunnel run
+
   vpm:
     container_name: vpm
     image: vpm
@@ -8,9 +15,9 @@ services:
       dockerfile: Dockerfile
       args:
         - args=-prod
-    restart: always
-    ports:
-      - "8080:8080"
+    restart: unless-stopped
+    expose:
+      - "8080"
     volumes:
       - "./config.toml:/vpm/config.toml"
     depends_on:
@@ -18,18 +25,15 @@ services:
 
   migrate:
     image: migrate/migrate
-    restart: on-failure:5
     volumes:
       - ./migrations:/migrations
     command: ["-path", "/migrations", "-database", "postgres://vpm@database:5432/vpm?sslmode=disable", "up"]
-    depends_on:
-      - database
 
   database:
     image: postgres:14-alpine
-    restart: always
-    ports:
-      - "5432:5432"
+    restart: unless-stopped
+    expose:
+      - "5432"
     environment:
       POSTGRES_DB: vpm
       POSTGRES_USER: vpm

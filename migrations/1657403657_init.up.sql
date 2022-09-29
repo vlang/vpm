@@ -54,18 +54,6 @@ alter sequence category_id_seq owned by categories.id;
 create unique index category_slug_uindex
     on categories (slug);
 
-create table categories_packages
-(
-    category_id integer not null
-        constraint categories_packages_categories_id_fk
-            references categories
-            on update cascade on delete cascade,
-    package_id integer not null
-        constraint categories_packages_packages_id_fk
-            references packages
-            on update cascade on delete cascade
-);
-
 create table packages
 (
     id            serial
@@ -97,3 +85,15 @@ create unique index packages_github_id_uindex
 
 create unique index packages_name_uindex
     on packages (name);
+
+create table categories_packages
+(
+    category_id integer not null
+        constraint categories_packages_categories_id_fk
+            references categories
+            on update cascade on delete cascade,
+    package_id integer not null
+        constraint categories_packages_packages_id_fk
+            references packages
+            on update cascade on delete cascade
+);

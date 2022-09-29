@@ -2,6 +2,7 @@ module entity
 
 import time
 
+[json: 'package']
 pub struct Package {
 pub mut:
 	id        int
@@ -30,7 +31,7 @@ pub mut:
 }
 
 pub struct FullPackage {
-	Package [json: 'package']
+	Package
 pub mut:
 	author     User
 	categories []Category

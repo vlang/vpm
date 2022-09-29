@@ -38,7 +38,7 @@ fn (mut ctx Ctx) new_package_page() vweb.Result {
 	return ctx.html(layout)
 }
 
-['/~:username/:package'; get]
+['/:username/:package'; get]
 fn (mut ctx Ctx) package(username string, package string) vweb.Result {
 	usr := username.trim_left('@~')
 
@@ -54,6 +54,32 @@ fn (mut ctx Ctx) package(username string, package string) vweb.Result {
 		layout := $tmpl('./templates/layout.html')
 		return send_html(mut ctx, .ok, layout)
 	}
+
+	// readme_key := 'readme:'+username+":"+package
+	// mut readme := ctx.kv.get(readme_key)
+	// if readme.len == 0 {
+	// 	readme = ctx.render_markdown(username, package) or {
+	// 		log.info()
+	// 			.add('username', username)
+	// 			.add('package', package)
+	// 			.add('error', err.str())
+	// 			.msg('failed to render markdown')
+	// 		''
+	// 	}
+
+	// 	if readme.len != 0 {
+	// 		ctx.kv.put(readme_key, readme)
+	// 		log.info()
+	// 			.add('readme_key', readme_key)
+	// 			.add('readme_length', readme.len)
+	// 			.msg('rendered markdown')
+	// 	}
+	// } else {
+	// 	log.info()
+	// 		.add('readme_key', readme_key)
+	// 		.add('readme_length', readme.len)
+	// 		.msg('served cached markdown')
+	// }
 
 	ctx.to_meta += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">\n'
 	content := $tmpl('./templates/pages/package.html')

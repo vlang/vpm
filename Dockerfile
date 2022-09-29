@@ -17,7 +17,7 @@ FROM thevlang/vlang:alpine-base
 LABEL maintainer="Anton Zavodchikov <terisbackno@gmail.com>"
 WORKDIR /vpm
 # ? Install runtime deps
-RUN apk --no-cache --update-cache add gc-dev postgresql-dev
+RUN apk --no-cache --update-cache add gc libpq
 # Copy binary and assets
 COPY ./app/static ./app/static
 COPY ./app/templates ./templates
