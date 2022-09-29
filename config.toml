@@ -1,3 +1,5 @@
+root_url = "https://vpm.terisback.ru"
+
 [jwt]
 secret = "some_very_secure_secret"
 

@@ -51,7 +51,7 @@ pub fn parse(data string) ?Config {
 	cfg := toml.parse_text(data) or { return error('failed to parse toml: $err') }
 
 	return Config{
-		root_url: cfg.value('http.root_url').default_to('http://localhost:8080').string()
+		root_url: cfg.value('root_url').default_to('http://localhost:8080').string()
 		jwt: JWT{
 			secret: cfg.value('jwt.secret').default_to('very_secure_secret').string()
 		}
