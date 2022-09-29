@@ -2,6 +2,7 @@ module app
 
 import vweb
 import entity
+import lib.log
 
 const packages_view_mock = entity.PackagesView{
 	total_count: 248
@@ -10,7 +11,7 @@ const packages_view_mock = entity.PackagesView{
 			Package: entity.Package {
 				id: 1
 				name: 'treplo'
-				description: 'Logging lib'
+				description: 'Placeholder'
 				stars: 3
 			}
 			author: entity.User {
@@ -23,7 +24,7 @@ const packages_view_mock = entity.PackagesView{
 			Package: entity.Package {
 				id: 1
 				name: 'treplo'
-				description: 'Logging lib'
+				description: 'Placeholder'
 				stars: 3
 			}
 			author: entity.User {
@@ -36,7 +37,7 @@ const packages_view_mock = entity.PackagesView{
 			Package: entity.Package {
 				id: 1
 				name: 'treplo'
-				description: 'Logging lib'
+				description: 'Placeholder'
 				stars: 3
 			}
 			author: entity.User {
@@ -46,17 +47,17 @@ const packages_view_mock = entity.PackagesView{
 	]
 }
 
-const categories_mock = [
-	entity.Category{
-		slug: 'http'
-		packages: 101
-	},
-]
-
 // Homepage frontend
 ['/'; get]
 fn (mut ctx Ctx) index() vweb.Result {
-	categories := app.categories_mock.clone()
+	categories := ctx.package.categories() or {
+		log.error()
+			.add('error', err.str())
+			.msg('tried to get categories')
+
+		[]entity.Category{}
+	}
+
 	view := app.packages_view_mock
 
 	content := $tmpl('./templates/pages/index.html')
