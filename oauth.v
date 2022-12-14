@@ -44,12 +44,12 @@ fn (mut app App) oauth_cb() vweb.Result {
 	}) or { return app.redirect('/') }
 	println('resp text=' + resp.body)
 	token := resp.body.find_between('access_token=', '&')
-	println('token =$token')
+	println('token =${token}')
 	user_js := http.fetch(
 		// url: 'https://api.github.com/user?access_token=$token'
 		url: 'https://api.github.com/user'
 		method: .get
-		header: http.new_header(key: .authorization, value: 'token $token')
+		header: http.new_header(key: .authorization, value: 'token ${token}')
 		// header: {
 		//'User-Agent': 'V http client'
 		//}
@@ -62,7 +62,7 @@ fn (mut app App) oauth_cb() vweb.Result {
 	if login.len < 2 {
 		return app.redirect('/new')
 	}
-	println('login =$login')
+	println('login =${login}')
 	mut random_id := random_string(20)
 	/*
 	user := User{
@@ -76,8 +76,8 @@ fn (mut app App) oauth_cb() vweb.Result {
 	app.db.exec_param2('insert into "User" (name, random_id) values ($1, $2)', login,
 		random_id) or {}
 	// Fetch the new or already existing user and set cookies
-	user_id := app.db.q_int("select id from \"User\" where name='$login' ") or { panic(err) }
-	random_id = app.db.q_string("select random_id from \"User\" where name='$login' ") or {
+	user_id := app.db.q_int("select id from \"User\" where name='${login}' ") or { panic(err) }
+	random_id = app.db.q_string("select random_id from \"User\" where name='${login}' ") or {
 		panic(err)
 	}
 	app.set_cookie(
@@ -103,7 +103,7 @@ fn (mut app App) auth() {
 		return
 	}
 	random_id := q_cookie.trim_space()
-	println('auth sid="$id_cookie" id=$id len ="$random_id.len" qq="$random_id" !!!')
+	println('auth sid="${id_cookie}" id=${id} len ="${random_id.len}" qq="${random_id}" !!!')
 	app.cur_user = User{}
 	if id != 0 {
 		cur_user := app.retrieve_user(id, random_id) or { return }

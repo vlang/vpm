@@ -26,7 +26,7 @@ fn (app &App) retrieve(name string) ?Mod {
 	rows := app.db.exec_param('select name, url, nr_downloads, vcs, description from "Mod" where name=$1',
 		name) or { return err }
 	if rows.len == 0 {
-		return error('Found no module with name "$name"')
+		return error('Found no module with name "${name}"')
 	}
 	row := rows[0]
 	mod := Mod{

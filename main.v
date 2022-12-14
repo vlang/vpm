@@ -28,10 +28,10 @@ pub mut:
 fn main() {
 	// s := seed.time_seed_array(2)
 	// s.seed([seed[0], seed[1]])
-	txt := os.read_file('dbconf.json') !
+	txt := os.read_file('dbconf.json')!
 	println(txt)
 	dbconf := json.decode(DbConfig, txt) or {
-		println('failed to decode dbconf.json: $err')
+		println('failed to decode dbconf.json: ${err}')
 		return
 	}
 	// dbconf := json.decode(DbConfig, os.read_file('dbconf.json') ?) ?
@@ -77,7 +77,7 @@ pub fn (mut app App) index() vweb.Result {
 pub fn (mut app App) new() vweb.Result {
 	app.auth()
 	logged_in := app.cur_user.name != ''
-	println('new() loggedin: $logged_in')
+	println('new() loggedin: ${logged_in}')
 	return $vweb.html()
 }
 
@@ -102,22 +102,22 @@ fn is_valid_mod_name(s string) bool {
 pub fn (mut app App) create_module(name string, description string, vcs string) vweb.Result {
 	app.auth()
 	name_lower := name.to_lower()
-	println('CREATE name="$name"')
+	println('CREATE name="${name}"')
 	if app.cur_user.name == '' || !is_valid_mod_name(name_lower) {
-		println('not valid mod name curuser="$app.cur_user.name"')
+		println('not valid mod name curuser="${app.cur_user.name}"')
 		return app.redirect('/')
 	}
 	url := app.form['url'].replace('<', '&lt;')
-	println('CREATE url="$url"')
+	println('CREATE url="${url}"')
 	if !url.starts_with('github.com/') && !url.starts_with('http://github.com/')
 		&& !url.starts_with('https://github.com/') {
 		println('NOT GITHUb')
 		return app.redirect('/')
 	}
-	println('CREATE url="$url"')
+	println('CREATE url="${url}"')
 	vcs_ := if vcs == '' { 'git' } else { vcs }
 	if vcs_ !in supported_vcs_systems {
-		println('Unsupported vcs: $vcs')
+		println('Unsupported vcs: ${vcs}')
 		return app.redirect('/')
 	}
 	app.insert_module(app.cur_user.name + '.' + name.limit(max_name_len), url.limit(50),
@@ -128,7 +128,7 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 ['/mod/:name']
 pub fn (mut app App) mod(name string) vweb.Result {
 	// name := app.get_mod_name()
-	println('mod name=$name')
+	println('mod name=${name}')
 	mymod := app.retrieve(name) or { return app.redirect('/') }
 	xx := mymod // TODO weird tmpl bug
 	// comments := app.find_comments(id)
@@ -139,7 +139,7 @@ pub fn (mut app App) mod(name string) vweb.Result {
 ['/jsmod/:name']
 pub fn (mut app App) jsmod(name string) vweb.Result {
 	// name := app.req.url.replace('jsmod/', '')[1..]
-	println('jsMOD name=$name')
+	println('jsMOD name=${name}')
 	app.inc_nr_downloads(name)
 	mod := app.retrieve(name) or { return app.json('404') }
 	return app.json(mod)
