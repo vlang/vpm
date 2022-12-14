@@ -28,7 +28,7 @@ pub mut:
 fn main() {
 	// s := seed.time_seed_array(2)
 	// s.seed([seed[0], seed[1]])
-	txt := os.read_file('dbconf.json') ?
+	txt := os.read_file('dbconf.json') !
 	println(txt)
 	dbconf := json.decode(DbConfig, txt) or {
 		println('failed to decode dbconf.json: $err')
