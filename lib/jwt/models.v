@@ -32,7 +32,7 @@ pub:
 
 // parse_claims is a generic function that parses the claims of token
 // into a real struct
-pub fn (t Token) parse_claims<T>() ?T {
+pub fn (t Token) parse_claims[T]() !T {
 	return json.decode(T, t.claims)
 }
 
