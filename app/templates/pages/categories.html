@@ -1,0 +1,7 @@
+<h1>List of categories</h1>
+
+<div class="flex flex-wrap gap-2 panel">
+	@for category in categories
+	<a class="category" href="/categories/@category.slug">@category.slug<sup>@category.packages</sup></a>
+	@end
+</div>

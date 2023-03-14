@@ -1,0 +1,18 @@
+root_url = "https://vpm.terisback.ru"
+
+[jwt]
+secret = "some_very_secure_secret"
+
+[github]
+client_id = "Iv1.66c79997379fa72e"
+secret = "c343754363951801004de03eba667cf8db7285be"
+
+[http]
+port = 8080
+
+[postgres]
+host = "localhost"
+port = 5432
+user = "vpm"
+password = "vpm"
+db = "vpm"
