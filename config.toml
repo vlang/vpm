@@ -1,4 +1,4 @@
-root_url = "https://vpm.terisback.ru"
+root_url = "https://vpm.vlang.io"
 
 [jwt]
 secret = "some_very_secure_secret"
