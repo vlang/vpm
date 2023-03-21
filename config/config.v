@@ -10,6 +10,7 @@ pub mut:
 	gh       Github
 	http     HTTP
 	pg       Postgres
+	is_dev   bool
 }
 
 pub struct JWT {
@@ -48,7 +49,7 @@ pub fn parse_file(path string) ?Config {
 }
 
 pub fn parse(data string) ?Config {
-	cfg := toml.parse_text(data) or { return error('failed to parse toml: $err') }
+	cfg := toml.parse_text(data) or { return error('failed to parse toml: ${err}') }
 
 	return Config{
 		root_url: cfg.value('root_url').default_to('http://localhost:8080').string()
@@ -69,6 +70,7 @@ pub fn parse(data string) ?Config {
 			password: cfg.value('postgres.password').default_to('vpm').string()
 			db: cfg.value('postgres.db').default_to('vpm').string()
 		}
+		is_dev: cfg.value('is_dev').default_to('false').bool()
 	}
 }
 

@@ -50,6 +50,8 @@ const packages_view_mock = entity.PackagesView{
 // Homepage frontend
 ['/'; get]
 fn (mut ctx Ctx) index() vweb.Result {
+	
+	/*
 	categories := ctx.package.categories() or {
 		log.error()
 			.add('error', err.str())
@@ -57,10 +59,12 @@ fn (mut ctx Ctx) index() vweb.Result {
 
 		[]entity.Category{}
 	}
+	*/
+	categories := []entity.Category{}
 
 	view := app.packages_view_mock
 
-	content := $tmpl('./templates/pages/index.html')
+	content :='aas'// $tmpl('./templates/pages/index.html')
 	layout := $tmpl('./templates/layout.html')
 	return ctx.html(layout)
 }
