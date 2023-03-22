@@ -9,10 +9,6 @@ import os
 import entity
 import config
 
-const (
-	port = 8091
-)
-
 struct App {
 	vweb.Context
 	gh_client_id     string [vweb_global]
@@ -98,6 +94,7 @@ fn main() {
 			host: conf.pg.host
 			dbname: conf.pg.db
 			user: conf.pg.user
+			password: conf.pg.password
 		}) or { panic(err) }
 		// gh_client_id: dbconf.github_client_id
 		// gh_client_secret: dbconf.github_client_secret
@@ -119,7 +116,7 @@ fn main() {
 	}
 
 	// app.serve_static('/img/github.png', 'img/github.png')
-	vweb.run(app, port)
+	vweb.run(app, conf.http.port)
 }
 
 struct DbConfig {
