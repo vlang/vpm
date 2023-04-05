@@ -1,5 +1,7 @@
 module main
 
+import time
+
 const banned_names = ['xxx']
 
 const supported_vcs_systems = ['git', 'hg']
@@ -16,6 +18,9 @@ struct Package {
 	stars        int
 	downloads    int
 	is_flatten   bool // No need to mention author of package, example `ui`
+
+	updated_at time.Time = time.now()
+	created_at time.Time = time.now()
 }
 
 fn (mut app App) find_all_packages() []Package {

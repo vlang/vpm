@@ -14,9 +14,12 @@ struct App {
 	gh_client_id     string [vweb_global]
 	gh_client_secret string [vweb_global]
 pub mut:
-	db          pg.DB [vweb_global]
-	cur_user    User  [vweb_global]
-	nr_packages int
+	db                        pg.DB     [vweb_global]
+	cur_user                  User      [vweb_global]
+	nr_packages               int
+	recently_updated_packages []Package
+	most_downloaded_packages  []Package
+	new_packages              []Package
 }
 
 const max_name_len = 35
@@ -35,48 +38,6 @@ const basic_categories = [
 	},
 	Category{
 		name: 'Web programming'
-	},
-]
-
-const new_packages = [
-	entity.FullPackage{
-		Package: entity.Package{
-			id: 1
-			name: 'treplo'
-			description: 'Placeholder'
-			stars: 3
-		}
-		author: entity.User{
-			username: 'Terisback'
-		}
-	},
-]
-
-const most_downloaded_packages = [
-	entity.FullPackage{
-		Package: entity.Package{
-			id: 1
-			name: 'treplo'
-			description: 'Placeholder'
-			stars: 3
-		}
-		author: entity.User{
-			username: 'Terisback'
-		}
-	},
-]
-
-const recently_updated_packages = [
-	entity.FullPackage{
-		Package: entity.Package{
-			id: 1
-			name: 'treplo'
-			description: 'Placeholder'
-			stars: 3
-		}
-		author: entity.User{
-			username: 'Terisback'
-		}
 	},
 ]
 
@@ -131,6 +92,18 @@ pub fn (mut app App) before_request() {
 	app.nr_packages = sql app.db {
 		select count from Package
 	} or { 0 }
+
+	app.recently_updated_packages = sql app.db {
+		select from Package order by updated_at desc limit 10
+	} or { [] }
+
+	app.new_packages = sql app.db {
+		select from Package order by created_at limit 10
+	} or { [] }
+
+	app.most_downloaded_packages = sql app.db {
+		select from Package order by nr_downloads limit 10
+	} or { [] }
 }
 
 pub fn (mut app App) index() vweb.Result {
@@ -165,7 +138,7 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		app.error('not valid mod name curuser="${app.cur_user.name}"')
 		return app.redirect('/new')
 	}
-	url := app.form['url'].replace('<', '&lt;')
+	url := app.form['url'].replace('<', '&lt;').limit(50)
 	println('CREATE url="${url}"')
 	if !url.starts_with('github.com/') && !url.starts_with('http://github.com/')
 		&& !url.starts_with('https://github.com/') {
@@ -178,9 +151,19 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		app.error('Unsupported vcs: ${vcs}')
 		return app.redirect('/new')
 	}
+
+	// Make sure the URL is unique
+	existing := sql app.db {
+		select from Package where url == url
+	} or { return app.redirect('/new') }
+	if existing.len > 0 {
+		app.error('This URL has already been submitted')
+		return app.new()
+	}
+
 	app.insert_module(Package{
 		name: app.cur_user.username + '.' + name.limit(max_name_len)
-		url: url.limit(50)
+		url: url
 		description: description
 		vcs: vcs_.limit(3)
 		user_id: app.cur_user.id
