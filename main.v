@@ -14,11 +14,10 @@ struct App {
 	gh_client_id     string [vweb_global]
 	gh_client_secret string [vweb_global]
 pub mut:
-	db       pg.DB [vweb_global]
-	cur_user User  [vweb_global]
+	db          pg.DB [vweb_global]
+	cur_user    User  [vweb_global]
+	nr_packages int
 }
-
-const total_count = 248
 
 const max_name_len = 35
 
@@ -101,11 +100,11 @@ fn main() {
 	}
 
 	sql app.db {
-		create table Mod
-	}
+		create table Package
+	}!
 	sql app.db {
 		create table User
-	}
+	}!
 
 	if conf.is_dev {
 		app.cur_user = User{
@@ -128,7 +127,10 @@ struct DbConfig {
 	// password string
 }
 
-pub fn (mut app App) init() {
+pub fn (mut app App) before_request() {
+	app.nr_packages = sql app.db {
+		select count from Package
+	} or { 0 }
 }
 
 pub fn (mut app App) index() vweb.Result {
@@ -176,7 +178,7 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		app.error('Unsupported vcs: ${vcs}')
 		return app.redirect('/new')
 	}
-	app.insert_module(Mod{
+	app.insert_module(Package{
 		name: app.cur_user.username + '.' + name.limit(max_name_len)
 		url: url.limit(50)
 		description: description
@@ -184,4 +186,22 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		user_id: app.cur_user.id
 	})
 	return app.redirect('/')
+}
+
+['/delete_package/:package_id'; post]
+pub fn (mut app App) delete_package(package_id int) vweb.Result {
+	if !app.is_logged_in() {
+		return app.ok('ok')
+	}
+	sql app.db {
+		delete from Package where id == package_id && user_id == app.cur_user.id
+	} or {}
+	return app.ok('ok')
+}
+
+pub fn (app &App) format_nr_packages() string {
+	if app.nr_packages == 1 {
+		return '${app.nr_packages} package'
+	}
+	return '${app.nr_packages} packages'
 }

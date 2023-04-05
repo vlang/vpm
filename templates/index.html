@@ -1,5 +1,18 @@
 @include 'header.html'
 
+<script>
+function delete_package(package_id) {
+
+	fetch("/delete_package/" + package_id, {
+  method: "POST",
+  headers: {'Content-Type': 'application/json'},
+}).then(res => {
+	window.location.reload();
+	//document.getElementById('package' + package_id).remove() ;
+});
+}
+</script>
+
 <header class="flex gap-4 flex-col">
 	<h1 class="text-display-large font-bold">
 		Package Manager for the <span class="text-primary">V</span> Language
@@ -27,7 +40,7 @@
 			Submit a package
 		</a>
 	</div>
-	<span>@total_count packages</span>
+	<span>@app.format_nr_packages()</span>
 </div>
 
 <div>

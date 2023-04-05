@@ -1,9 +1,9 @@
-module entity
+module main
 
 import time
 
 [json: 'package']
-pub struct Package {
+pub struct PackageOld {
 pub mut:
 	id        int
 	author_id int
@@ -28,6 +28,8 @@ pub mut:
 
 	created_at time.Time = time.now()
 	updated_at time.Time = time.now()
+
+	author User
 }
 
 pub struct FullPackage {
@@ -37,12 +39,11 @@ pub mut:
 	categories []Category
 }
 
-pub fn (package FullPackage) format_name() string {
-	println('username="${package.author.username}"')
-	return if package.is_flatten {
-		package.name
+pub fn (p FullPackage) format_name() string {
+	return if p.is_flatten {
+		p.name
 	} else {
-		'${package.author.username}.${package.name}'
+		'${p.author.username}.${p.name}'
 	}
 }
 
