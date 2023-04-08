@@ -39,16 +39,16 @@ pub mut:
 	db       string
 }
 
-pub fn parse_file(path string) ?Config {
+pub fn parse_file(path string) !Config {
 	if !os.exists(path) {
 		return error('config file does not exist')
 	}
 
-	data := os.read_file(path)?
+	data := os.read_file(path)!
 	return parse(data)
 }
 
-pub fn parse(data string) ?Config {
+pub fn parse(data string) !Config {
 	cfg := toml.parse_text(data) or { return error('failed to parse toml: ${err}') }
 
 	return Config{
@@ -57,8 +57,8 @@ pub fn parse(data string) ?Config {
 			secret: cfg.value('jwt.secret').default_to('very_secure_secret').string()
 		}
 		gh: Github{
-			client_id: cfg.value_opt('github.client_id')?.string()
-			secret: cfg.value_opt('github.secret')?.string()
+			client_id: cfg.value_opt('github.client_id')!.string()
+			secret: cfg.value_opt('github.secret')!.string()
 		}
 		http: HTTP{
 			port: cfg.value('http.port').default_to(8080).int()
@@ -74,6 +74,6 @@ pub fn parse(data string) ?Config {
 	}
 }
 
-pub fn generate(path string) ? {
+pub fn generate(path string) ! {
 	return error('not implemented')
 }
