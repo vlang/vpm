@@ -132,9 +132,10 @@ pub fn (mut app App) index() vweb.Result {
 		name: 'vpm'
 		value: '777'
 	)
+	println('cur user id:${app.cur_user.id}')
 	your_packages := app.find_user_packages(app.cur_user.id)
-	println('YOUR PACKAGES')
-	println(your_packages)
+	// println('YOUR PACKAGES')
+	// println(your_packages)
 	// mods := app.find_all_mods()
 	return $vweb.html()
 }
