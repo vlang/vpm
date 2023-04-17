@@ -20,7 +20,7 @@
 
 			@if !app.is_logged_in()
 			<a class="button bg-general text-white hover:bg-[#303030] hover:no-underline focus:bg-[#424242] flex justify-center gap-2"
-				rel="external" href="/login" aria-label="Login with Github">
+				rel="external" href="@app.login_link()" aria-label="Login with Github">
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 					<use href="#github_login_icon"></use>
 				</svg>

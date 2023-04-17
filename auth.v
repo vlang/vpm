@@ -110,3 +110,7 @@ fn (mut app App) auth() {
 		app.cur_user = cur_user
 	}
 }
+
+fn (app &App) login_link() string {
+	return 'https://github.com/login/oauth/authorize?response_type=code&client_id=${app.config.gh.client_id}'
+}
