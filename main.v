@@ -122,6 +122,8 @@ pub fn (mut app App) before_request() {
 	app.most_downloaded_packages = sql app.db {
 		select from Package order by nr_downloads limit 10
 	} or { [] }
+
+	app.auth()
 }
 
 pub fn (mut app App) index() vweb.Result {
