@@ -1,10 +1,12 @@
 <div id="package@pkg.id" class="package-card basis-[5.625rem] flex gap-4 items-center">
 	<div class="min-w-0 flex-auto">
 		<a class="package-card__title mb-1 block font-bold text-medium text-primary overflow-hidden whitespace-nowrap overflow-ellipsis"
-			href="/@pkg.author.username/@pkg.name">
+			href="/mod/@pkg.name">
 			@pkg.format_name()
 		</a>
-		<span class='btn_delete' onclick='delete_package(@pkg.id)'>❌</span>
+		@if app.package_belongs_to_cur_user(pkg)
+			<span class='btn_delete' onclick='delete_package(@pkg.id)'>❌</span>
+		@end
 		<p
 			class="package-card__description mb-2 block text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">
 			@pkg.description
@@ -24,9 +26,11 @@
 			</div>
 		</div>
 	</div>
+	<!--
 	<a class="package-card__chevron text-primary" href="/@pkg.author.username/@pkg.name" tabindex="-1">
 		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 			<use href="#chevron_right_icon"></use>
 		</svg>
 	</a>
+	-->
 </div>

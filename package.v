@@ -7,27 +7,29 @@ const banned_names = ['xxx']
 const supported_vcs_systems = ['git', 'hg']
 
 struct Package {
-	id           int    [primary; sql: serial]
-	name         string
-	description  string
-	url          string
-	nr_downloads int
-	vcs          string = 'git'
-	user_id      int
-	author       User   [fkey: 'id']
-	stars        int
-	downloads    int
-	is_flatten   bool // No need to mention author of package, example `ui`
-
+	id            int    [primary; sql: serial]
+	name          string [unique]
+	description   string
+	documentation string
+	url           string
+	nr_downloads  int
+	vcs           string = 'git'
+	user_id       int
+	author        User   [fkey: 'id']
+	stars         int
+	downloads     int
+	is_flatten    bool // No need to mention author of package, example `ui`
+	// categories []Category [skip] // [fkey: 'category_id']
 	updated_at time.Time = time.now()
 	created_at time.Time = time.now()
 }
 
 fn (mut app App) find_all_packages() []Package {
-	mods := sql app.db {
+	pkgs := sql app.db {
 		select from Package order by nr_downloads desc
 	} or { [] }
-	return mods
+	println('all pkgs ${pkgs.len}')
+	return pkgs
 }
 
 fn (mut app App) find_user_packages(user_id int) []Package {
@@ -37,7 +39,7 @@ fn (mut app App) find_user_packages(user_id int) []Package {
 	return mod
 }
 
-fn (app &App) retrieve(name string) !Package {
+fn (app &App) retrieve_package(name string) !Package {
 	rows := sql app.db {
 		select from Package where name == name
 	}!
@@ -84,4 +86,8 @@ pub fn (p Package) format_name() string {
 		'FFF ${p.author.username}.${p.name}'
 	}
 	*/
+}
+
+pub fn (app &App) package_belongs_to_cur_user(p Package) bool {
+	return p.user_id == app.cur_user.id
 }

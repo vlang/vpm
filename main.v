@@ -2,17 +2,18 @@ module main
 
 import vweb
 import db.pg
-// import json
+import json
 // import rand
 // import rand.seed
-// import os
-// import entity
+import os
+import entity
 import config
 
+// gh_client_id     string [vweb_global]
+// gh_client_secret string [vweb_global]
 struct App {
 	vweb.Context
-	gh_client_id     string [vweb_global]
-	gh_client_secret string [vweb_global]
+	config config.Config [vweb_global]
 pub mut:
 	db                        pg.DB     [vweb_global]
 	cur_user                  User      [vweb_global]
@@ -20,6 +21,8 @@ pub mut:
 	recently_updated_packages []Package
 	most_downloaded_packages  []Package
 	new_packages              []Package
+	// Decoded jwt claims, if there is
+	// claims &JWTClaims = unsafe { nil }
 }
 
 const max_name_len = 35
@@ -55,7 +58,9 @@ fn main() {
 			dbname: conf.pg.db
 			user: conf.pg.user
 			password: conf.pg.password
+			port: conf.pg.port
 		}) or { panic(err) }
+		config: conf
 		// gh_client_id: dbconf.github_client_id
 		// gh_client_secret: dbconf.github_client_secret
 	}
@@ -66,6 +71,11 @@ fn main() {
 	sql app.db {
 		create table User
 	}!
+
+	if false {
+		app.migrate_old_modules()!
+		exit(0)
+	}
 
 	if conf.is_dev {
 		app.cur_user = User{
@@ -92,10 +102,18 @@ pub fn (mut app App) before_request() {
 	app.nr_packages = sql app.db {
 		select count from Package
 	} or { 0 }
+	// println('NR packages ${app.nr_packages}')
 
 	app.recently_updated_packages = sql app.db {
 		select from Package order by updated_at desc limit 10
-	} or { [] }
+	} or {
+		// println(err)
+		// exit(0)
+		[]
+	}
+
+	// println('AAAAA')
+	// println(app.recently_updated_packages)
 
 	app.new_packages = sql app.db {
 		select from Package order by created_at limit 10
@@ -113,6 +131,8 @@ pub fn (mut app App) index() vweb.Result {
 		value: '777'
 	)
 	your_packages := app.find_user_packages(app.cur_user.id)
+	println('YOUR PACKAGES')
+	println(your_packages)
 	// mods := app.find_all_mods()
 	return $vweb.html()
 }
@@ -180,6 +200,21 @@ pub fn (mut app App) delete_package(package_id int) vweb.Result {
 		delete from Package where id == package_id && user_id == app.cur_user.id
 	} or {}
 	return app.ok('ok')
+}
+
+['/mod/:name']
+pub fn (mut app App) mod(name string) vweb.Result {
+	println('mod name=${name}')
+	pkg := app.retrieve_package(name) or { return app.redirect('/') }
+	return $vweb.html()
+}
+
+['/jsmod/:name']
+pub fn (mut app App) jsmod(name string) vweb.Result {
+	println('jsMOD name=${name}')
+	app.inc_nr_downloads(name)
+	mod := app.retrieve_package(name) or { return app.json('404') }
+	return app.json(mod)
 }
 
 pub fn (app &App) format_nr_packages() string {
