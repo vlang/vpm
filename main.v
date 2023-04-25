@@ -119,6 +119,21 @@ pub fn (mut app App) before_request() {
 		select from Package order by created_at limit 10
 	} or { [] }
 
+	/*
+	println('nr_pkgs=${app.new_packages.len}')
+	for i, pkg in app.new_packages {
+		println('${i}) ${pkg.name}  - user_id:${pkg.user_id}')
+		// user := app.retrieve_user(pkg.user_id)
+		users := sql app.db {
+			select from User where id == pkg.user_id
+		} or {
+			println(err)
+			continue
+		}
+		println(users)
+	}
+	*/
+
 	app.most_downloaded_packages = sql app.db {
 		select from Package order by nr_downloads limit 10
 	} or { [] }

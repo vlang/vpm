@@ -92,24 +92,23 @@ fn (mut app App) oauth_cb() vweb.Result {
 	return app.redirect('/new')
 }
 
-fn (mut app App) auth() vweb.Result {
+fn (mut app App) auth() {
 	id_cookie := app.get_cookie('id') or {
 		println('failed to id cookie')
-		return app.redirect('/')
+		return
 	}
 	id := id_cookie.int()
 	q_cookie := app.get_cookie('q') or {
 		println('failed to get q cookie.')
-		return app.redirect('/')
+		return
 	}
 	random_id := q_cookie.trim_space()
 	println('auth sid="${id_cookie}" id=${id} len ="${random_id.len}" qq="${random_id}" !!!')
 	app.cur_user = User{}
 	if id != 0 {
-		cur_user := app.retrieve_user(id, random_id) or { return app.redirect('/') }
+		cur_user := app.retrieve_user(id, random_id) or { return  }
 		app.cur_user = cur_user
 	}
-	return app.redirect('/')
 }
 
 fn (app &App) login_link() string {
