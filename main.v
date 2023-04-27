@@ -72,7 +72,7 @@ fn main() {
 		create table User
 	}!
 
-	if false {
+	if os.args.contains('-migrate') {
 		app.migrate_old_modules()!
 		exit(0)
 	}
