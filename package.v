@@ -32,6 +32,13 @@ fn (mut app App) find_all_packages() []Package {
 	return pkgs
 }
 
+fn (mut app App) nr_packages_by_this_user(user_id int) int {
+	nr_pkgs := sql app.db {
+		select count from Package where user_id == user_id
+	} or { 0 }
+	return nr_pkgs
+}
+
 fn (mut app App) find_user_packages(user_id int) []Package {
 	mod := sql app.db {
 		select from Package where user_id == user_id order by nr_downloads desc

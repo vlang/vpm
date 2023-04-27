@@ -199,6 +199,11 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		return app.new()
 	}
 
+	if app.nr_packages_by_this_user(app.cur_user.id) > 100 {
+		app.error('One user can submit no more than 100 modules')
+		return app.new()
+	}
+
 	println('CREATE url="${url}"')
 	vcs_ := if vcs == '' { 'git' } else { vcs }
 	if vcs_ !in supported_vcs_systems {
