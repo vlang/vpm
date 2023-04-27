@@ -185,7 +185,7 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		return app.new()
 	}
 
-	if url.starts_with('https://github.com/${app.cur_user.name}') {
+	if !url.starts_with('https://github.com/${app.cur_user.name}') {
 		app.error('You can only submit packages under your GitHub acount "${app.cur_user.name}"')
 		return app.new()
 	}
