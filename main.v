@@ -8,6 +8,7 @@ import json
 import os
 import entity
 import config
+import net.http
 
 // gh_client_id     string [vweb_global]
 // gh_client_secret string [vweb_global]
@@ -181,8 +182,23 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 	if !url.starts_with('github.com/') && !url.starts_with('http://github.com/')
 		&& !url.starts_with('https://github.com/') {
 		app.error('wrong url format')
-		return app.redirect('/new')
+		return app.new()
 	}
+
+	if url.starts_with('https://github.com/${app.cur_user.name}') {
+		app.error('You can only submit packages under your GitHub acount "${app.cur_user.name}"')
+		return app.new()
+	}
+
+	resp := http.get(url) or {
+		app.error('Failed to fetch module URL')
+		return app.new()
+	}
+	if resp.status_code == 404 {
+		app.error('This module URL does not exist (404)')
+		return app.new()
+	}
+
 	println('CREATE url="${url}"')
 	vcs_ := if vcs == '' { 'git' } else { vcs }
 	if vcs_ !in supported_vcs_systems {

@@ -5,11 +5,11 @@ is_dev = true
 secret = "some_very_secure_secret"
 
 [github]
-client_id = "Iv1.66c79997379fa72e"
-secret = "c343754363951801004de03eba667cf8db7285be"
+client_id = ""
+secret = ""
 
 [http]
-port = 8080
+port = 8081
 
 [postgres]
 host = "localhost"
