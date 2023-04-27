@@ -2,11 +2,11 @@ module main
 
 import vweb
 import db.pg
-import json
+// import json
 // import rand
 // import rand.seed
 import os
-import entity
+// import entity
 import config
 import net.http
 
@@ -232,6 +232,9 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 
 ['/delete_package/:package_id'; post]
 pub fn (mut app App) delete_package(package_id int) vweb.Result {
+	if true {
+		return app.ok('ok')
+	}
 	if !app.is_logged_in() {
 		return app.ok('ok')
 	}
