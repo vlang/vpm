@@ -32,6 +32,15 @@ fn (mut app App) find_all_packages() []Package {
 	return pkgs
 }
 
+fn (mut app App) find_all_packages_by_query(query string) []Package {
+	q := '%' + query + '%'
+	pkgs := sql app.db {
+		select from Package where name like q order by nr_downloads desc
+	} or { [] }
+	println('found pkgs by query "${q}": ${pkgs.len}')
+	return pkgs
+}
+
 fn (mut app App) nr_packages_by_this_user(user_id int) int {
 	nr_pkgs := sql app.db {
 		select count from Package where user_id == user_id

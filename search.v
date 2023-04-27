@@ -2,13 +2,9 @@ module main
 
 import vweb
 
- fn (app &App) search (q string) vweb.Result {
- 	// TODO uncomment once ORM supports LIKE
-// 	packages := sql app.db {
-	// 	select from Package where name
-
-	// }
-
- return $vweb.html()
-
+pub fn (mut app App) search() vweb.Result {
+	q := app.query['q']
+	title := if q == '' { 'All Packages' } else { 'Search Results' }
+	packages := app.find_all_packages_by_query(q)
+	return $vweb.html()
 }
