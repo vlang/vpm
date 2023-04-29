@@ -64,17 +64,13 @@ fn (mut app App) oauth_cb() vweb.Result {
 	}
 	println('login =${login}')
 	mut random_id := random_string(20)
-	/*
 	user := User{
 		name: login
 		random_id: random_id
 	}
 	sql app.db {
 		insert user into User
-	}
-	*/
-	app.db.exec_param2('insert into "User" (name, random_id) values ($1, $2)', login,
-		random_id) or {}
+	} or { panic(err) }
 	// Fetch the new or already existing user and set cookies
 	user_id := app.db.q_int("select id from \"User\" where name='${login}' ") or { panic(err) }
 	random_id = app.db.q_string("select random_id from \"User\" where name='${login}' ") or {
@@ -106,7 +102,7 @@ fn (mut app App) auth() {
 	println('auth sid="${id_cookie}" id=${id} len ="${random_id.len}" qq="${random_id}" !!!')
 	app.cur_user = User{}
 	if id != 0 {
-		cur_user := app.retrieve_user(id, random_id) or { return  }
+		cur_user := app.retrieve_user(id, random_id) or { return }
 		app.cur_user = cur_user
 	}
 }

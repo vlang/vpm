@@ -36,6 +36,10 @@ fn (mut app App) migrate_old_modules() ! {
 		}
 		user := old_users[0]
 		// println('got user ${user.name}')
+		if user.name == '' {
+			println('skipping empty ${user}')
+			continue
+		}
 
 		new_user := User{
 			name: user.name
