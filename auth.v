@@ -65,7 +65,7 @@ fn (mut app App) oauth_cb() vweb.Result {
 	println('login =${login}')
 	mut random_id := random_string(20)
 	user := User{
-		name: login
+		username: login
 		random_id: random_id
 	}
 	sql app.db {

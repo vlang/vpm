@@ -80,7 +80,7 @@ fn main() {
 
 	if conf.is_dev {
 		app.cur_user = User{
-			name: 'Test user'
+			// name: 'Test user'
 			username: 'test_user'
 			is_admin: true
 		}
@@ -158,14 +158,14 @@ pub fn (mut app App) index() vweb.Result {
 
 pub fn (mut app App) new() vweb.Result {
 	// app.auth()
-	logged_in := app.cur_user.name != ''
+	logged_in := app.cur_user.username != ''
 	println('new() loggedin: ${logged_in}')
 	return $vweb.html()
 }
 
 pub fn (mut app App) is_logged_in() bool {
 	println('loggedin() ${app.cur_user}')
-	return app.cur_user.name != ''
+	return app.cur_user.username != ''
 }
 
 [post]
@@ -173,8 +173,8 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 	// app.auth()
 	name_lower := name.to_lower()
 	println('CREATE name="${name}"')
-	if app.cur_user.name == '' || !is_valid_mod_name(name_lower) {
-		app.error('not valid mod name curuser="${app.cur_user.name}"')
+	if app.cur_user.username == '' || !is_valid_mod_name(name_lower) {
+		app.error('not valid mod name curuser="${app.cur_user.username}"')
 		return app.redirect('/new')
 	}
 	url := app.form['url'].replace('<', '&lt;').limit(50)
@@ -185,8 +185,8 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		return app.new()
 	}
 
-	if !url.starts_with('https://github.com/${app.cur_user.name}') {
-		app.error('You can only submit packages under your GitHub acount "${app.cur_user.name}"')
+	if !url.starts_with('https://github.com/${app.cur_user.username}') {
+		app.error('You can only submit packages under your GitHub acount "${app.cur_user.username}"')
 		return app.new()
 	}
 

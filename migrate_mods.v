@@ -42,7 +42,7 @@ fn (mut app App) migrate_old_modules() ! {
 		}
 
 		new_user := User{
-			name: user.name
+			username: user.name
 			random_id: user.random_id
 		}
 		sql app.db {
@@ -51,7 +51,7 @@ fn (mut app App) migrate_old_modules() ! {
 		// println('new users.len=${new_users.len}')
 
 		new_user2 := sql app.db {
-			select from User where name == username
+			select from User where username == username
 		}!
 
 		pkg := Package{
