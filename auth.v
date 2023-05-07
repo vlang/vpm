@@ -74,8 +74,8 @@ fn (mut app App) oauth_cb() vweb.Result {
 		// can already exist, do nothing
 	}
 	// Fetch the new or already existing user and set cookies
-	user_id := app.db.q_int("select id from \"User\" where name='${login}' ") or { panic(err) }
-	random_id = app.db.q_string("select random_id from \"User\" where name='${login}' ") or {
+	user_id := app.db.q_int("select id from \"User\" where username='${login}' ") or { panic(err) }
+	random_id = app.db.q_string("select random_id from \"User\" where username='${login}' ") or {
 		panic(err)
 	}
 	app.set_cookie(
