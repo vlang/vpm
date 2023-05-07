@@ -20,9 +20,13 @@
 
 Instantly publish your modules and install them. Use the API to interact and find out more information about available modules. Become a contributor and enhance V with your work. [vpm.vlang.io →][vpm]
 
-To run it locally, just run `v .`. Don't forget to update `config.toml`.
+To run it locally, just run
 
-Set your Postgres host, port, user, password, and dbname.
+```bash
+v .
+```
+
+Don't forget to update `config.toml`: set your Postgres host, port, user, password, and dbname.
 
 In order to use GitHub authentication, add GitHub client id and secret as well.
 
