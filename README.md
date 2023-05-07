@@ -20,7 +20,7 @@
 
 Instantly publish your modules and install them. Use the API to interact and find out more information about available modules. Become a contributor and enhance V with your work. [vpm.vlang.io →][vpm]
 
-To run it locally, update `config.toml`.
+To run it locally, just run `v .`. Don't forget to update `config.toml`.
 
 Set your Postgres host, port, user, password, and dbname.
 
