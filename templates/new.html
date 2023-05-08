@@ -4,9 +4,9 @@
 		Submit a package
 	</h1>
 
-	<p>
-	<b>@app.form_error</b>
-	</p>
+	@if app.form_error.len>0
+	<p>@app.form_error</p>
+	@end
 
 	@if !logged_in
 	 <a href='https://github.com/login/oauth/authorize?response_type=code&client_id=3c7c2836a3afa00cd79e'
@@ -14,21 +14,14 @@
 
 	@else
 
-		<form action='/create_module' method='POST'>
+		<form class="w-1/2 flex flex-col gap-2" action='/create_module' method='POST'>
 
-		<input type='text' placeholder='Package name' required maxlength=10 pattern="[A-Za-z0-9]+"
+		<input class="p-2 rounded-lg" type='text' placeholder='Package name' required maxlength=10 pattern="[A-Za-z0-9]+"
 			title="Only letters and numbers are allowed" name='name'>
-		<br>
-		<input type='url' placeholder='GitHub URL' required maxlength=50 style='width:300px' name='url'
+		<input class="p-2 rounded-lg" type='url' placeholder='GitHub URL' required maxlength=50 name='url'
 			pattern='(https://github.com/)(.*?)' title='Only GitHub repositories are allowed for now' >
-		<br>
-		<textarea name='description' placeholder='Module description' required maxlength=800></textarea>
-		<br>
-
-		<input type='submit' value='Submit'>
-
-		</form>
-
+		<textarea class="p-2 rounded-lg" name='description' rows="10" placeholder='Module description' required maxlength=800></textarea>
+		<input class="mt-2 p-2 text-white rounded-lg bg-[#559fff]" type='submit' value='Submit'>
 
 	@end
 
