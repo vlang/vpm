@@ -86,6 +86,7 @@ fn main() {
 		}
 	}
 
+	app.serve_static('/css/dist.css', 'css/dist.css')
 	// app.serve_static('/img/github.png', 'img/github.png')
 	vweb.run(app, conf.http.port)
 }

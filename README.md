@@ -32,11 +32,34 @@ Make sure you have `libpq-dev` installed. Please refer to your OS or distributio
 
 In order to use GitHub authentication, add GitHub client id and secret as well.
 
+## Tailwind Setup
+Download and install Tailwinds [Standalone CLI][tailwindCli] in your local clone.
+
+**Linux Example**:
+```bash
+curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64
+chmod +x tailwindcss-linux-x64
+mv tailwindcss-linux-x64 tailwindcss
+```
+You can edit the tailwind configuration in `tailwind.config.js` and add custom css to `css/index.css`.
+
+### Watching CSS
+Use the Standalone CLI to watch the css for changes
+```bash
+./tailwindcss -i css/index.css -o css/dist.css --watch --minify
+```
+
+### Intellisense
+Use Tailwinds [CSS Intellisense][tailwindExtension] extension for VSCode to get code completion for 
+all tailwinds classes.
+
 <!-- Reference links -->
 [vpm]: https://vpm.vlang.io
 <!-- [GettingStarted]: https://vpm.vlang.io/docs/getting-started -->
 <!-- [Docs]: https://vpm.vlang.io/docs -->
 <!-- [Contribute]: .github/CONTRIBUTING.md -->
+[tailwindCli]: https://tailwindcss.com/blog/standalone-cli
+[tailwindExtension]: https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss
 
 <!-- Badges -->
 [DiscordBadge]: https://img.shields.io/discord/592103645835821068?label=Discord&logo=discord&logoColor=white
