@@ -29,7 +29,7 @@ pub fn (algorithm HS256) verify(token_raw string, secret string) ?Token {
 	parts := token_raw.split('.')
 	header := parts[0]
 	claims := parts[1]
-	signed := algorithm.sign('${header}.$claims', secret)?
+	signed := algorithm.sign('${header}.${claims}', secret)?
 
 	// check if token signature is valid by checking the created signature against the given signature from the given token
 	if signed != token.signature {

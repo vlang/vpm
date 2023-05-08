@@ -86,13 +86,13 @@ pub fn exchange_code(client_id string, secret string, code string) ?OAuthToken {
 		}
 	)?
 	if res.status() != .ok {
-		return error('request returned with bad status: $res.status()')
+		return error('request returned with bad status: ${res.status()}')
 	}
 
-	token := json2.decode<OAuthToken>(res.body)?
+	token := json2.decode[OAuthToken](res.body)?
 
 	if token.access_token.len == 0 {
-		return error('token is empty, $res.body')
+		return error('token is empty, ${res.body}')
 	}
 
 	return token
