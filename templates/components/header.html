@@ -27,14 +27,9 @@
 				Login
 			</a>
 			@else
-			<a href="/new" class="text-general">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-					<use href="#plus_icon"></use>
-				</svg>
-			</a>
 			<a href="/@app.cur_user.username">
 				<img class="w-12 h-12 rounded-full" title="@app.cur_user.username" alt="@app.cur_user.username"
-					src="@app.cur_user.avatar_url" />
+					src="https://github.com/@{app.cur_user.username}.png" />
 			</a>
 			@end
 		</div>
