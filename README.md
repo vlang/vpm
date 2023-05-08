@@ -28,6 +28,8 @@ v .
 
 Don't forget to update `config.toml`: set your Postgres host, port, user, password, and dbname.
 
+Make sure you have `libpq-dev` installed. Please refer to your OS or distribution documentation to install it.
+
 In order to use GitHub authentication, add GitHub client id and secret as well.
 
 <!-- Reference links -->
