@@ -3,7 +3,7 @@ module json2
 import time
 import x.json2
 
-pub fn to<T>(mut dest T, obj map[string]json2.Any) {
+pub fn to[T](mut dest T, obj map[string]json2.Any) {
 	$for field in T.fields {
 		mut json_name := field.name
 
@@ -26,7 +26,7 @@ pub fn to<T>(mut dest T, obj map[string]json2.Any) {
 				value := val.str()
 				dest.$(field.name) = time.parse(value) or {
 					time.parse_iso8601(value) or {
-						println('Unable to parse time for `$field.name` field, value was `$val`')
+						println('Unable to parse time for `${field.name}` field, value was `${val}`')
 						time.unix(0)
 					}
 				}

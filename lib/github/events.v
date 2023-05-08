@@ -10,19 +10,19 @@ pub fn parse_event(req http.Request) ?WebhookEvent {
 
 	match event {
 		'create' {
-			return json2.decode<CreateEvent>(req.data) or { return err }
+			return json2.decode[CreateEvent](req.data) or { return err }
 		}
 		'delete' {
-			return json2.decode<DeleteEvent>(req.data) or { return err }
+			return json2.decode[DeleteEvent](req.data) or { return err }
 		}
 		'public' {
-			return json2.decode<PublicEvent>(req.data) or { return err }
+			return json2.decode[PublicEvent](req.data) or { return err }
 		}
 		'star' {
-			return json2.decode<StarEvent>(req.data) or { return err }
+			return json2.decode[StarEvent](req.data) or { return err }
 		}
 		else {
-			return error('webhook event `$event` not implemented')
+			return error('webhook event `${event}` not implemented')
 		}
 	}
 }
