@@ -50,7 +50,7 @@ fn (mut ctx Ctx) search() vweb.Result {
 	results := app.search_results_mock.clone()
 	total := 243
 
-	title := 'Search results for «${query}» (${total})'
+	title := 'Search results for «$query» ($total)'
 
 	content := $tmpl('./templates/pages/browser.html')
 	layout := $tmpl('./templates/layout.html')

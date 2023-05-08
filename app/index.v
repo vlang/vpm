@@ -8,39 +8,39 @@ const packages_view_mock = entity.PackagesView{
 	total_count: 248
 	new_packages: [
 		entity.FullPackage{
-			Package: entity.Package{
+			Package: entity.Package {
 				id: 1
 				name: 'treplo'
 				description: 'Placeholder'
 				stars: 3
 			}
-			author: entity.User{
+			author: entity.User {
 				username: 'Terisback'
 			}
 		},
 	]
 	most_downloaded_packages: [
 		entity.FullPackage{
-			Package: entity.Package{
+			Package: entity.Package {
 				id: 1
 				name: 'treplo'
 				description: 'Placeholder'
 				stars: 3
 			}
-			author: entity.User{
+			author: entity.User {
 				username: 'Terisback'
 			}
 		},
 	]
 	recently_updated_packages: [
 		entity.FullPackage{
-			Package: entity.Package{
+			Package: entity.Package {
 				id: 1
 				name: 'treplo'
 				description: 'Placeholder'
 				stars: 3
 			}
-			author: entity.User{
+			author: entity.User {
 				username: 'Terisback'
 			}
 		},
@@ -50,6 +50,7 @@ const packages_view_mock = entity.PackagesView{
 // Homepage frontend
 ['/'; get]
 fn (mut ctx Ctx) index() vweb.Result {
+	
 	/*
 	categories := ctx.package.categories() or {
 		log.error()
@@ -63,7 +64,7 @@ fn (mut ctx Ctx) index() vweb.Result {
 
 	view := app.packages_view_mock
 
-	content := 'aas' // $tmpl('./templates/pages/index.html')
+	content :='aas'// $tmpl('./templates/pages/index.html')
 	layout := $tmpl('./templates/layout.html')
 	return ctx.html(layout)
 }

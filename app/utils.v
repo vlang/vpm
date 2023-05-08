@@ -38,7 +38,7 @@ fn send_text(mut ctx Ctx, status http.Status, text string) vweb.Result {
 }
 
 // Send `application/json` with status
-fn send_json[T](mut ctx Ctx, status http.Status, obj T) vweb.Result {
+fn send_json<T>(mut ctx Ctx, status http.Status, obj T) vweb.Result {
 	set_status(mut ctx, status)
 	return ctx.json(obj)
 }

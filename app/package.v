@@ -49,7 +49,7 @@ fn (mut ctx Ctx) package(username string, package string) vweb.Result {
 			.add('error', err.str())
 			.msg('tried to get package')
 
-		ctx.message = 'Package `${usr}.${package}` does not exist'
+		ctx.message = 'Package `${usr}.$package` does not exist'
 		content := $tmpl('./templates/pages/not_found.html')
 		layout := $tmpl('./templates/layout.html')
 		return send_html(mut ctx, .ok, layout)

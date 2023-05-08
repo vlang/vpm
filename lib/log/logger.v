@@ -43,11 +43,11 @@ pub fn with_level(level Level) Logger {
 	}
 }
 
-pub fn (logger Logger) add[T](key string, value T) Logger {
+pub fn (logger Logger) add<T>(key string, value T) Logger {
 	return logger.add_json(key, j2.Any(value))
 }
 
-pub fn (logger Logger) add_map[T](key string, value map[string]T) Logger {
+pub fn (logger Logger) add_map<T>(key string, value map[string]T) Logger {
 	mut some_map := map[string]j2.Any{}
 	for k, v in value {
 		some_map[k] = j2.Any(v)

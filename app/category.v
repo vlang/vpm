@@ -33,13 +33,13 @@ fn (mut ctx Ctx) category(slug string) vweb.Result {
 			.add('error', err.str())
 			.msg('tried to get packages with category')
 
-		ctx.message = 'Zero results for «${slug}» category found...'
+		ctx.message = 'Zero results for «$slug» category found...'
 		content := $tmpl('./templates/pages/error.html')
 		layout := $tmpl('./templates/layout.html')
 		return send_html(mut ctx, .not_found, layout)
 	}
 
-	title := 'Results for «${slug}» category (${total})'
+	title := 'Results for «$slug» category ($total)'
 	content := $tmpl('./templates/pages/browser.html')
 	layout := $tmpl('./templates/layout.html')
 	return ctx.html(layout)

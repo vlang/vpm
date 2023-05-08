@@ -10,7 +10,7 @@ fn (mut ctx Ctx) user(username string) vweb.Result {
 	unescaped_username := username.trim_left('@~')
 
 	user := ctx.user.get_by_username(unescaped_username) or {
-		ctx.message = 'User `${username}` does not exist'
+		ctx.message = 'User `$username` does not exist'
 		content := $tmpl('./templates/pages/not_found.html')
 		layout := $tmpl('./templates/layout.html')
 		return send_html(mut ctx, .not_found, layout)
@@ -24,9 +24,11 @@ fn (mut ctx Ctx) user(username string) vweb.Result {
 		[]entity.FullPackage{}
 	}
 
-	total_downloads := arrays.fold(packages, 0, fn (downloads int, pkg entity.FullPackage) int {
-		return downloads + pkg.downloads
-	})
+	total_downloads := arrays.fold(packages, 0,
+		fn (downloads int, pkg entity.FullPackage) int {
+			return downloads + pkg.downloads
+		}
+	)
 
 	// Helper
 	is_current_user := if isnil(ctx.claims) {

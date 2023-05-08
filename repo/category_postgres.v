@@ -21,15 +21,15 @@ pub fn new_category_repo(db pg.DB) CategoryRepo {
 }
 
 pub fn (r CategoryRepo) create(category entity.Category) ?entity.Category {
-	all := sql.to_idents[entity.Category]()
+	all := sql.to_idents<entity.Category>()
 	idents := all.filter(it !in ['id', 'created_at', 'updated_at'])
 	values := sql.to_values(category, idents)
 
-	query := ['insert into ${repo.categories_table} (${idents.join(', ')})',
+	query := ['insert into $repo.categories_table (${idents.join(', ')})',
 		'values (${values.join(', ')}) returning ${all.join(', ')};'].join(' ')
 
 	row := r.db.exec_one(query)?
-	return sql.from_row_to[entity.Category](row.vals, all)
+	return sql.from_row_to<entity.Category>(row.vals, all)
 }
 
 // Many to Many connection
@@ -43,65 +43,65 @@ pub fn (r CategoryRepo) add_to(category_id int, package_id int) ? {
 		category_id: category_id
 		package_id: package_id
 	}
-	idents := sql.to_idents[CategoryToPackage]()
+	idents := sql.to_idents<CategoryToPackage>()
 	values := sql.to_values(c2p, idents)
 
-	query := ['insert into ${repo.categories_packages_table} (${idents.join(', ')})',
+	query := ['insert into $repo.categories_packages_table (${idents.join(', ')})',
 		'values (${values.join(', ')});'].join(' ')
 
 	r.db.exec_one(query)?
 }
 
 pub fn (r CategoryRepo) get_by_slug(slug string) ?entity.Category {
-	all := sql.to_idents[entity.Category]()
+	all := sql.to_idents<entity.Category>()
 
-	query := "select ${all.join(', ')} from ${repo.categories_table} where slug = '${slug}';"
+	query := "select ${all.join(', ')} from $repo.categories_table where slug = '$slug';"
 
 	row := r.db.exec_one(query)?
-	return sql.from_row_to[entity.Category](row.vals, all)
+	return sql.from_row_to<entity.Category>(row.vals, all)
 }
 
 pub fn (r CategoryRepo) get_by_package_id(package_id int) ?[]entity.Category {
-	all := sql.to_idents[entity.Category]()
+	all := sql.to_idents<entity.Category>()
 
-	query := ['select ${all.join(', ')} from ${repo.categories_table}',
-		'join ${repo.categories_packages_table}',
+	query := ['select ${all.join(', ')} from $repo.categories_table',
+		'join $repo.categories_packages_table',
 		'on ${repo.categories_table}.id = ${repo.categories_packages_table}.category_id',
-		'where ${repo.categories_packages_table}.package_id = ${package_id};'].join(' ')
+		'where ${repo.categories_packages_table}.package_id = $package_id;'].join(' ')
 
 	rows := r.db.exec(query)?
 	mut categories := []entity.Category{cap: rows.len}
 	for _, row in rows {
-		categories << sql.from_row_to[entity.Category](row.vals, all)?
+		categories << sql.from_row_to<entity.Category>(row.vals, all)?
 	}
 	return categories
 }
 
 pub fn (r CategoryRepo) get_all() ?[]entity.Category {
-	all := sql.to_idents[entity.Category]()
+	all := sql.to_idents<entity.Category>()
 
-	query := 'select ${all.join(', ')} from ${repo.categories_table};'
+	query := 'select ${all.join(', ')} from $repo.categories_table;'
 
 	rows := r.db.exec(query)?
 	mut categories := []entity.Category{cap: rows.len}
 	for _, row in rows {
-		categories << sql.from_row_to[entity.Category](row.vals, all)?
+		categories << sql.from_row_to<entity.Category>(row.vals, all)?
 	}
 	return categories
 }
 
 pub fn (r CategoryRepo) update(category entity.Category) ?entity.Category {
-	all := sql.to_idents[entity.Category]()
+	all := sql.to_idents<entity.Category>()
 	idents := all.filter(it !in ['id', 'created_at'])
 	values := sql.to_values(entity.Category{
-		...category
+		...category,
 		updated_at: time.now()
 	}, idents)
 	set := sql.to_set(idents, values)
 
-	query := ['update ${repo.categories_table} set ${set.join(', ')}',
-		'where id = ${category.id} returning ${all.join(', ')};'].join(' ')
+	query := ['update $repo.categories_table set ${set.join(', ')}',
+		'where id = $category.id returning ${all.join(', ')};'].join(' ')
 
 	row := r.db.exec_one(query)?
-	return sql.from_row_to[entity.Category](row.vals, all)
+	return sql.from_row_to<entity.Category>(row.vals, all)
 }

@@ -20,7 +20,7 @@ fn (ctx Ctx) authorize() &JWTClaims {
 		return unsafe { nil }
 	}
 
-	claims := jwt.verify[JWTClaims](token, jwt.new_algorithm(.hs256), ctx.config.jwt.secret) or {
+	claims := jwt.verify<JWTClaims>(token, jwt.new_algorithm(.hs256), ctx.config.jwt.secret) or {
 		log.info()
 			.add('error', err.str())
 			.msg('token is invalid')
