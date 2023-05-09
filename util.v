@@ -5,7 +5,6 @@ fn is_valid_mod_name(s string) bool {
 		return false
 	}
 	for c in s {
-		// println(c.str())
 		if !(c >= `A` && c <= `Z`) && !(c >= `a` && c <= `z`) && !(c >= `0` && c <= `9`) && c != `.` {
 			return false
 		}

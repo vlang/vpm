@@ -35,7 +35,7 @@ fn (mut app App) migrate_old_modules() ! {
 			continue
 		}
 		user := old_users[0]
-		// println('got user ${user.name}')
+
 		if user.name == '' || user.random_id == '' {
 			println('skipping empty ${user}')
 			continue
@@ -48,7 +48,6 @@ fn (mut app App) migrate_old_modules() ! {
 		sql app.db {
 			insert new_user into User
 		} or {}
-		// println('new users.len=${new_users.len}')
 
 		new_user2 := sql app.db {
 			select from User where username == username

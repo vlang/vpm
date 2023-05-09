@@ -3,15 +3,7 @@ module main
 import rand
 import net.http
 import json
-// import os
 import vweb
-
-/*
-const (
-	client_id     = os.getenv('VPM_GITHUB_CLIENT_ID')
-	client_secret = os.getenv('VPM_GITHUB_SECRET')
-)
-*/
 
 struct GitHubUser {
 	login string
@@ -36,7 +28,7 @@ fn (mut app App) oauth_cb() vweb.Result {
 	if code == '' {
 		return app.redirect('/')
 	}
-	// d := 'client_id=$client_id&client_secret=$client_secret&code=$code'
+
 	resp := http.post_form('https://github.com/login/oauth/access_token', {
 		'client_id':     app.config.gh.client_id
 		'client_secret': app.config.gh.secret
@@ -46,13 +38,9 @@ fn (mut app App) oauth_cb() vweb.Result {
 	token := resp.body.find_between('access_token=', '&')
 	println('token =${token}')
 	user_js := http.fetch(
-		// url: 'https://api.github.com/user?access_token=$token'
 		url: 'https://api.github.com/user'
 		method: .get
 		header: http.new_header(key: .authorization, value: 'token ${token}')
-		// header: {
-		//'User-Agent': 'V http client'
-		//}
 	) or { panic(err) }
 	gh_user := json.decode(GitHubUser, user_js.body) or {
 		println('cant decode')
