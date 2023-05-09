@@ -3,7 +3,6 @@ module package
 import config
 import entity
 import repo
-import lib.sql
 import lib.log
 
 // Used in search and packages view (index page)
@@ -116,30 +115,6 @@ pub fn (u UseCase) packages_view() ?entity.PackagesView {
 }
 
 pub fn (u UseCase) search(query string, category string, order_by OrderBy, page int) ?([]entity.FullPackage, int) {
-	/*
-	packages, total := u.package.search(
-		query: query
-		offset: package.per_page * page
-		limit: package.per_page
-		order_by: sql.OrderBy{
-			column: order_by.str()
-			order: sql.Order.descending
-		}
-	)?
-
-	mut full_packages := []entity.FullPackage{cap: packages.len}
-	for _, package in packages {
-		full_packages << u.to_full_package(package)?
-	}
-
-	log.info()
-		.add('query', query)
-		.add('order_by', order_by.str())
-		.add('page', page)
-		.add('total', total)
-		.msg('search results')
-	*/
-
 	mut full_packages := []entity.FullPackage{}
 	total := 0
 	return full_packages, total
