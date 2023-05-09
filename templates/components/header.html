@@ -1,24 +1,19 @@
-<header class="flex-shrink-0 h-28 flex justify-center items-center bg-white border-b-2 border-solid border-off-white">
-	<div class="px-4 w-page h-16 flex gap-4 justify-between">
+<header class="flex-shrink-0 h-20 flex justify-center items-center bg-white 
+	md:border-b md:border-solid md:border-light-grey">
+	<div class="px-6 w-page h-16 flex gap-4 justify-between items-center">
 		<div class="flex-1 flex items-center">
-			<a class="clip-zero w-16 lg:w-full" href="/">
+			<a class="clip-zero w-full md:w-16 lg:w-full" href="/">
 				<svg xmlns="http://www.w3.org/2000/svg" width="145" height="64">
 					<use href="#vpm_logo"></use>
 				</svg>
 			</a>
 		</div>
-		<form class="flex basis-[36.25rem] rounded-2xl focus-within:outline bg-off-white" action="/search">
-			<label class="flex-1 px-5 py-4 box-border flex gap-4 items-center text-grey">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-					<use href="#search_icon"></use>
-				</svg>
-				<input class="flex-1 appearance-none focus:text-general focus:border-0 focus:outline-none bg-transparent"
-					name="q" type="search" placeholder="Search" pattern="[A-Za-z0-9-.]{(1, 100)}"
-					title="Must match rules of github repo naming"></label>
-		</form>
+		<div class="hidden md:flex basis-[36.25rem]">
+			@include 'components/searchbar.html'
+		</div>
 		<div class="flex-1 flex justify-end items-center gap-6">
 
-			@if !app.is_logged_in()
+			@if app.is_logged_in()
 			<a class="button bg-general text-white hover:bg-[#303030] hover:no-underline focus:bg-[#424242] flex justify-center gap-2"
 				rel="external" href="@app.login_link()" aria-label="Login with Github">
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
@@ -35,3 +30,6 @@
 		</div>
 	</div>
 </header>
+<div class="md:hidden top-0 sticky z-10 justify-center bg-white h-fit py-2 px-4 border-b border-solid border-light-grey">
+	@include 'components/searchbar.html'
+</div>

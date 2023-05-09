@@ -3,7 +3,11 @@ module.exports = {
     content: ["./templates/**/*.{html,js}"],
     theme: {
         colors: {
-            primary: "#559FFF",
+            primary: {
+                DEFAULT: "#559FFF",
+                dark: "#4887D9",
+                darker: "#4078BF"
+            },
             general: "#161616",
             grey: "#B6B6B6",
             "dark-grey": "#626262",
@@ -11,12 +15,14 @@ module.exports = {
             sub: "#7A7A7A",
             night: "#161616",
             disabled: "#D9D9D9",
+            "light-grey": "#D9D9D9",
             white: "#FFFFFF",
+
 
             success: "#00BA88",
             error: "#FA3C6A",
 
-            base: "#F7F7F7",
+            base: "#fafafa",
 
             transparent: "#00000000",
         },
@@ -38,7 +44,7 @@ module.exports = {
         },
         fontSize: {
             small: [
-                "1",
+                "1rem",
                 {
                     lineHeight: "1.5rem",
                 },

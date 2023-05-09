@@ -1,11 +1,11 @@
 @include 'header.html'
 
 <div class="flex flex-col lg:grid lg:grid-cols-3 gap-5">
-	<div class="col-span-2 panel">
+	<div class="col-span-2 panel inactive flex">
 		<!-- Buttons Row -->
-		<div class="flex flex-wrap gap-4">
+		<div class="flex flex-wrap gap-4 h-fit justify-between w-full">
 			<button id="v-install-copy"
-				class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2">
+				class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2 w-full md:w-fit">
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 					<use href="#copy_icon"></use>
 				</svg>
@@ -21,7 +21,7 @@
 			</a>
 			@end
 			<a href="$pkg.url" target="_blank"
-				class="button text-white whitespace-nowrap hover:no-underline bg-primary flex gap-2">
+				class="button primary w-full md:w-fit">
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 					<use href="#repo_icon"></use>
 				</svg>
@@ -36,7 +36,7 @@
 			-->
 		</div>
 	</div>
-	<div class="panel flex flex-col gap-4">
+	<div class="panel inactive flex flex-col gap-4">
 		<div>
 			<h3 class="mb-1 text-primary leading-8">About</h3>
 			<div class="flex gap-4 items-center text-sub font-bold overflow-hidden">
@@ -56,7 +56,7 @@
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 						<use href="#clock_icon"></use>
 					</svg>
-					@pkg.updated_at
+					@pkg.updated_at.ymmdd()
 				</div>
 			</div>
 		</div>
