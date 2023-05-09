@@ -4,10 +4,9 @@ import time
 
 pub struct User {
 pub mut:
-	id        int    [primary; sql: serial]
-	github_id int
-	username  string [unique]
-	// name       string
+	id         int    [primary; sql: serial]
+	github_id  int
+	username   string [unique]
 	avatar_url string
 
 	is_blocked   bool
