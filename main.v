@@ -74,6 +74,7 @@ fn main() {
 	}
 
 	app.serve_static('/css/dist.css', 'css/dist.css')
+	app.serve_static('/favicon.png', 'favicon.png')
 	vweb.run(app, conf.http.port)
 }
 
