@@ -2,16 +2,10 @@ module main
 
 import vweb
 import db.pg
-// import json
-// import rand
-// import rand.seed
 import os
-// import entity
 import config
 import net.http
 
-// gh_client_id     string [vweb_global]
-// gh_client_secret string [vweb_global]
 struct App {
 	vweb.Context
 	config config.Config [vweb_global]
@@ -22,8 +16,6 @@ pub mut:
 	recently_updated_packages []Package
 	most_downloaded_packages  []Package
 	new_packages              []Package
-	// Decoded jwt claims, if there is
-	// claims &JWTClaims = unsafe { nil }
 }
 
 const max_name_len = 35
@@ -46,13 +38,11 @@ const basic_categories = [
 ]
 
 fn main() {
-	// is_dev := os.args.contains('dev')
 	conf := config.parse_file(config_file) or {
 		println(err)
 		exit(1)
 	}
-	// s := seed.time_seed_array(2)
-	// s.seed([seed[0], seed[1]])
+
 	mut app := &App{
 		db: pg.connect(pg.Config{
 			host: conf.pg.host
@@ -62,8 +52,6 @@ fn main() {
 			port: conf.pg.port
 		}) or { panic(err) }
 		config: conf
-		// gh_client_id: dbconf.github_client_id
-		// gh_client_secret: dbconf.github_client_secret
 	}
 
 	sql app.db {
@@ -80,14 +68,12 @@ fn main() {
 
 	if conf.is_dev {
 		app.cur_user = User{
-			// name: 'Test user'
 			username: 'test_user'
 			is_admin: true
 		}
 	}
 
 	app.serve_static('/css/dist.css', 'css/dist.css')
-	// app.serve_static('/img/github.png', 'img/github.png')
 	vweb.run(app, conf.http.port)
 }
 
@@ -97,44 +83,20 @@ struct DbConfig {
 	user                 string
 	github_client_id     string
 	github_client_secret string
-	// password string
 }
 
 pub fn (mut app App) before_request() {
 	app.nr_packages = sql app.db {
 		select count from Package
 	} or { 0 }
-	// println('NR packages ${app.nr_packages}')
 
 	app.recently_updated_packages = sql app.db {
 		select from Package order by updated_at desc limit 10
-	} or {
-		// println(err)
-		// exit(0)
-		[]
-	}
-
-	// println('AAAAA')
-	// println(app.recently_updated_packages)
+	} or { [] }
 
 	app.new_packages = sql app.db {
 		select from Package order by created_at limit 10
 	} or { [] }
-
-	/*
-	println('nr_pkgs=${app.new_packages.len}')
-	for i, pkg in app.new_packages {
-		println('${i}) ${pkg.name}  - user_id:${pkg.user_id}')
-		// user := app.retrieve_user(pkg.user_id)
-		users := sql app.db {
-			select from User where id == pkg.user_id
-		} or {
-			println(err)
-			continue
-		}
-		println(users)
-	}
-	*/
 
 	app.most_downloaded_packages = sql app.db {
 		select from Package order by nr_downloads limit 10
@@ -151,14 +113,11 @@ pub fn (mut app App) index() vweb.Result {
 	)
 	println('cur user id:${app.cur_user.id}')
 	your_packages := app.find_user_packages(app.cur_user.id)
-	// println('YOUR PACKAGES')
-	// println(your_packages)
-	// mods := app.find_all_mods()
+
 	return $vweb.html()
 }
 
 pub fn (mut app App) new() vweb.Result {
-	// app.auth()
 	logged_in := app.cur_user.username != ''
 	println('new() loggedin: ${logged_in}')
 	return $vweb.html()
@@ -171,7 +130,6 @@ pub fn (mut app App) is_logged_in() bool {
 
 [post]
 pub fn (mut app App) create_module(name string, description string, vcs string) vweb.Result {
-	// app.auth()
 	name_lower := name.to_lower()
 	println('CREATE name="${name}"')
 	if app.cur_user.username == '' || !is_valid_mod_name(name_lower) {
@@ -242,6 +200,7 @@ pub fn (mut app App) delete_package(package_id int) vweb.Result {
 	sql app.db {
 		delete from Package where id == package_id && user_id == app.cur_user.id
 	} or {}
+
 	return app.ok('ok')
 }
 
