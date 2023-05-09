@@ -43,14 +43,19 @@ function delete_package(package_id) {
 	<span>@app.format_nr_packages()</span>
 </div>
 
-<div>
-	<h2 class="mb-4 text-large font-bold">Your packages</h2>
-	<div class="flex flex-col gap-4 panel">
-		@for pkg in your_packages
-		@include './components/package-card.html'
-		@end
+<!--There is no sense to show "Your packages" if user is not logged in.-->
+@if app.is_logged_in()
+
+	<div>
+		<h2 class="mb-4 text-large font-bold">Your packages</h2>
+		<div class="flex flex-col gap-4 panel">
+			@for pkg in your_packages
+			@include './components/package-card.html'
+			@end
+		</div>
 	</div>
-</div>
+
+@end
 
 <div>
 	<h2 class="mb-4 text-large font-bold">Popular categories</h2>
