@@ -22,7 +22,7 @@ jobs:
         ../v fmt -verify .
 
   ubuntu:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout V
       uses: actions/checkout@v2
