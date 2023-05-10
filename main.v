@@ -5,6 +5,7 @@ import db.pg
 import os
 import config
 import net.http
+import lib.github
 
 struct App {
 	vweb.Context
@@ -145,17 +146,26 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		return app.new()
 	}
 
-	if !url.starts_with('https://github.com/${app.cur_user.username}') {
-		app.error('You can only submit packages under your GitHub acount "${app.cur_user.username}"')
-		return app.new()
-	}
-
 	resp := http.get(url) or {
 		app.error('Failed to fetch module URL')
 		return app.new()
 	}
+
 	if resp.status_code == 404 {
 		app.error('This module URL does not exist (404)')
+		return app.new()
+	}
+
+	mut package_author_name := app.cur_user.username
+
+	// NOTE: Allow admin to add modules that are not under their own GitHub account
+	if app.cur_user.is_admin == true {
+		package_author_name = url.all_after('https://github.com/').split('/')[0]
+	}
+
+	if !url.starts_with('https://github.com/${package_author_name}')
+		&& app.cur_user.is_admin == false {
+		app.error('You can only submit packages under your GitHub acount "${package_author_name}"')
 		return app.new()
 	}
 
@@ -180,12 +190,18 @@ pub fn (mut app App) create_module(name string, description string, vcs string) 
 		return app.new()
 	}
 
+	repository_data := github.get_repo_by_username_and_name(package_author_name, url.all_after_last('/')) or {
+		app.error('Failed to fetch repository data from GitHub')
+		return app.new()
+	}
+
 	app.insert_module(Package{
-		name: app.cur_user.username + '.' + name.limit(max_name_len)
+		name: package_author_name + '.' + name.limit(max_name_len)
 		url: url
 		description: description
 		vcs: vcs_.limit(3)
 		user_id: app.cur_user.id
+		stars: repository_data.stargazers_count
 	})
 	return app.redirect('/')
 }
