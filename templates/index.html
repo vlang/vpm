@@ -55,10 +55,6 @@ function delete_package(package_id) {
 <div>
 	<h2 class="mb-4 font-bold text-center md:text-left">Popular categories</h2>
 	<div class="flex flex-wrap gap-2">
-		<a class="category" href="/search?categories=slug">slug<sup>pack</sup></a>
-		<a class="category" href="/search?categories=slug">slug<sup>pack</sup></a>
-		<a class="category" href="/search?categories=slug">slug<sup>pack</sup></a>
-
 		@for category in categories
 		<a class="category" href="/search?categories=@category.slug">@category.slug<sup>@category.packages</sup></a>
 		@end
