@@ -11,6 +11,7 @@ pub mut:
 	http     HTTP
 	pg       Postgres
 	is_dev   bool
+	dev_user string
 }
 
 pub struct JWT {
@@ -71,6 +72,7 @@ pub fn parse(data string) !Config {
 			db: cfg.value('postgres.db').default_to('vpm').string()
 		}
 		is_dev: cfg.value('is_dev').default_to('false').bool()
+		dev_user: cfg.value('dev_user').default_to('test_user').string()
 	}
 }
 

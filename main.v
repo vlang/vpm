@@ -68,7 +68,7 @@ fn main() {
 
 	if conf.is_dev {
 		app.cur_user = User{
-			username: 'test_user'
+			username: conf.dev_user
 			is_admin: true
 		}
 	}

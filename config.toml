@@ -1,5 +1,6 @@
 root_url = "https://vpm.vlang.io"
 is_dev = true
+dev_user = "test_user"
 
 [jwt]
 secret = "some_very_secure_secret"
@@ -13,7 +14,7 @@ port = 8081
 
 [postgres]
 host = "localhost"
-port = 5433
+port = 5432
 user = "vpm"
 password = "vpm"
 db = "vpm"
