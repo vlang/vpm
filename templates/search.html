@@ -2,9 +2,9 @@
 @include 'header.html'
 <h1>@title</h1>
 
-<div class="flex flex-col gap-4 panel">
+<div class="flex flex-col">
 	@for pkg in packages
-		@include './components/package-card.html'
+		@include './components/package.html'
 	@end
 </div>
 
