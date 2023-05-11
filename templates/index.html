@@ -18,8 +18,8 @@ function delete_package(package_id) {
 		Package Manager for the <span class="text-primary">V</span> Language
 	</h1>
 
-	<p class="text-medium text-sub">
-		Instantly publish your packages and install them. Become a contributor and enhance our community your work.
+	<p class="text-large text-sub">
+		Instantly publish your packages and install them. Become a contributor and enhance our community with your work.
 		Use the API to interact and find out more information about available packages.
 	</p>
 </header>
@@ -40,18 +40,17 @@ function delete_package(package_id) {
 	<span>@app.format_nr_packages()</span>
 </div>
 
+<!--There is no sense to show "Your packages" if user is not logged in.-->
 @if app.is_logged_in()
 <div class="flex flex-col gap-4">
 	<h2 class="text-large font-bold text-center md:text-left">Your packages</h2>
 	<div class="flex flex-col gap-4 place-items-center md:grid md:auto-rows-max md:grid-flow-col">
 		@for pkg in your_packages
 		@include './components/package-card.html'
-		@include './components/package-card.html'
-		@include './components/package-card.html'
 		@end
 	</div>
 </div>
-@endif
+@end
 
 <div>
 	<h2 class="mb-4 font-bold text-center md:text-left">Popular categories</h2>
