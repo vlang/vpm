@@ -65,34 +65,36 @@ function delete_package(package_id) {
 	</div>
 </div>
 
-<div class="flex flex-col gap-6 md:grid grid-cols-1 md:gap-0" id="content-container">
-	<div class="relative hidden md:flex md:justify-center md:gap-12 md:z-[1] content-selector">
+<div class="grid grid-cols-1 gap-0" id="content-container">
+	<div class="hidden content-selector relative z-[1] md:flex md:justify-center md:gap-12 ">
 		<button class="content-section-btn" onclick="setActive(0)">New packages</button>
 		<button class="content-section-btn"" onclick="setActive(1)">Most downloaded</button>
 		<button class="content-section-btn"" onclick="setActive(2)">Recently updated</button>
 		<span class="active-border"></span>
 	</div>
-	<div class="content-section md:ease " id="content-0">
-		<h2 class="mb-4 text-center md:hidden">New packages</h2>
+	<!-- Select on mobile -->
+	<div class="md:hidden content-selector relative z-[1] flex justify-center p-6 w-full">
+		<select name="content-selector" class="primary" id="mobile-content-selector" onchange="onSelectChange()">
+			<option value="0" selected>New packages</option>
+			<option value="1">Most downloaded</option>
+			<option value="2">Recently updated</option>
+		</select>
+	</div>
+	<div class="content-section ease " id="content-0">
 		<div class="flex flex-col">
 			@for pkg in app.new_packages
 			@include './components/package.html'
-			@include './components/package.html'
-			@include './components/package.html'
 			@end
 		</div>
 	</div>
-	<div class="content-section md:ease md:pointer-events-none md:opacity-0" id="content-1">
-		<h2 class="mb-4 text-center md:hidden">Most downloaded</h2>
+	<div class="content-section ease pointer-events-none opacity-0" id="content-1">
 		<div class="flex flex-col">
 			@for pkg in app.most_downloaded_packages
 			@include './components/package.html'
-			@include './components/package.html'
 			@end
 		</div>
 	</div>
-	<div class="content-section md:ease md:pointer-events-none md:opacity-0" id="content-2">
-		<h2 class="mb-4 text-center md:hidden">Recently updated</h2>
+	<div class="content-section mease pointer-events-none opacity-0" id="content-2">
 		<div class="flex flex-col">
 			@for pkg in app.recently_updated_packages
 			@include './components/package.html'
@@ -103,35 +105,45 @@ function delete_package(package_id) {
 
 <script>
 const indicator = document.querySelector('span.active-border');
-const container = document.querySelector('#content-container')
-let activeContentIndex = 0;
-let currentTimeout = 0
+const container = document.querySelector('#content-container');
+const mobileSelect = document.querySelector('#mobile-content-selector');
 
-function setActive(index) {
+let activeContentIndex = 0;
+let currentTimeout = 0;
+
+// change content in "new packages, most downloaded" sections
+function setActive(index, resizing) {
 	const el = document.querySelector('.content-selector');
 	const activeElement = el.children.item(index);
 
 	indicator.style.width = (activeElement.clientWidth + 10)+'px';
 	indicator.style.left = (activeElement.offsetLeft - 5)+'px';
 
-	if (index != activeContentIndex) {
-		window.clearTimeout(currentTimeout)
+	if (index != activeContentIndex || resizing) {
+		window.clearTimeout(currentTimeout);
 
 		const prev = document.querySelector('#content-'+activeContentIndex);
-		prev.classList.add('md:opacity-0');
-		prev.classList.add('md:pointer-events-none');
-
+		prev.classList.add('opacity-0');
+		prev.classList.add('pointer-events-none');
+		// pretty css animation
 		currentTimeout = window.setTimeout(() => {
 			const current = document.querySelector('#content-'+index);
-			current.classList.remove('md:opacity-0');
-			current.classList.remove('md:pointer-events-none');
+			current.classList.remove('opacity-0');
+			current.classList.remove('pointer-events-none');
 
 			activeContentIndex = index;
-		}, 150)
-		
+			mobileSelect.selectedIndex = index;
+		}, 150);
 	}
 }
 setActive(0)
+
+function onSelectChange() {
+	const index = mobileSelect.selectedIndex;
+	setActive(Number(index));
+}
+
+window.addEventListener("resize", () => setActive(activeContentIndex, true))
 
 </script>
 
