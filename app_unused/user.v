@@ -2,7 +2,7 @@ module app
 
 import arrays
 import vweb
-import entity
+import app_unused.entity
 import lib.log
 
 ['/:username'; get]

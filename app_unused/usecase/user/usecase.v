@@ -3,8 +3,8 @@ module user
 import config
 import lib.github
 import lib.log
-import repo
-import entity
+import app_unused.repo
+import app_unused.entity
 
 pub struct UseCase {
 	cfg  config.Github

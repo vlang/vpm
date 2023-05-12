@@ -2,7 +2,7 @@ module repo
 
 import pg
 import time
-import entity
+import app_unused.entity
 import lib.sql
 
 const (
