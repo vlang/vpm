@@ -100,7 +100,7 @@ pub fn (mut app App) before_request() {
 	} or { [] }
 
 	app.most_downloaded_packages = sql app.db {
-		select from Package order by nr_downloads limit 10
+		select from Package order by downloads limit 10
 	} or { [] }
 
 	app.auth()

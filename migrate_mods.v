@@ -57,7 +57,7 @@ fn (mut app App) migrate_old_modules() ! {
 			name: mod.name
 			description: mod.description
 			url: mod.url
-			nr_downloads: mod.nr_downloads
+			downloads: mod.nr_downloads
 			vcs: mod.vcs
 			user_id: new_user2[0].id
 		}
