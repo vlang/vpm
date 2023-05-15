@@ -1,17 +1,17 @@
 module main
 
 import vweb
+import entity
 
-pub fn (mut app App) search() vweb.Result {
-	q := app.query['q']
-	title := if q == '' { 'All Packages' } else { 'Search Results' }
-	unsorted_packages := app.find_all_packages_by_query(q)
+pub fn (mut app App) search(query string) vweb.Result {
+	title := if query == '' { 'All Packages' } else { 'Search Results' }
+	unsorted_packages := app.packages.query(query)
 	packages := sort_packages(unsorted_packages) // NOTE: packages variable is used in search.html template
 
 	return $vweb.html()
 }
 
-fn sort_packages(unsorted_packages []Package) []Package {
+fn sort_packages(unsorted_packages []entity.Package) []entity.Package {
 	mut packages := unsorted_packages.clone()
 
 	packages.sort_with_compare(compare_packages)
@@ -19,7 +19,7 @@ fn sort_packages(unsorted_packages []Package) []Package {
 	return packages
 }
 
-fn compare_packages(a &Package, b &Package) int {
+fn compare_packages(a &entity.Package, b &entity.Package) int {
 	if a.stars != b.stars {
 		return if a.stars > b.stars { -1 } else { 1 }
 	}

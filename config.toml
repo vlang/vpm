@@ -1,6 +1,6 @@
 root_url = "https://vpm.vlang.io"
 is_dev = true
-dev_user = "test_user"
+dev_user = "xy3"
 
 [jwt]
 secret = "some_very_secure_secret"

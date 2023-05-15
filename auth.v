@@ -4,6 +4,7 @@ import rand
 import net.http
 import json
 import vweb
+import entity
 
 struct GitHubUser {
 	login string
@@ -52,7 +53,7 @@ fn (mut app App) oauth_cb() vweb.Result {
 	}
 	println('login =${login}')
 	mut random_id := random_string(20)
-	user := User{
+	user := entity.User{
 		username: login
 		random_id: random_id
 	}
@@ -90,9 +91,9 @@ fn (mut app App) auth() {
 	}
 	random_id := q_cookie.trim_space()
 	println('auth sid="${id_cookie}" id=${id} len ="${random_id.len}" qq="${random_id}" !!!')
-	app.cur_user = User{}
+	app.cur_user = entity.User{}
 	if id != 0 {
-		cur_user := app.retrieve_user(id, random_id) or { return }
+		cur_user := app.users.get(id, random_id) or { return }
 		app.cur_user = cur_user
 	}
 }

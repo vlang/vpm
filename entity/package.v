@@ -5,29 +5,19 @@ import time
 [json: 'package']
 pub struct Package {
 pub mut:
-	id        int
-	author_id int
-	github_id int
-
-	name          string
+	id            int       [primary; sql: serial]
+	name          string    [unique]
 	description   string
 	documentation string
-	repository    string
-	license       string
-
-	vcs string
-	url string
-
-	stars         int
+	url           string
 	downloads     int
-	downloaded_at time.Time = time.now()
-	// Do not feature it on homepage
-	is_hidden bool
-	// No need to mention author of package, example `ui`
-	is_flatten bool
-
-	created_at time.Time = time.now()
-	updated_at time.Time = time.now()
+	vcs           string = 'git'
+	user_id       int
+	author        User      [fkey: 'id']
+	stars         int
+	is_flatten    bool // No need to mention author of package, example `ui`
+	updated_at    time.Time = time.now()
+	created_at    time.Time = time.now()
 }
 
 pub struct FullPackage {
@@ -62,4 +52,12 @@ pub mut:
 	vcs          string = 'git'
 	url          string
 	nr_downloads int
+}
+
+pub fn (p Package) format_name() string {
+	return p.name
+}
+
+pub fn (p Package) belongs_to_user(user_id int) bool {
+	return p.user_id == user_id
 }

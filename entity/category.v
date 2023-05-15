@@ -10,6 +10,9 @@ pub mut:
 	// Packages count
 	packages int
 
+	name       string
+	nr_modules int
+
 	created_at time.Time = time.now()
 	updated_at time.Time = time.now()
 }

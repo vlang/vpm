@@ -1,9 +1,9 @@
 <section id="package@pkg.id" class="package">
-		<a class="package-card__title hover:underline cursor-pointer" href="/mod/@pkg.name"> 
+		<a class="package-card__title hover:underline cursor-pointer" href="/mod/@pkg.name">
 			@pkg.format_name()
         </a>
 		<!--
-		@if app.package_belongs_to_cur_user(pkg)
+		@if app.packages.belongs_to_user(pkg, app.cur_user.id)
 			<span class='btn_delete' onclick='delete_package(@pkg.id)'>❌</span>
 		@end
 		-->
