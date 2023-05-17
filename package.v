@@ -12,7 +12,7 @@ struct Package {
 	description   string
 	documentation string
 	url           string
-	downloads     int
+	nr_downloads  int
 	vcs           string = 'git'
 	user_id       int
 	author        User      [fkey: 'id']
@@ -24,7 +24,7 @@ struct Package {
 
 fn (mut app App) find_all_packages() []Package {
 	pkgs := sql app.db {
-		select from Package order by downloads desc
+		select from Package order by nr_downloads desc
 	} or { [] }
 	println('all pkgs ${pkgs.len}')
 	return pkgs
@@ -48,7 +48,7 @@ fn (mut app App) nr_packages_by_this_user(user_id int) int {
 
 fn (mut app App) find_user_packages(user_id int) []Package {
 	mod := sql app.db {
-		select from Package where user_id == user_id order by downloads desc
+		select from Package where user_id == user_id order by nr_downloads desc
 	} or { [] }
 	return mod
 }
@@ -66,7 +66,7 @@ fn (app &App) retrieve_package(name string) !Package {
 
 fn (app &App) inc_nr_downloads(name string) {
 	sql app.db {
-		update Package set downloads = downloads + 1 where name == name
+		update Package set nr_downloads = nr_downloads + 1 where name == name
 	} or {}
 }
 
