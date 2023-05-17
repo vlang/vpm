@@ -2,6 +2,7 @@ module repo
 
 import db.pg
 import entity
+import lib.log
 
 const banned_names = ['xxx']
 
@@ -16,54 +17,66 @@ interface Packages {
 	count_by_user(user_id int) int
 	incr_downloads(name string) !
 	create_package(package entity.Package) !
-	delete(package_id, user_id int) !
+	delete(package_id int, user_id int) !
+	get_recently_updated_packages() []entity.Package
+	get_packages_count() int
+	get_new_packages() []entity.Package
+	get_most_downloaded_packages() []entity.Package
 }
 
-struct PackagesRepo {
+pub struct PackagesRepo {
 pub mut:
 	db pg.DB
 }
 
 fn (p PackagesRepo) all() []entity.Package {
 	pkgs := sql p.db {
-		select from Package order by downloads desc
+		select from entity.Package order by downloads desc
 	} or { [] }
-	println('all pkgs ${pkgs.len}')
+
+	log.info()
+		.add("package count", pkgs.len)
+		.msg('all pkgs')
+
 	return pkgs
 }
 
 fn (p PackagesRepo) find_by_query(query string) []entity.Package {
 	q := '%' + query + '%'
 	pkgs := sql p.db {
-		select from Package where name like q
+		select from entity.Package where name like q
 	} or { [] }
-	println('found pkgs by query "${q}": ${pkgs.len}')
+
+	log.info()
+		.add("count", pkgs.len)
+		.msg('found pkgs by query "${q}"')
+
 	return pkgs
 }
 
 fn (p PackagesRepo) find_by_url(url string) []entity.Package {
 	return sql p.db {
-		select from Package where url == url
+		select from entity.Package where url == url
 	} or { [] }
 }
 
 fn (p PackagesRepo) count_by_user(user_id int) int {
 	nr_pkgs := sql p.db {
-		select count from Package where user_id == user_id
+		select count from entity.Package where user_id == user_id
 	} or { 0 }
 	return nr_pkgs
 }
 
 fn (p PackagesRepo) find_by_user(user_id int) []entity.Package {
 	mod := sql p.db {
-		select from Package where user_id == user_id order by downloads desc
+		select from entity.Package where user_id == user_id order by downloads desc
 	} or { [] }
 	return mod
 }
 
 fn (p PackagesRepo) get(name string) !entity.Package {
 	rows := sql p.db {
-		select from Package where name == name
+		select from entity.Package where name == name
 	}!
 
 	if rows.len == 0 {
@@ -74,11 +87,11 @@ fn (p PackagesRepo) get(name string) !entity.Package {
 
 fn (p PackagesRepo) incr_downloads(name string) ! {
 	sql p.db {
-		update Package set downloads = downloads + 1 where name == name
+		update entity.Package set downloads = downloads + 1 where name == name
 	} or { return err }
 }
 
-pub fn (p PackagesRepo) delete(package_id, user_id int) ! {
+pub fn (p PackagesRepo) delete(package_id int, user_id int) ! {
 	sql p.db {
 		delete from entity.Package where id == package_id && user_id == user_id
 	} or { return err }
@@ -87,16 +100,40 @@ pub fn (p PackagesRepo) delete(package_id, user_id int) ! {
 pub fn (p PackagesRepo) create_package(package entity.Package) ! {
 	for bad_name in repo.banned_names {
 		if package.name.contains(bad_name) {
-			return error("package name contains banned word ${bad_name}")
+			return error('package name contains banned word ${bad_name}')
 		}
 	}
 	if package.url.contains(' ') || package.url.contains('%') || package.url.contains('<') {
-		return error("package url contains invalid characters")
+		return error('package url contains invalid characters')
 	}
 	if package.vcs !in repo.supported_vcs_systems {
-		return error("package vcs system ${package.vcs} is not supported")
+		return error('package vcs system ${package.vcs} is not supported')
 	}
 	sql p.db {
-		insert mod into Package
+		insert package into entity.Package
 	} or { return err }
+}
+
+pub fn (p PackagesRepo) get_recently_updated_packages() []entity.Package {
+	return sql p.db {
+		select from entity.Package order by updated_at desc limit 10
+	} or { [] }
+}
+
+pub fn (p PackagesRepo) get_packages_count() int {
+	return sql p.db {
+		select count from entity.Package
+	} or { 0 }
+}
+
+pub fn (p PackagesRepo) get_new_packages() []entity.Package {
+	return sql p.db {
+		select from entity.Package order by created_at limit 10
+	} or { [] }
+}
+
+pub fn (p PackagesRepo) get_most_downloaded_packages() []entity.Package {
+	return sql p.db {
+		select from entity.Package order by downloads limit 10
+	} or { [] }
 }

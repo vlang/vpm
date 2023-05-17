@@ -4,8 +4,6 @@ import entity
 import lib.log
 import net.http
 import repo
-import usecase.user
-import vweb
 
 // Used in search and packages view (index page)
 pub const per_page = 6
@@ -16,7 +14,7 @@ struct Vcs {
 	name       string
 	hosts      []string
 	protocols  []string
-	url_format string
+	format_url fn (protocol string, host string, username string) string
 }
 
 const allowed_vcs = [
@@ -24,18 +22,14 @@ const allowed_vcs = [
 		name: 'github'
 		hosts: ['github.com']
 		protocols: ['https', 'http']
-		url_format: '%HOST%/%USER%/%NAME%'
+		format_url: fn (protocol string, host string, username string) string {
+			return '${protocol}://${host}/${username}'
+		}
 	},
 ]
 
 pub struct UseCase {
 	packages repo.Packages
-}
-
-pub fn new_use_case(packages repo.Packages) UseCase {
-	return UseCase{
-		packages: packages
-	}
 }
 
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user entity.User) ! {
@@ -76,8 +70,12 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user e
 	return
 }
 
-pub fn (u UseCase) delete(package_id int, user entity.User) ! {
-	return u.packages.delete(package_id, user.id)
+pub fn (u UseCase) get(name string) !entity.Package {
+	return u.packages.get(name)
+}
+
+pub fn (u UseCase) delete(package_id int, user_id int) ! {
+	return u.packages.delete(package_id, user_id)
 }
 
 pub fn (u UseCase) query(query string) []entity.Package {
@@ -88,15 +86,35 @@ pub fn (u UseCase) find_by_user(user_id int) []entity.Package {
 	return u.packages.find_by_user(user_id)
 }
 
+pub fn (u UseCase) incr_downloads(name string) ! {
+	return u.packages.incr_downloads(name)
+}
+
+pub fn (u UseCase) get_recently_updated_packages() []entity.Package {
+	return u.packages.get_recently_updated_packages()
+}
+
+pub fn (u UseCase) get_packages_count() int {
+	return u.packages.get_packages_count()
+}
+
+pub fn (u UseCase) get_new_packages() []entity.Package {
+	return u.packages.get_new_packages()
+}
+
+pub fn (u UseCase) get_most_downloaded_packages() []entity.Package {
+	return u.packages.get_most_downloaded_packages()
+}
+
 fn check_vcs(url string, username string) !string {
 	for vcs in package.allowed_vcs {
 		for protocol in vcs.protocols {
 			for host in vcs.hosts {
-				if !url.starts_with('${protocol}://${host}/') {
+				if !url.starts_with(vcs.format_url(protocol, host, '')) {
 					continue
 				}
 
-				if !url.starts_with('${protocol}://${host}/${username}') {
+				if !url.starts_with(vcs.format_url(protocol, host, username)) {
 					return error('you must submit a package from your own account')
 				}
 
@@ -119,111 +137,3 @@ fn is_valid_mod_name(s string) bool {
 	}
 	return true
 }
-
-//
-// pub fn (u UseCase) categories() ?[]entity.Category {
-// 	categories := u.category.get_all()?
-//
-// 	log.info()
-// 		.add('count', categories.len)
-// 		.msg('all categories')
-//
-// 	return categories
-// }
-//
-// pub fn (u UseCase) category(slug string, order_by OrderBy, page int) ?([]entity.FullPackage, int) {
-// 	category := u.category.get_by_slug(slug)?
-// 	// TODO: paginate
-// 	packages := u.package.get_by_category_id(category.id)?
-//
-// 	offset := page * package.per_page
-// 	mut full_packages := []entity.FullPackage{cap: package.per_page}
-// 	for _, package in packages[offset..offset + package.per_page] {
-// 		full_packages << u.to_full_package(package)?
-// 	}
-//
-// 	log.info()
-// 		.add('slug', slug)
-// 		.add('order_by', order_by.str())
-// 		.add('page', page)
-// 		.add('count', packages.len)
-// 		.msg('packages with category')
-//
-// 	return full_packages, packages.len
-// }
-//
-// pub fn (u UseCase) get_by_author(author_id int) ?[]entity.FullPackage {
-// 	packages := u.package.get_by_author(author_id)?
-//
-// 	mut full_packages := []entity.FullPackage{cap: packages.len}
-// 	for _, package in packages {
-// 		full_packages << u.to_full_package(package)?
-// 	}
-//
-// 	log.info()
-// 		.add('author', author_id)
-// 		.add('count', packages.len)
-// 		.msg('packages by author')
-//
-// 	return full_packages
-// }
-//
-// pub fn (u UseCase) old_package(username string, package string) ?entity.OldPackage {
-// 	usr := u.user.get_by_username(username)?
-// 	pkg := u.package.get(usr.id, package)?
-// 	name := if pkg.is_flatten { pkg.name } else { '${usr.username}.${pkg.name}' }
-//
-// 	log.info()
-// 		.add('author', usr.id)
-// 		.add('package', pkg.id)
-// 		.add('is_flatten', pkg.is_flatten)
-// 		.add('name', name)
-// 		.msg('old package')
-//
-// 	return entity.OldPackage{
-// 		id: pkg.id
-// 		name: name
-// 		vcs: pkg.vcs
-// 		url: pkg.url
-// 		nr_downloads: pkg.downloads
-// 	}
-// }
-//
-// pub fn (u UseCase) full_package(username string, package string) ?entity.FullPackage {
-// 	usr := u.user.get_by_username(username)?
-// 	pkg := u.package.get(usr.id, package)?
-//
-// 	log.info()
-// 		.add('author', usr.id)
-// 		.add('package', pkg.id)
-// 		.add('is_flatten', pkg.is_flatten)
-// 		.msg('full package')
-//
-// 	return u.to_full_package(pkg)
-// }
-//
-// pub fn (u UseCase) packages_view() ?entity.PackagesView {
-// 	return error('not implemented')
-// }
-//
-// pub fn (u UseCase) search(query string, category string, order_by OrderBy, page int) ?([]entity.FullPackage, int) {
-// 	mut full_packages := []entity.FullPackage{}
-// 	total := 0
-// 	return full_packages, total
-// }
-//
-// pub fn (u UseCase) update(package entity.Package) ?entity.Package {
-// 	// TODO: repeat process of create method
-// 	return error('not implemented')
-// }
-//
-// fn (u UseCase) to_full_package(package entity.Package) ?entity.FullPackage {
-// 	author := u.user.get(package.author_id)?
-// 	categories := u.category.get_by_package_id(package.id)?
-//
-// 	return entity.FullPackage{
-// 		Package: package
-// 		author: author
-// 		categories: categories
-// 	}
-// }

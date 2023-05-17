@@ -2,8 +2,8 @@
 
 <script>
     function delete_package(package_id) {
-        fetch("/delete_package/" + package_id, {
-            method: "POST",
+        fetch("/api/packages/id/" + package_id, {
+            method: "DELETE",
             headers: {'Content-Type': 'application/json'},
         }).then(res => {
             window.location.reload();
@@ -24,14 +24,14 @@
 </header>
 
 <div class="my-6 md:max-w-3xl mx-auto flex flex-col md:flex-row gap-4 items-center">
-    <a href="/search" class="button primary">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+    <a class="button primary" href="/search">
+        <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
             <use href="#browse_icon"></use>
         </svg>
         Browse packages
     </a>
-    <a href="/new" class="button primary">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+    <a class="button primary" href="/new">
+        <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
             <use href="#plus_icon"></use>
         </svg>
         Submit a package
@@ -63,16 +63,14 @@
 <div class="grid grid-cols-1 gap-0" id="content-container">
     <div class="hidden content-selector relative z-[1] md:flex md:justify-center md:gap-12 ">
         <button class="content-section-btn" onclick="setActive(0)">New packages</button>
-        <button class="content-section-btn"
-        " onclick="setActive(1)">Most downloaded</button>
-        <button class="content-section-btn"
-        " onclick="setActive(2)">Recently updated</button>
+        <button class="content-section-btn" onclick="setActive(1)">Most downloaded</button>
+        <button class="content-section-btn" onclick="setActive(2)">Recently updated</button>
         <span class="active-border"></span>
     </div>
     <!-- Select on mobile -->
     <div class="md:hidden content-selector relative z-[1] flex justify-center p-6 w-full">
-        <select name="content-selector" class="primary" id="mobile-content-selector" onchange="onSelectChange()">
-            <option value="0" selected>New packages</option>
+        <select class="primary" id="mobile-content-selector" name="content-selector" onchange="onSelectChange()">
+            <option selected value="0">New packages</option>
             <option value="1">Most downloaded</option>
             <option value="2">Recently updated</option>
         </select>

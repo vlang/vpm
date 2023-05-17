@@ -1,11 +1,26 @@
 module main
 
 import vweb
-import net.http
+import entity
+
+const basic_categories = [
+	entity.Category{
+		name: 'Command line tools'
+	},
+	entity.Category{
+		name: 'Networking'
+	},
+	entity.Category{
+		name: 'Game development'
+	},
+	entity.Category{
+		name: 'Web programming'
+	},
+]
 
 ['/api/packages'; post]
 pub fn (mut app App) api_create_package(name string, vcsUrl string, description string) vweb.Result {
-	app.packages.create(name, vcsUrl, description, app.cur_user) or { return app.json(err) }
+	app.packages.create(name, vcsUrl, description, app.cur_user) or { return app.json(err.msg()) }
 
 	return app.ok('ok')
 }
@@ -13,13 +28,13 @@ pub fn (mut app App) api_create_package(name string, vcsUrl string, description 
 ['/api/packages/id/:package_id'; delete]
 pub fn (mut app App) delete_package(package_id int) vweb.Result {
 	if !app.is_logged_in() {
-		app.set_status(401, http.Status.unauthorized)
+		app.set_status(401, 'Unauthorized')
 		return app.json({
 			'error': 'you must be logged in to delete a package'
 		})
 	}
 
-	app.packages.delete(package_id, app.cur_user) or { return app.not_found() }
+	app.packages.delete(package_id, app.cur_user.id) or { return app.not_found() }
 
 	return app.ok('ok')
 }

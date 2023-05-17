@@ -2,6 +2,7 @@ module entity
 
 import time
 
+[json: 'user']
 pub struct User {
 pub mut:
 	id         int    [primary; sql: serial]

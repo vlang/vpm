@@ -28,7 +28,6 @@ pub mut:
 }
 
 pub fn (package FullPackage) format_name() string {
-	println('username="${package.author.username}"')
 	return if package.is_flatten {
 		package.name
 	} else {
