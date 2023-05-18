@@ -49,7 +49,8 @@ fn (p PackagesRepo) find_by_query(query string) []entity.Package {
 
 	log.info()
 		.add('count', pkgs.len)
-		.msg('found pkgs by query "${q}"')
+		.add("query", q)
+		.msg('found pkgs by query')
 
 	return pkgs
 }
