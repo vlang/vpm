@@ -17,7 +17,6 @@ struct Package {
 	user_id       int
 	author        User      [fkey: 'id']
 	stars         int
-	downloads     int
 	is_flatten    bool // No need to mention author of package, example `ui`
 	updated_at    time.Time = time.now()
 	created_at    time.Time = time.now()
@@ -34,7 +33,7 @@ fn (mut app App) find_all_packages() []Package {
 fn (mut app App) find_all_packages_by_query(query string) []Package {
 	q := '%' + query + '%'
 	pkgs := sql app.db {
-		select from Package where name like q order by nr_downloads desc
+		select from Package where name like q
 	} or { [] }
 	println('found pkgs by query "${q}": ${pkgs.len}')
 	return pkgs
