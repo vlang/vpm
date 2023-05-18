@@ -36,6 +36,7 @@ pub fn (mut app App) is_logged_in() bool {
 		.add('user id', app.cur_user.id)
 		.add('username', app.cur_user.username)
 		.msg('user is logged in')
+
 	return app.cur_user.username != ''
 }
 
@@ -43,12 +44,14 @@ pub fn (mut app App) format_nr_packages() string {
 	if app.nr_packages == 1 {
 		return '${app.nr_packages} package'
 	}
+
 	return '${app.nr_packages} packages'
 }
 
 fn (mut app App) new() vweb.Result {
 	logged_in := app.cur_user.username != ''
 	log.info().msg('new() loggedin: ${logged_in}')
+
 	return $vweb.html()
 }
 
@@ -78,5 +81,6 @@ pub fn (mut app App) create_package(name string, url string, description string)
 
 		return app.new()
 	}
+
 	return app.redirect('/')
 }

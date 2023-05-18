@@ -35,7 +35,7 @@ fn (p PackagesRepo) all() []entity.Package {
 	} or { [] }
 
 	log.info()
-		.add("package count", pkgs.len)
+		.add('package count', pkgs.len)
 		.msg('all pkgs')
 
 	return pkgs
@@ -48,7 +48,7 @@ fn (p PackagesRepo) find_by_query(query string) []entity.Package {
 	} or { [] }
 
 	log.info()
-		.add("count", pkgs.len)
+		.add('count', pkgs.len)
 		.msg('found pkgs by query "${q}"')
 
 	return pkgs
