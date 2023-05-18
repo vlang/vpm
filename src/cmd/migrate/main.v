@@ -20,6 +20,8 @@ struct OldUser {
 	random_id string
 }
 
+const config_file = './config.toml'
+
 fn main() {
 	conf := config.parse_file(config_file) or {
 		println(err)
@@ -37,7 +39,7 @@ fn main() {
 	migrate_old_packages(db)!
 }
 
-fn migrate_old_packages(db pg) ! {
+fn migrate_old_packages(db pg.DB) ! {
 	old_mods := sql db {
 		select from Mod
 	}!
