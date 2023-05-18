@@ -2,7 +2,7 @@ module app
 
 import time
 import vweb
-import entity
+import app_unused.entity
 import lib.github
 import lib.jwt
 import lib.log

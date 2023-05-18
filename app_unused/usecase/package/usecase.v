@@ -1,8 +1,8 @@
 module package
 
 import config
-import entity
-import repo
+import app_unused.entity
+import app_unused.repo
 import lib.log
 
 // Used in search and packages view (index page)

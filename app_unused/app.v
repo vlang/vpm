@@ -4,9 +4,9 @@ import pg
 import vweb
 import config
 import lib.log
-import repo
-import usecase.package
-import usecase.user
+import app_unused.repo
+import app_unused.usecase.package
+import app_unused.usecase.user
 
 [heap]
 struct Ctx {
