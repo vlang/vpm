@@ -1,31 +1,28 @@
 @include 'header.html'
 <div class="w-full md:p-0 md:w-[512px] md:mx-auto">
 
-    <h1>
-        Submit a package
-    </h1>
+	<h1>
+		Submit a package
+	</h1>
 
-    @if app.form_error.len>0
-    <p>@app.form_error</p>
-    @end
+	@if app.form_error.len>0
+	<p>@app.form_error</p>
+	@end
 
-    @if !logged_in
-    <a href='https://github.com/login/oauth/authorize?response_type=code&client_id=3c7c2836a3afa00cd79e'
-    >Log in via GitHub</a>
+	@if !logged_in
+		<a href='https://github.com/login/oauth/authorize?response_type=code&client_id=3c7c2836a3afa00cd79e'
+		>Log in via GitHub</a>
 
-    @else
-    <form action='/create_package' class="w-full flex flex-col gap-4 mt-4" method='POST'>
-        <input class="p-2 rounded-lg border border-light-grey" maxlength=10 name='name' pattern="[A-Za-z0-9]+"
-               placeholder='Package name' required
-               title="Only letters and numbers are allowed" type='text'>
-        <input class="p-2 rounded-lg border border-light-grey" maxlength=50 name='url' pattern='(https://github.com/)(.*?)' placeholder='GitHub URL'
-               required
-               title='Only GitHub repositories are allowed for now' type='url'>
-        <textarea class="p-2 rounded-lg border border-light-grey" maxlength=800 name='description'
-                  placeholder='Module description' required rows="10"></textarea>
-        <input class="button primary cursor-pointer" type='submit' value='Submit'>
-    </form>
-    @end
+	@else
+		<form class="w-full flex flex-col gap-4 mt-4" action='/create_package' method='POST'>
+			<input class="p-2 rounded-lg border border-light-grey" type='text' placeholder='Package name' required maxlength=10 pattern="[A-Za-z0-9]+"
+				title="Only letters and numbers are allowed" name='name'>
+			<input class="p-2 rounded-lg border border-light-grey" type='url' placeholder='GitHub URL' required maxlength=50 name='url'
+				pattern='(https://github.com/)(.*?)' title='Only GitHub repositories are allowed for now' >
+			<textarea class="p-2 rounded-lg border border-light-grey" name='description' rows="10" placeholder='Module description' required maxlength=800></textarea>
+			<input class="button primary cursor-pointer" type='submit' value='Submit'>
+		</form>
+	@end
 </div>
 
 <!--

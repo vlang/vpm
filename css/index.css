@@ -117,6 +117,9 @@
     .package-card__title {
         @apply mb-1 block font-bold text-medium text-primary overflow-hidden whitespace-nowrap overflow-ellipsis;
     }
+    .package-card__description {
+        @apply line-clamp-2 h-12;
+    }
 
     .package {
         @apply border-b border-light-grey px-1 py-4;

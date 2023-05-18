@@ -5,7 +5,7 @@
     				<span class='btn_delete' onclick='delete_package(@pkg.id)'>❌</span>
     			@end
     			-->
-    <p class="package-card__description mb-2 block text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">
+    <p class="package-card__description mb-2 text-small text-sub overflow-ellipsis">
         @pkg.description
     </p>
     <div class="flex gap-4 items-center text-sub font-bold overflow-hidden">
@@ -16,10 +16,10 @@
             @pkg.stars
         </div>
         <div class="package-card__last-update flex gap-2 whitespace-nowrap">
-            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
                 <use href="#download_icon"></use>
             </svg>
-            @pkg.downloads
+            @pkg.nr_downloads
         </div>
     </div>
     <!--

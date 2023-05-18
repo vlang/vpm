@@ -1,7 +1,7 @@
 module app
 
 import vweb
-import entity
+import app_unused.entity
 import lib.log
 
 const search_results_mock = [
