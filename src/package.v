@@ -47,9 +47,17 @@ pub fn (mut app App) get_package_by_name(name string) vweb.Result {
 	return app.json(package)
 }
 
-// TODO: Delete jsmod after V install command is updated to use the new get_package_by_name and incr_downloads endpoints
+['/api/packages/:name/incr_downloads'; post]
+pub fn (mut app App) incr_downloads(name string) vweb.Result {
+	app.packages.incr_downloads(name) or { return app.json('404') }
+
+	return app.ok('ok')
+}
+
+// TODO: Delete jsmod and delete_package_deprecated some time after V is updated to use the new API endpoints
+
 ['/jsmod/:name']
-pub fn (mut app App) jsmod(name string) vweb.Result {
+pub fn (mut app App) jsmod_deprecated(name string) vweb.Result {
 	log.info()
 		.add('name', name)
 		.msg('jsMOD')
@@ -58,9 +66,7 @@ pub fn (mut app App) jsmod(name string) vweb.Result {
 	return app.json(package)
 }
 
-['/api/packages/:name/incr_downloads'; post]
-pub fn (mut app App) incr_downloads(name string) vweb.Result {
-	app.packages.incr_downloads(name) or { return app.json('404') }
-
-	return app.ok('ok')
+['/delete_package/:package_id'; post]
+pub fn (mut app App) delete_package_deprecated(package_id int) vweb.Result {
+	return app.delete_package(package_id)
 }
