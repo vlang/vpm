@@ -6,7 +6,7 @@
     			@end
     			-->
     <p class="package-card__description mb-2 text-small text-sub overflow-ellipsis">
-        @pkg.description
+        @pkg.description<br>
     </p>
     <div class="flex gap-4 items-center text-sub font-bold overflow-hidden">
         <div class="package-card__stars flex gap-2 whitespace-nowrap">
@@ -16,7 +16,7 @@
             @pkg.stars
         </div>
         <div class="package-card__last-update flex gap-2 whitespace-nowrap">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                 <use href="#download_icon"></use>
             </svg>
             @pkg.nr_downloads

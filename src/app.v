@@ -79,6 +79,7 @@ pub fn (mut app App) create_package(name string, url string, description string)
 			.add('user_id', app.cur_user.id)
 			.msg('error creating package')
 
+		app.error(err.msg())
 		return app.new()
 	}
 

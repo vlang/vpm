@@ -1,17 +1,5 @@
 @include 'header.html'
 
-<script>
-    function delete_package(package_id) {
-        fetch("/api/packages/id/" + package_id, {
-            method: "DELETE",
-            headers: {'Content-Type': 'application/json'},
-        }).then(res => {
-            window.location.reload();
-            //document.getElementById('package' + package_id).remove() ;
-        });
-    }
-</script>
-
 <header class="flex gap-4 flex-col md:max-w-3xl mx-auto">
     <h1>
         Package Manager for the <span class="text-primary">V</span> Language

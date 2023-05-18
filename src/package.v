@@ -2,6 +2,7 @@ module main
 
 import vweb
 import entity
+import lib.log
 
 const basic_categories = [
 	entity.Category{
@@ -43,6 +44,17 @@ pub fn (mut app App) delete_package(package_id int) vweb.Result {
 pub fn (mut app App) get_package_by_name(name string) vweb.Result {
 	package := app.packages.get(name) or { return app.json('404') }
 
+	return app.json(package)
+}
+
+// TODO: Delete jsmod after V install command is updated to use the new get_package_by_name and incr_downloads endpoints
+['/jsmod/:name']
+pub fn (mut app App) jsmod(name string) vweb.Result {
+	log.info()
+		.add('name', name)
+		.msg('jsMOD')
+
+	package := app.packages.get(name) or { return app.json('404') }
 	return app.json(package)
 }
 

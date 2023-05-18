@@ -49,7 +49,7 @@ fn (p PackagesRepo) find_by_query(query string) []entity.Package {
 
 	log.info()
 		.add('count', pkgs.len)
-		.add("query", q)
+		.add('query', q)
 		.msg('found pkgs by query')
 
 	return pkgs
@@ -102,14 +102,14 @@ pub fn (p PackagesRepo) delete(package_id int, user_id int) ! {
 pub fn (p PackagesRepo) create_package(package entity.Package) ! {
 	for bad_name in repo.banned_names {
 		if package.name.contains(bad_name) {
-			return error('package name contains banned word ${bad_name}')
+			return error('Package name contains banned word ${bad_name}')
 		}
 	}
 	if package.url.contains(' ') || package.url.contains('%') || package.url.contains('<') {
-		return error('package url contains invalid characters')
+		return error('Package url contains invalid characters')
 	}
 	if package.vcs !in repo.supported_vcs_systems {
-		return error('package vcs system ${package.vcs} is not supported')
+		return error('Package vcs system ${package.vcs} is not supported')
 	}
 	sql p.db {
 		insert package into entity.Package
