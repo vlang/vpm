@@ -24,8 +24,8 @@ fn compare_packages(a &entity.Package, b &entity.Package) int {
 		return if a.stars > b.stars { -1 } else { 1 }
 	}
 
-	if a.downloads != b.downloads {
-		return if a.downloads > b.downloads { -1 } else { 1 }
+	if a.nr_downloads != b.nr_downloads {
+		return if a.nr_downloads > b.nr_downloads { -1 } else { 1 }
 	}
 
 	if a.updated_at != b.updated_at {

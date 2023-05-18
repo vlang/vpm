@@ -31,7 +31,7 @@ pub mut:
 
 fn (p PackagesRepo) all() []entity.Package {
 	pkgs := sql p.db {
-		select from entity.Package order by downloads desc
+		select from entity.Package order by nr_downloads desc
 	} or { [] }
 
 	log.info()
@@ -68,10 +68,11 @@ fn (p PackagesRepo) count_by_user(user_id int) int {
 }
 
 fn (p PackagesRepo) find_by_user(user_id int) []entity.Package {
-	mod := sql p.db {
-		select from entity.Package where user_id == user_id order by downloads desc
+	package := sql p.db {
+		select from entity.Package where user_id == user_id order by nr_downloads desc
 	} or { [] }
-	return mod
+
+	return package
 }
 
 fn (p PackagesRepo) get(name string) !entity.Package {
@@ -87,7 +88,7 @@ fn (p PackagesRepo) get(name string) !entity.Package {
 
 fn (p PackagesRepo) incr_downloads(name string) ! {
 	sql p.db {
-		update entity.Package set downloads = downloads + 1 where name == name
+		update entity.Package set nr_downloads = nr_downloads + 1 where name == name
 	} or { return err }
 }
 
@@ -134,6 +135,6 @@ pub fn (p PackagesRepo) get_new_packages() []entity.Package {
 
 pub fn (p PackagesRepo) get_most_downloaded_packages() []entity.Package {
 	return sql p.db {
-		select from entity.Package order by downloads limit 10
+		select from entity.Package order by nr_downloads limit 10
 	} or { [] }
 }
