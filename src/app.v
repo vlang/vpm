@@ -6,11 +6,8 @@ import entity
 
 pub fn (mut app App) before_request() {
 	app.recently_updated_packages = app.packages.get_recently_updated_packages()
-
 	app.nr_packages = app.packages.get_packages_count()
-
 	app.new_packages = app.packages.get_new_packages()
-
 	app.most_downloaded_packages = app.packages.get_most_downloaded_packages()
 	app.auth()
 }
