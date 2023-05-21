@@ -1,20 +1,20 @@
 module main
 
 import vweb
-import entity
+import entity { Category }
 import lib.log
 
 const basic_categories = [
-	entity.Category{
+	Category{
 		name: 'Command line tools'
 	},
-	entity.Category{
+	Category{
 		name: 'Networking'
 	},
-	entity.Category{
+	Category{
 		name: 'Game development'
 	},
-	entity.Category{
+	Category{
 		name: 'Web programming'
 	},
 ]

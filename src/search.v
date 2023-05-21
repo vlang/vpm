@@ -1,7 +1,7 @@
 module main
 
 import vweb
-import entity
+import entity { Package }
 
 pub fn (mut app App) search() vweb.Result {
 	query := app.query['q']
@@ -12,7 +12,7 @@ pub fn (mut app App) search() vweb.Result {
 	return $vweb.html()
 }
 
-fn sort_packages(unsorted_packages []entity.Package) []entity.Package {
+fn sort_packages(unsorted_packages []Package) []Package {
 	mut packages := unsorted_packages.clone()
 
 	packages.sort_with_compare(compare_packages)
@@ -20,7 +20,7 @@ fn sort_packages(unsorted_packages []entity.Package) []entity.Package {
 	return packages
 }
 
-fn compare_packages(a &entity.Package, b &entity.Package) int {
+fn compare_packages(a &Package, b &Package) int {
 	if a.stars != b.stars {
 		return if a.stars > b.stars { -1 } else { 1 }
 	}

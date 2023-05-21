@@ -4,7 +4,7 @@ import vweb
 import db.pg
 import config
 import repo
-import entity
+import entity { Package, User }
 import usecase.package
 import usecase.user
 
@@ -12,14 +12,14 @@ struct App {
 	vweb.Context
 	config config.Config [vweb_global]
 pub mut:
-	db                        pg.DB            [vweb_global]
-	cur_user                  entity.User      [vweb_global]
-	packages                  package.UseCase  [vweb_global]
-	users                     user.UseCase     [vweb_global]
+	db                        pg.DB           [vweb_global]
+	cur_user                  User            [vweb_global]
+	packages                  package.UseCase [vweb_global]
+	users                     user.UseCase    [vweb_global]
 	nr_packages               int
-	recently_updated_packages []entity.Package
-	most_downloaded_packages  []entity.Package
-	new_packages              []entity.Package
+	recently_updated_packages []Package
+	most_downloaded_packages  []Package
+	new_packages              []Package
 }
 
 const config_file = './config.toml'
@@ -58,14 +58,14 @@ fn main() {
 	}
 
 	sql app.db {
-		create table entity.Package
+		create table Package
 	}!
 	sql app.db {
-		create table entity.User
+		create table User
 	}!
 
 	if conf.is_dev {
-		app.cur_user = entity.User{
+		app.cur_user = User{
 			username: conf.dev_user
 			is_admin: true
 		}

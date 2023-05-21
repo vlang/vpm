@@ -2,7 +2,7 @@ module main
 
 import db.pg
 import config
-import entity
+import entity { Package, User }
 
 // Old definition
 struct Mod {
@@ -64,19 +64,19 @@ fn migrate_old_packages(db pg.DB) ! {
 			continue
 		}
 
-		new_user := entity.User{
+		new_user := User{
 			username: user.name
 			random_id: user.random_id
 		}
 		sql db {
-			insert new_user into entity.User
+			insert new_user into User
 		} or {}
 
 		new_user2 := sql db {
-			select from entity.User where username == username
+			select from User where username == username
 		}!
 
-		pkg := entity.Package{
+		pkg := Package{
 			name: mod.name
 			description: mod.description
 			url: mod.url
@@ -85,7 +85,7 @@ fn migrate_old_packages(db pg.DB) ! {
 			user_id: new_user2[0].id
 		}
 		sql db {
-			insert pkg into entity.Package
+			insert pkg into Package
 		} or { continue }
 	}
 }

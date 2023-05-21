@@ -2,7 +2,7 @@ module main
 
 import vweb
 import lib.log
-import entity
+import entity { Category }
 
 pub fn (mut app App) before_request() {
 	app.recently_updated_packages = app.packages.get_recently_updated_packages()
@@ -13,7 +13,7 @@ pub fn (mut app App) before_request() {
 }
 
 pub fn (mut app App) index() vweb.Result {
-	categories := []entity.Category{}
+	categories := []Category{}
 	app.set_cookie(
 		name: 'vpm'
 		value: '777'

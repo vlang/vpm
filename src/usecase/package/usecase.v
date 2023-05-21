@@ -1,6 +1,6 @@
 module package
 
-import entity
+import entity { Package, User }
 import lib.log
 import net.http
 import repo
@@ -32,7 +32,7 @@ pub struct UseCase {
 	packages repo.Packages
 }
 
-pub fn (u UseCase) create(name string, vcsUrl string, description string, user entity.User) ! {
+pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
 	name_lower := name.to_lower()
 	log.info().add('name', name).msg('create package')
 	if user.username == '' || !is_valid_mod_name(name_lower) {
@@ -59,7 +59,7 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user e
 		return error('This URL has already been submitted')
 	}
 
-	u.packages.create_package(entity.Package{
+	u.packages.create_package(Package{
 		name: user.username + '.' + name.limit(package.max_name_len)
 		url: url
 		description: description
@@ -70,7 +70,7 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user e
 	return
 }
 
-pub fn (u UseCase) get(name string) !entity.Package {
+pub fn (u UseCase) get(name string) !Package {
 	return u.packages.get(name)
 }
 
@@ -78,11 +78,11 @@ pub fn (u UseCase) delete(package_id int, user_id int) ! {
 	return u.packages.delete(package_id, user_id)
 }
 
-pub fn (u UseCase) query(query string) []entity.Package {
+pub fn (u UseCase) query(query string) []Package {
 	return u.packages.find_by_query(query)
 }
 
-pub fn (u UseCase) find_by_user(user_id int) []entity.Package {
+pub fn (u UseCase) find_by_user(user_id int) []Package {
 	return u.packages.find_by_user(user_id)
 }
 
@@ -90,7 +90,7 @@ pub fn (u UseCase) incr_downloads(name string) ! {
 	return u.packages.incr_downloads(name)
 }
 
-pub fn (u UseCase) get_recently_updated_packages() []entity.Package {
+pub fn (u UseCase) get_recently_updated_packages() []Package {
 	return u.packages.get_recently_updated_packages()
 }
 
@@ -98,11 +98,11 @@ pub fn (u UseCase) get_packages_count() int {
 	return u.packages.get_packages_count()
 }
 
-pub fn (u UseCase) get_new_packages() []entity.Package {
+pub fn (u UseCase) get_new_packages() []Package {
 	return u.packages.get_new_packages()
 }
 
-pub fn (u UseCase) get_most_downloaded_packages() []entity.Package {
+pub fn (u UseCase) get_most_downloaded_packages() []Package {
 	return u.packages.get_most_downloaded_packages()
 }
 
