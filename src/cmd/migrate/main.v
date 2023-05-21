@@ -1,5 +1,9 @@
 module main
 
+import db.pg
+import config
+import entity { Package, User }
+
 // Old definition
 struct Mod {
 	id           int    [primary; sql: serial]
@@ -16,8 +20,27 @@ struct OldUser {
 	random_id string
 }
 
-fn (mut app App) migrate_old_modules() ! {
-	old_mods := sql app.db {
+const config_file = './config.toml'
+
+fn main() {
+	conf := config.parse_file(config_file) or {
+		println(err)
+		exit(1)
+	}
+
+	db := pg.connect(pg.Config{
+		host: conf.pg.host
+		dbname: conf.pg.db
+		user: conf.pg.user
+		password: conf.pg.password
+		port: conf.pg.port
+	}) or { panic(err) }
+
+	migrate_old_packages(db)!
+}
+
+fn migrate_old_packages(db pg.DB) ! {
+	old_mods := sql db {
 		select from Mod
 	}!
 	for mod in old_mods {
@@ -28,7 +51,7 @@ fn (mut app App) migrate_old_modules() ! {
 			'medvednikov'
 		}
 
-		old_users := sql app.db {
+		old_users := sql db {
 			select from OldUser where name == username
 		}!
 		if old_users.len == 0 {
@@ -45,11 +68,11 @@ fn (mut app App) migrate_old_modules() ! {
 			username: user.name
 			random_id: user.random_id
 		}
-		sql app.db {
+		sql db {
 			insert new_user into User
 		} or {}
 
-		new_user2 := sql app.db {
+		new_user2 := sql db {
 			select from User where username == username
 		}!
 
@@ -61,7 +84,7 @@ fn (mut app App) migrate_old_modules() ! {
 			vcs: mod.vcs
 			user_id: new_user2[0].id
 		}
-		sql app.db {
+		sql db {
 			insert pkg into Package
 		} or { continue }
 	}

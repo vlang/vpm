@@ -1,7 +1,8 @@
-module main
+module entity
 
 import time
 
+[json: 'user']
 pub struct User {
 pub mut:
 	id         int    [primary; sql: serial]
@@ -17,14 +18,4 @@ pub mut:
 
 	created_at time.Time = time.now()
 	updated_at time.Time = time.now()
-}
-
-fn (app &App) retrieve_user(id int, random_id string) ?User {
-	users := sql app.db {
-		select from User where id == id && random_id == random_id
-	} or { return none }
-	if users.len == 0 {
-		return none
-	}
-	return users[0]
 }

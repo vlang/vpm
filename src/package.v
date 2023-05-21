@@ -1,100 +1,72 @@
 module main
 
-import time
+import vweb
+import entity { Category }
+import lib.log
 
-const banned_names = ['xxx']
+const basic_categories = [
+	Category{
+		name: 'Command line tools'
+	},
+	Category{
+		name: 'Networking'
+	},
+	Category{
+		name: 'Game development'
+	},
+	Category{
+		name: 'Web programming'
+	},
+]
 
-const supported_vcs_systems = ['git', 'hg']
+['/api/packages'; post]
+pub fn (mut app App) api_create_package(name string, vcsUrl string, description string) vweb.Result {
+	app.packages.create(name, vcsUrl, description, app.cur_user) or { return app.json(err.msg()) }
 
-struct Package {
-	id            int       [primary; sql: serial]
-	name          string    [unique]
-	description   string
-	documentation string
-	url           string
-	nr_downloads  int
-	vcs           string = 'git'
-	user_id       int
-	author        User      [fkey: 'id']
-	stars         int
-	is_flatten    bool // No need to mention author of package, example `ui`
-	updated_at    time.Time = time.now()
-	created_at    time.Time = time.now()
+	return app.ok('ok')
 }
 
-fn (mut app App) find_all_packages() []Package {
-	pkgs := sql app.db {
-		select from Package order by nr_downloads desc
-	} or { [] }
-	println('all pkgs ${pkgs.len}')
-	return pkgs
-}
-
-fn (mut app App) find_all_packages_by_query(query string) []Package {
-	q := '%' + query + '%'
-	pkgs := sql app.db {
-		select from Package where name like q
-	} or { [] }
-	println('found pkgs by query "${q}": ${pkgs.len}')
-	return pkgs
-}
-
-fn (mut app App) nr_packages_by_this_user(user_id int) int {
-	nr_pkgs := sql app.db {
-		select count from Package where user_id == user_id
-	} or { 0 }
-	return nr_pkgs
-}
-
-fn (mut app App) find_user_packages(user_id int) []Package {
-	mod := sql app.db {
-		select from Package where user_id == user_id order by nr_downloads desc
-	} or { [] }
-	return mod
-}
-
-fn (app &App) retrieve_package(name string) !Package {
-	rows := sql app.db {
-		select from Package where name == name
-	}!
-
-	if rows.len == 0 {
-		return error('Found no module with name "${name}"')
+['/api/packages/id/:package_id'; delete]
+pub fn (mut app App) delete_package(package_id int) vweb.Result {
+	if !app.is_logged_in() {
+		app.set_status(401, 'Unauthorized')
+		return app.json({
+			'error': 'you must be logged in to delete a package'
+		})
 	}
-	return rows[0]
+
+	app.packages.delete(package_id, app.cur_user.id) or { return app.not_found() }
+
+	return app.ok('ok')
 }
 
-fn (app &App) inc_nr_downloads(name string) {
-	sql app.db {
-		update Package set nr_downloads = nr_downloads + 1 where name == name
-	} or {}
+['/api/packages/:name']
+pub fn (mut app App) get_package_by_name(name string) vweb.Result {
+	package := app.packages.get(name) or { return app.json('404') }
+
+	return app.json(package)
 }
 
-fn (app &App) insert_module(mod Package) {
-	for bad_name in banned_names {
-		if mod.name.contains(bad_name) {
-			return
-		}
-	}
-	if mod.url.contains(' ') || mod.url.contains('%') || mod.url.contains('<') {
-		return
-	}
-	if mod.vcs !in supported_vcs_systems {
-		return
-	}
-	sql app.db {
-		insert mod into Package
-	} or {}
+['/api/packages/:name/incr_downloads'; post]
+pub fn (mut app App) incr_downloads(name string) vweb.Result {
+	app.packages.incr_downloads(name) or { return app.json('404') }
+
+	return app.ok('ok')
 }
 
-fn clean_url(s string) string {
-	return s.replace(' ', '-').to_lower()
+// TODO: Delete jsmod and delete_package_deprecated some time after V is updated to use the new API endpoints
+
+['/jsmod/:name']
+pub fn (mut app App) jsmod_deprecated(name string) vweb.Result {
+	log.info()
+		.add('name', name)
+		.msg('jsMOD')
+
+	package := app.packages.get(name) or { return app.json('404') }
+	return app.json(package)
 }
 
-pub fn (p Package) format_name() string {
-	return p.name
-}
-
-pub fn (app &App) package_belongs_to_cur_user(p Package) bool {
-	return p.user_id == app.cur_user.id
+['/delete_package/:package_id'; post]
+pub fn (mut app App) delete_package_deprecated(package_id int) vweb.Result {
+	return app.delete_package(package_id)
 }

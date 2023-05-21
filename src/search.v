@@ -1,11 +1,12 @@
 module main
 
 import vweb
+import entity { Package }
 
 pub fn (mut app App) search() vweb.Result {
-	q := app.query['q']
-	title := if q == '' { 'All Packages' } else { 'Search Results' }
-	unsorted_packages := app.find_all_packages_by_query(q)
+	query := app.query['q']
+	title := if query == '' { 'All Packages' } else { 'Search Results' }
+	unsorted_packages := app.packages.query(query)
 	packages := sort_packages(unsorted_packages) // NOTE: packages variable is used in search.html template
 
 	return $vweb.html()
