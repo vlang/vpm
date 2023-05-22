@@ -16,6 +16,20 @@ pub fn get_repo_by_id(id int) !Repository {
 	return json2.decode[Repository](res.body)
 }
 
+pub fn get_repo_by_username_and_name(username string, name string) !Repository {
+	res := http.fetch(
+		method: .get
+		url: github.api + '/repos/${username}/${name}'
+		user_agent: 'vpm'
+	)!
+
+	if res.status() != .ok {
+		return error('status not ok: ${res.status()}, ${res.body}')
+	}
+
+	return json2.decode[Repository](res.body)
+}
+
 pub struct Client {
 	authorization string
 }
