@@ -4,8 +4,6 @@ import entity { Package, User }
 import lib.log
 import net.http
 import repo
-import app
-import lib.github
 
 // Used in search and packages view (index page)
 pub const per_page = 6
@@ -71,12 +69,18 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 		return error('This URL has already been submitted')
 	}
 
+	// repository_data := github.get_repo_by_username_and_name(package_author_name, url.all_after_last('/')) or {
+	// 	app.error('Failed to fetch repository data from GitHub')
+	// 	return app.new()
+	// }
+
 	u.packages.create_package(Package{
 		name: package_author_name + '.' + name.limit(package.max_name_len)
 		url: url
 		short_description: description
 		vcs: vcs_name.limit(3)
 		user_id: user.id
+		readme_file_content_url: 'https://raw.githubusercontent.com/${package_author_name}/${url.all_after_last('/')}/main/README.md'
 	}) or { return err }
 
 	return
