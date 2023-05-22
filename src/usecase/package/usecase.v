@@ -74,7 +74,7 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 	u.packages.create_package(Package{
 		name: package_author_name + '.' + name.limit(package.max_name_len)
 		url: url
-		description: description
+		short_description: description
 		vcs: vcs_name.limit(3)
 		user_id: user.id
 	}) or { return err }

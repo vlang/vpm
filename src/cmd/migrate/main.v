@@ -78,7 +78,7 @@ fn migrate_old_packages(db pg.DB) ! {
 
 		pkg := Package{
 			name: mod.name
-			description: mod.description
+			short_description: mod.description
 			url: mod.url
 			nr_downloads: mod.nr_downloads
 			vcs: mod.vcs
