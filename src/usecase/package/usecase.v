@@ -4,6 +4,8 @@ import entity { Package, User }
 import lib.log
 import net.http
 import repo
+import app
+import lib.github
 
 // Used in search and packages view (index page)
 pub const per_page = 6
@@ -35,19 +37,28 @@ pub struct UseCase {
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
 	name_lower := name.to_lower()
 	log.info().add('name', name).msg('create package')
-	if user.username == '' || !is_valid_mod_name(name_lower) {
-		return error('not valid mod name cur_user="${user.username}"')
+
+	mut package_author_name := user.username
+
+	if package_author_name == '' || !is_valid_mod_name(name_lower) {
+		return error('not valid mod name cur_user="${package_author_name}"')
 	}
 
 	url := vcsUrl.replace('<', '&lt;').limit(50)
 	log.info().add('url', name).msg('create package')
 
-	vcs_name := check_vcs(url, user.username) or { return err }
-
 	resp := http.get(url) or { return error('Failed to fetch package URL') }
+
 	if resp.status_code == 404 {
 		return error('This package URL does not exist (404)')
 	}
+
+	// NOTE: Allow admin to add modules that are not under their own GitHub account
+	if user.is_admin == true {
+		package_author_name = url.all_after('https://github.com/').split('/')[0]
+	}
+
+	vcs_name := check_vcs(url, package_author_name) or { return err }
 
 	if u.packages.count_by_user(user.id) > 100 {
 		return error('One user can submit no more than 100 packages')
@@ -55,12 +66,13 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 
 	// Make sure the URL is unique
 	existing := u.packages.find_by_url(url)
+
 	if existing.len > 0 {
 		return error('This URL has already been submitted')
 	}
 
 	u.packages.create_package(Package{
-		name: user.username + '.' + name.limit(package.max_name_len)
+		name: package_author_name + '.' + name.limit(package.max_name_len)
 		url: url
 		description: description
 		vcs: vcs_name.limit(3)
