@@ -52,7 +52,7 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 	}
 
 	// NOTE: Allow admin to add modules that are not under their own GitHub account
-	if user.is_admin == true {
+	if user.is_admin {
 		package_author_name = url.all_after('https://github.com/').split('/')[0]
 	}
 
