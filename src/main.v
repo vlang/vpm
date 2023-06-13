@@ -8,6 +8,8 @@ import entity { Package, User }
 import usecase.package
 import usecase.user
 
+const max_package_url_len = 75
+
 struct App {
 	vweb.Context
 	config config.Config [vweb_global]
