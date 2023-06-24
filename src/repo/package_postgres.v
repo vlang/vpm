@@ -130,12 +130,12 @@ pub fn (p PackagesRepo) get_packages_count() int {
 
 pub fn (p PackagesRepo) get_new_packages() []Package {
 	return sql p.db {
-		select from Package order by created_at limit 10
+		select from Package order by created_at desc limit 10
 	} or { [] }
 }
 
 pub fn (p PackagesRepo) get_most_downloaded_packages() []Package {
 	return sql p.db {
-		select from Package order by nr_downloads limit 10
+		select from Package order by nr_downloads desc limit 10
 	} or { [] }
 }
