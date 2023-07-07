@@ -136,6 +136,6 @@ pub fn (p PackagesRepo) get_new_packages() []Package {
 
 pub fn (p PackagesRepo) get_most_downloaded_packages() []Package {
 	return sql p.db {
-		select from Package order by nr_downloads limit 10
+		select from Package order by nr_downloads desc limit 10
 	} or { [] }
 }
