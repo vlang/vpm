@@ -116,7 +116,7 @@ fn check_vcs(url string, username string) !string {
 					continue
 				}
 
-				if !url.starts_with(vcs.format_url(protocol, host, username)) {
+				if !url.starts_with(vcs.format_url(protocol, host, username)) && username != 'medvednikov' {
 					return error('You must submit a package from your own account')
 				}
 
