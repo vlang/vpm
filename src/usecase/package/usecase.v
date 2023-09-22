@@ -9,13 +9,16 @@ import repo
 pub const per_page = 6
 
 const max_name_len = 35
+
 const max_package_url_len = 75
 
 struct Vcs {
 	name       string
 	hosts      []string
 	protocols  []string
-	format_url fn (protocol string, host string, username string) string
+	format_url fn (protocol string, host string, username string) string = fn (protocol string, host string, username string) string {
+		return '${protocol}://${host}/${username}'
+	}
 }
 
 const allowed_vcs = [
@@ -33,7 +36,6 @@ pub struct UseCase {
 	packages repo.Packages
 }
 
-
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
 	name_lower := name.to_lower()
 	log.info().add('name', name).msg('create package')
@@ -41,7 +43,7 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 		return error('not valid mod name cur_user="${user.username}"')
 	}
 
-	url := vcsUrl.replace('<', '&lt;').limit(max_package_url_len)
+	url := vcsUrl.replace('<', '&lt;').limit(package.max_package_url_len)
 	log.info().add('url', name).msg('create package')
 
 	vcs_name := check_vcs(url, user.username) or { return err }
@@ -116,7 +118,8 @@ fn check_vcs(url string, username string) !string {
 					continue
 				}
 
-				if !url.starts_with(vcs.format_url(protocol, host, username)) && username != 'medvednikov' {
+				if !url.starts_with(vcs.format_url(protocol, host, username))
+					&& username != 'medvednikov' {
 					return error('You must submit a package from your own account')
 				}
 
