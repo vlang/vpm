@@ -3,12 +3,18 @@ module repo
 import db.pg
 import entity { User }
 
-interface Users {
-	get(id int, random_id string) ?User
+pub struct UsersRepo {
+	db pg.DB [required]
 }
 
-pub struct UsersRepo {
-	db pg.DB
+pub fn new_users(db pg.DB) !&UsersRepo {
+	sql db {
+		create table User
+	}!
+
+	return &UsersRepo{
+		db: db
+	}
 }
 
 fn (u UsersRepo) get(id int, random_id string) ?User {

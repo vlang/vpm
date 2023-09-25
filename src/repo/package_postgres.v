@@ -8,25 +8,19 @@ const banned_names = ['xxx']
 
 const supported_vcs_systems = ['git']
 
-interface Packages {
-	all() []Package
-	get(name string) !Package
-	find_by_query(query string) []Package
-	find_by_url(url string) []Package
-	find_by_user(user_id int) []Package
-	count_by_user(user_id int) int
-	incr_downloads(name string) !
-	create_package(package Package) !
-	delete(package_id int, user_id int) !
-	get_recently_updated_packages() []Package
-	get_packages_count() int
-	get_new_packages() []Package
-	get_most_downloaded_packages() []Package
-}
-
 pub struct PackagesRepo {
 pub mut:
-	db pg.DB
+	db pg.DB [required]
+}
+
+pub fn new_packages(db pg.DB) !&PackagesRepo {
+	sql db {
+		create table Package
+	}!
+
+	return &PackagesRepo{
+		db: db
+	}
 }
 
 fn (p PackagesRepo) all() []Package {

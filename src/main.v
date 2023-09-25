@@ -41,16 +41,16 @@ fn main() {
 		port: conf.pg.port
 	}) or { panic(err) }
 
+	defer {
+		db.close()
+	}
+
 	mut packages_use_case := &package.UseCase{
-		packages: &repo.PackagesRepo{
-			db: db
-		}
+		packages: repo.new_packages(db)!
 	}
 
 	mut users_use_case := &user.UseCase{
-		users: &repo.UsersRepo{
-			db: db
-		}
+		users: repo.new_users(db)!
 	}
 
 	mut app := &App{
@@ -59,13 +59,6 @@ fn main() {
 		packages: packages_use_case
 		users: users_use_case
 	}
-
-	sql app.db {
-		create table Package
-	}!
-	sql app.db {
-		create table User
-	}!
 
 	if conf.is_dev {
 		app.cur_user = User{

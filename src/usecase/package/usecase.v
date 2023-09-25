@@ -3,7 +3,6 @@ module package
 import entity { Package, User }
 import lib.log
 import net.http
-import repo
 
 // Used in search and packages view (index page)
 pub const per_page = 6
@@ -33,8 +32,24 @@ const allowed_vcs = [
 	},
 ]
 
+interface PackagesRepo {
+	all() []Package
+	get(name string) !Package
+	find_by_query(query string) []Package
+	find_by_url(url string) []Package
+	find_by_user(user_id int) []Package
+	count_by_user(user_id int) int
+	incr_downloads(name string) !
+	create_package(package Package) !
+	delete(package_id int, user_id int) !
+	get_recently_updated_packages() []Package
+	get_packages_count() int
+	get_new_packages() []Package
+	get_most_downloaded_packages() []Package
+}
+
 pub struct UseCase {
-	packages repo.Packages
+	packages PackagesRepo [required]
 }
 
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
