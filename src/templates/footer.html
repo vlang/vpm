@@ -1,20 +1,6 @@
-
-			</main>
-		</div>
-		<!--include 'components/footer.html'-->
-	</div>
-
-	<script>
-		function delete_package(package_id) {
-			fetch("/api/packages/id/" + package_id, {
-				method: "DELETE",
-				headers: {'Content-Type': 'application/json'},
-			}).then(res => {
-				window.location.reload();
-				//document.getElementById('package' + package_id).remove() ;
-			});
-		}
-	</script>
+</main>
+@include 'components/footer.html'
+@include 'assets/icons.html'
 </body>
 
 </html>
