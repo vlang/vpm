@@ -4,24 +4,24 @@
     <div class="col-span-2 panel inactive flex flex-col">
         <!-- Buttons Row -->
         <div class="flex flex-wrap gap-4 h-fit justify-between w-full">
-            <button class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2 w-full md:w-fit"
-                    id="v-install-copy">
+            <button
+                class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2 w-full md:w-fit"
+                id="v-install-copy">
                 <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#copy_icon"></use>
                 </svg>
                 v install @pkg.format_name()
             </button>
             @if pkg.documentation.len > 0
-            <a class="button text-white whitespace-nowrap hover:no-underline bg-primary flex gap-2" href="$pkg.documentation"
-               target="_blank">
+            <a class="button text-white whitespace-nowrap hover:no-underline bg-primary flex gap-2"
+                href="$pkg.documentation" target="_blank">
                 <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#docs_icon"></use>
                 </svg>
                 Documentation
             </a>
             @end
-            <a class="button primary w-full md:w-fit" href="$pkg.url"
-               target="_blank">
+            <a class="button primary w-full md:w-fit" href="$pkg.url" target="_blank">
                 <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#repo_icon"></use>
                 </svg>
@@ -31,9 +31,7 @@
 
         <!-- Markdown -->
         <div class="mt-8">
-            <!--
-                TODO README
-                -->
+            @pkg_readme
         </div>
     </div>
     <div class="panel inactive flex flex-col gap-4">
@@ -70,7 +68,7 @@
         <div>
             <h3 class="mb-1 text-primary leading-8">Author</h3>
             <a href="/@pkg.author.username">
-                <img alt="@pkg.author.username" class="w-8 h-8 rounded-full" src="@pkg.author.avatar_url"/>
+                <img alt="@pkg.author.username" class="w-8 h-8 rounded-full" src="@pkg.author.avatar_url" />
             </a>
         </div>
     </div>
