@@ -19,6 +19,7 @@ pub mut:
 	cur_user                  User            [vweb_global]
 	packages                  package.UseCase [vweb_global]
 	users                     user.UseCase    [vweb_global]
+	title                     string          [vweb_global]
 	nr_packages               int
 	recently_updated_packages []Package
 	most_downloaded_packages  []Package

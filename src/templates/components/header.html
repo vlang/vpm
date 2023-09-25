@@ -1,5 +1,5 @@
-<header class="flex-shrink-0 h-20 flex justify-center items-center bg-white 
-	md:border-b md:border-solid md:border-light-grey">
+<header class="flex-shrink-0 h-20 flex justify-center items-center bg-white
+	md:border-b md:border-solid md:border-off-white">
 	<div class="px-6 w-page h-16 flex gap-4 justify-between items-center">
 		<div class="flex-1 flex items-center">
 			<a class="clip-zero w-full md:w-16 lg:w-full" href="/">
@@ -22,7 +22,7 @@
 				Login
 			</a>
 			@else
-			<a href="/@app.cur_user.username">
+			<a href="/users/@app.cur_user.username">
 				<img class="w-12 h-12 rounded-full" title="@app.cur_user.username" alt="@app.cur_user.username"
 					src="https://github.com/@{app.cur_user.username}.png" />
 			</a>
@@ -30,6 +30,6 @@
 		</div>
 	</div>
 </header>
-<div class="md:hidden top-0 sticky z-10 justify-center bg-white h-fit py-2 px-4 border-b border-solid border-light-grey">
+<div class="md:hidden top-0 sticky z-10 justify-center bg-white h-fit py-2 px-4 border-b border-solid border-off-white">
 	@include 'components/searchbar.html'
 </div>

@@ -16,24 +16,16 @@
 
 	@else
 	<form class="w-full flex flex-col gap-4 mt-4" action='/create_package' method='POST'>
-		<input class="p-2 rounded-lg border border-light-grey" type='text' placeholder='Package name' required
+		<input class="p-2 rounded-lg border border-off-white" type='text' placeholder='Package name' required
 			maxlength=10 pattern="[A-Za-z0-9]+" title="Only letters and numbers are allowed" name='name'>
-		<input class="p-2 rounded-lg border border-light-grey" type='url' placeholder='GitHub URL' required
+		<input class="p-2 rounded-lg border border-off-white" type='url' placeholder='GitHub URL' required
 			maxlength=@max_package_url_len name='url' pattern='(https://github.com/)(.*?)'
 			title='Only GitHub repositories are allowed for now'>
-		<textarea class="p-2 rounded-lg border border-light-grey" name='description' rows="10"
+		<textarea class="p-2 rounded-lg border border-off-white" name='description' rows="10"
 			placeholder='Module description' required maxlength=800></textarea>
 		<input class="button primary cursor-pointer" type='submit' value='Submit'>
 	</form>
 	@end
 </div>
-
-<!--
-<div class="flex flex-col gap-4 panel">
-	for pkg in results
-	include '../components/search-entry.html'
-	end
-</div>
--->
 
 @include 'footer.html'

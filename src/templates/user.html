@@ -1,0 +1,9 @@
+@include 'header.html'
+
+<div class="flex flex-col">
+    @for pkg in packages
+    @include './components/package.html'
+    @end
+</div>
+
+@include 'footer.html'

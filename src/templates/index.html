@@ -1,52 +1,49 @@
 @include 'header.html'
 
-<header class="flex gap-4 flex-col md:max-w-3xl mx-auto">
+<section class="flex gap-4 flex-col items-start mx-auto">
     <h1>
         Package Manager for the <span class="text-primary">V</span> Language
     </h1>
 
-    <p class="text-large text-sub">
-        Instantly publish your packages and install them. Become a contributor and enhance our community with your work.
-        Use the API to interact and find out more information about available packages.
+    <p class="text-medium md:text-large text-sub">
+        Discover new packages from open-source collaborators. Become a contributor and enhance our community with your
+        work. It's all about exploring, learning, and growing together.
     </p>
-</header>
 
-<div class="my-6 md:max-w-3xl mx-auto flex flex-col md:flex-row gap-4 items-center">
-    <a class="button primary" href="/search">
-        <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-            <use href="#browse_icon"></use>
-        </svg>
-        Browse packages
-    </a>
-    <a class="button primary" href="/new">
-        <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-            <use href="#plus_icon"></use>
-        </svg>
-        Submit a package
-    </a>
-    <span>@app.format_nr_packages()</span>
-</div>
-
-<!--There is no sense to show "Your packages" if user is not logged in.-->
-@if app.is_logged_in()
-<div class="flex flex-col gap-4">
-    <h2 class="text-large font-bold text-center md:text-left">Your packages</h2>
-    <div class="flex flex-col gap-4 place-items-center md:grid md:auto-rows-max md:grid-flow-col">
-        @for pkg in your_packages
-        @include './components/package-card.html'
-        @end
+    <div class="mt-6 w-full flex flex-col justify-start items-center md:flex-row gap-4 md:gap-8">
+        <div class="flex flex-col justify-start items-center md:flex-row gap-4">
+            <a class="button primary" href="/search">
+                <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                    <use href="#browse_icon"></use>
+                </svg>
+                Browse packages
+            </a>
+            <a class="button primary" href="/new">
+                <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                    <use href="#plus_icon"></use>
+                </svg>
+                Submit a package
+            </a>
+        </div>
+        <span>@app.format_nr_packages()</span>
     </div>
-</div>
-@end
+</section>
 
-<div>
+<section>
     <h2 class="mb-4 font-bold text-center md:text-left">Popular categories</h2>
-    <div class="flex flex-wrap gap-2">
-        @for category in categories
-        <a class="category" href="/search?categories=@category.slug">@category.slug<sup>@category.packages</sup></a>
-        @end
+    <div class="panel">
+        <div class=" flex flex-wrap gap-2 md:h-10 md:overflow-hidden md:justify-between">
+            @for category in categories
+            <a class="category flex-1 md:flex-none" href="/search?categories=@category.slug">
+                @category.name
+                @if category.packages > 0
+                <sup>@category.packages</sup>
+                @end
+            </a>
+            @end
+        </div>
     </div>
-</div>
+</section>
 
 <div class="grid grid-cols-1 gap-0" id="content-container">
     <div class="hidden content-selector relative z-[1] md:flex md:justify-center md:gap-12 ">
@@ -56,34 +53,34 @@
         <span class="active-border"></span>
     </div>
     <!-- Select on mobile -->
-    <div class="md:hidden content-selector relative z-[1] flex justify-center p-6 w-full">
+    <section class="md:hidden content-selector relative z-[1] flex justify-center p-6 w-full">
         <select class="primary" id="mobile-content-selector" name="content-selector" onchange="onSelectChange()">
             <option selected value="0">New packages</option>
             <option value="1">Most downloaded</option>
             <option value="2">Recently updated</option>
         </select>
-    </div>
-    <div class="content-section ease " id="content-0">
+    </section>
+    <section class="content-section ease " id="content-0">
         <div class="flex flex-col">
             @for pkg in app.new_packages
             @include './components/package.html'
             @end
         </div>
-    </div>
-    <div class="content-section ease pointer-events-none opacity-0" id="content-1">
+    </section>
+    <section class="content-section ease pointer-events-none opacity-0" id="content-1">
         <div class="flex flex-col">
             @for pkg in app.most_downloaded_packages
             @include './components/package.html'
             @end
         </div>
-    </div>
-    <div class="content-section mease pointer-events-none opacity-0" id="content-2">
+    </section>
+    <section class="content-section mease pointer-events-none opacity-0" id="content-2">
         <div class="flex flex-col">
             @for pkg in app.recently_updated_packages
             @include './components/package.html'
             @end
         </div>
-    </div>
+    </section>
 </div>
 
 <script>
