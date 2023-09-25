@@ -5,10 +5,6 @@ import lib.log
 import entity { Category }
 
 pub fn (mut app App) before_request() {
-	app.recently_updated_packages = app.packages.get_recently_updated_packages()
-	app.nr_packages = app.packages.get_packages_count()
-	app.new_packages = app.packages.get_new_packages()
-	app.most_downloaded_packages = app.packages.get_most_downloaded_packages()
 	app.auth()
 }
 
@@ -22,6 +18,11 @@ pub fn (mut app App) index() vweb.Result {
 	log.info()
 		.add('cur user id', app.cur_user.id)
 		.msg('index()')
+
+	app.recently_updated_packages = app.packages.get_recently_updated_packages()
+	app.nr_packages = app.packages.get_packages_count()
+	app.new_packages = app.packages.get_new_packages()
+	app.most_downloaded_packages = app.packages.get_most_downloaded_packages()
 
 	your_packages := app.packages.find_by_user(app.cur_user.id)
 
