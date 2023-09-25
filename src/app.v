@@ -5,6 +5,11 @@ import lib.log
 import entity { Category }
 
 pub fn (mut app App) before_request() {
+	// Skip auth for static
+	if app.req.url.ends_with('/favicon.png') || app.req.url.ends_with('/dist.css') {
+		return
+	}
+
 	app.auth()
 }
 
