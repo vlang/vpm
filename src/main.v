@@ -7,6 +7,7 @@ import repo
 import entity { Package, User }
 import usecase.package
 import usecase.user
+import os
 
 const max_package_url_len = 75
 
@@ -73,7 +74,6 @@ fn main() {
 		}
 	}
 
-	app.serve_static('/css/dist.css', 'css/dist.css')
-	app.serve_static('/favicon.png', 'favicon.png')
+	app.mount_static_folder_at(os.resource_abs_path('./static'), '/')
 	vweb.run(app, conf.http.port)
 }
