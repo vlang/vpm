@@ -81,11 +81,11 @@
             </div>
         </div>
         <div class="flex flex-wrap gap-2">
-            <!--
-                for category in pkg.categories
-                <a class="category" href="/search?categories=category.slug">category.slug</a>
-                end
-                -->
+            @for category in categories
+            <a class="category flex-1 md:flex-none" href="/search?category=@category.slug">
+                @category.name
+            </a>
+            @end
         </div>
         <div>
             <h3 class="mb-1 text-primary leading-8">Author</h3>

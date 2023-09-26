@@ -36,6 +36,7 @@ const allowed_vcs = [
 interface CategoriesRepo {
 	get_all() ![]Category
 	get_category_packages(category_id int) ![]Package
+	get_package_categories(package_id int) ![]Category
 }
 
 interface PackagesRepo {
@@ -72,6 +73,10 @@ pub fn (u UseCase) get_category_packages(category_slug string) ?[]Package {
 	}) or { return [] }
 
 	return u.categories.get_category_packages(category.id) or { [] }
+}
+
+pub fn (u UseCase) get_package_categories(package_id int) ?[]Category {
+	return u.categories.get_package_categories(package_id) or { [] }
 }
 
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {

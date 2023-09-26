@@ -31,6 +31,8 @@ pub fn (mut app App) package(name string) vweb.Result {
 		return app.redirect('/')
 	}
 
+	categories := app.packages().get_package_categories(pkg.id) or { [] }
+
 	readme := app.packages().get_package_markdown(name) or {
 		println(err)
 		return app.redirect('/')

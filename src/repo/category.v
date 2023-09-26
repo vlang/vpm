@@ -121,3 +121,15 @@ pub fn (r CategoryRepo) get_category_packages(category_id int) ![]Package {
 
 	return pkgs
 }
+
+pub fn (r CategoryRepo) get_package_categories(package_id int) ![]Category {
+	c2p := sql r.db {
+		select from CategoryPackage where package_id == package_id
+	}!
+
+	ctgs := arrays.flatten(c2p.map(sql r.db {
+		select from Category where id == it.category_id
+	}!))
+
+	return ctgs
+}
