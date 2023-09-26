@@ -7,7 +7,7 @@
             <button
                 class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2 w-full md:w-fit"
                 id="v-install-copy">
-                <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#copy_icon"></use>
                 </svg>
                 v install @pkg.format_name()
@@ -15,14 +15,14 @@
             @if pkg.documentation.len > 0
             <a class="button text-white whitespace-nowrap hover:no-underline bg-primary flex gap-2"
                 href="$pkg.documentation" target="_blank">
-                <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#docs_icon"></use>
                 </svg>
                 Documentation
             </a>
             @end
             <a class="button primary w-full md:w-fit" href="$pkg.url" target="_blank">
-                <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#repo_icon"></use>
                 </svg>
                 Repository
@@ -54,7 +54,7 @@
                     <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                         <use href="#clock_icon"></use>
                     </svg>
-                    @pkg.updated_at.ymmdd()
+                    @pkg.updated_at.relative()
                 </div>
             </div>
         </div>

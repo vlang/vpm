@@ -1,24 +1,25 @@
 module repo
 
-import db.pg
+import orm
 import entity { Package }
-import lib.log
 
 const banned_names = ['xxx']
 
 const supported_vcs_systems = ['git']
 
 pub struct PackagesRepo {
-pub mut:
-	db pg.DB [required]
+mut:
+	db orm.Connection [required]
 }
 
-pub fn new_packages(db pg.DB) !&PackagesRepo {
+pub fn migrate_packages(db orm.Connection) ! {
 	sql db {
 		create table Package
 	}!
+}
 
-	return &PackagesRepo{
+pub fn packages(db orm.Connection) PackagesRepo {
+	return PackagesRepo{
 		db: db
 	}
 }
@@ -28,11 +29,19 @@ fn (p PackagesRepo) all() []Package {
 		select from Package order by nr_downloads desc
 	} or { [] }
 
-	log.info()
-		.add('package count', pkgs.len)
-		.msg('all pkgs')
-
 	return pkgs
+}
+
+pub fn (p PackagesRepo) get_by_id(id int) !Package {
+	rows := sql p.db {
+		select from Package where id == id
+	}!
+
+	if rows.len == 0 {
+		return error('Found no module with id: ${id}')
+	}
+
+	return rows[0]
 }
 
 fn (p PackagesRepo) find_by_query(query string) []Package {
@@ -40,11 +49,6 @@ fn (p PackagesRepo) find_by_query(query string) []Package {
 	pkgs := sql p.db {
 		select from Package where name like q
 	} or { [] }
-
-	log.info()
-		.add('count', pkgs.len)
-		.add('query', q)
-		.msg('found pkgs by query')
 
 	return pkgs
 }
@@ -78,6 +82,7 @@ fn (p PackagesRepo) get(name string) !Package {
 	if rows.len == 0 {
 		return error('Found no module with name "${name}"')
 	}
+
 	return rows[0]
 }
 
@@ -99,12 +104,15 @@ pub fn (p PackagesRepo) create_package(package Package) ! {
 			return error('Package name contains banned word ${bad_name}')
 		}
 	}
+
 	if package.url.contains(' ') || package.url.contains('%') || package.url.contains('<') {
 		return error('Package url contains invalid characters')
 	}
+
 	if package.vcs !in repo.supported_vcs_systems {
 		return error('Package vcs system ${package.vcs} is not supported')
 	}
+
 	sql p.db {
 		insert package into Package
 	} or { return err }

@@ -3,11 +3,20 @@ module main
 import vweb
 import entity { Package }
 
+['/search']
 pub fn (mut app App) search() vweb.Result {
 	query := app.query['q']
+	category := app.query['category']
 	title := if query == '' { 'All Packages' } else { 'Search Results' }
-	unsorted_packages := app.packages.query(query)
-	packages := sort_packages(unsorted_packages) // NOTE: packages variable is used in search.html template
+	unsorted_packages := app.packages().query(query)
+	mut packages := sort_packages(unsorted_packages) // NOTE: packages variable is used in search.html template
+
+	if category.len > 0 {
+		if cpkgs := app.packages().get_category_packages(category) {
+			ids := cpkgs.map(it.id)
+			packages = packages.filter(it.id in ids)
+		}
+	}
 
 	return $vweb.html()
 }

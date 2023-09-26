@@ -1,8 +1,9 @@
 module package
 
-import entity { Package, User }
+import entity { Category, Package, User }
 import lib.log
 import net.http
+import arrays
 
 // Used in search and packages view (index page)
 pub const per_page = 6
@@ -32,9 +33,15 @@ const allowed_vcs = [
 	},
 ]
 
+interface CategoriesRepo {
+	get_all() ![]Category
+	get_category_packages(category_id int) ![]Package
+}
+
 interface PackagesRepo {
 	all() []Package
 	get(name string) !Package
+	get_by_id(id int) !Package
 	find_by_query(query string) []Package
 	find_by_url(url string) []Package
 	find_by_user(user_id int) []Package
@@ -49,7 +56,22 @@ interface PackagesRepo {
 }
 
 pub struct UseCase {
-	packages PackagesRepo [required]
+	categories CategoriesRepo [required]
+	packages   PackagesRepo   [required]
+}
+
+pub fn (u UseCase) get_categories() ![]Category {
+	return u.categories.get_all()!
+}
+
+pub fn (u UseCase) get_category_packages(category_slug string) ?[]Package {
+	cats := u.categories.get_all() or { return none }
+
+	category := arrays.find_first(cats, fn [category_slug] (elem Category) bool {
+		return category_slug == elem.slug
+	}) or { return [] }
+
+	return u.categories.get_category_packages(category.id) or { [] }
 }
 
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {

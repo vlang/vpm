@@ -1,27 +1,65 @@
 module main
 
 import vweb
-import entity { Category }
+import entity
 import lib.log
 
-const basic_categories = [
-	Category{
-		name: 'Command line tools'
-	},
-	Category{
-		name: 'Networking'
-	},
-	Category{
-		name: 'Game development'
-	},
-	Category{
-		name: 'Web programming'
-	},
-]
+['/new']
+fn (mut app App) new() vweb.Result {
+	logged_in := app.cur_user.username != ''
+	log.info().msg('new() loggedin: ${logged_in}')
+
+	return $vweb.html()
+}
+
+['/users/:name']
+pub fn (mut app App) user(name string) vweb.Result {
+	user := app.users().get_by_name(name) or {
+		error := 'Not found such user'
+		return app.html($tmpl('./templates/error.html'))
+	}
+
+	packages := app.packages().find_by_user(user.id)
+
+	return $vweb.html()
+}
+
+['/packages/:name']
+pub fn (mut app App) package(name string) vweb.Result {
+	pkg := app.packages().get(name) or {
+		log.error()
+			.add('error', err.str())
+			.msg('error getting package')
+
+		return app.redirect('/')
+	}
+
+	pkg_readme := 'aboba'
+
+	return $vweb.html()
+}
+
+['/create_package'; post]
+pub fn (mut app App) create_package(name string, url string, description string) vweb.Result {
+	app.packages().create(name, url, description, app.cur_user) or {
+		log.error()
+			.add('error', err.str())
+			.add('url', url)
+			.add('name', name)
+			.add('description', description)
+			.add('user_id', app.cur_user.id)
+			.msg('error creating package')
+
+		app.error(err.msg())
+		return app.new()
+	}
+
+	return app.redirect('/')
+}
 
 ['/api/packages'; post]
 pub fn (mut app App) api_create_package(name string, vcsUrl string, description string) vweb.Result {
-	app.packages.create(name, vcsUrl, description, app.cur_user) or { return app.json(err.msg()) }
+	app.packages().create(name, vcsUrl, description, app.cur_user) or { return app.json(err.msg()) }
 
 	return app.ok('ok')
 }
@@ -35,21 +73,21 @@ pub fn (mut app App) delete_package(package_id int) vweb.Result {
 		})
 	}
 
-	app.packages.delete(package_id, app.cur_user.id) or { return app.not_found() }
+	app.packages().delete(package_id, app.cur_user.id) or { return app.not_found() }
 
 	return app.ok('ok')
 }
 
 ['/api/packages/:name']
 pub fn (mut app App) get_package_by_name(name string) vweb.Result {
-	package := app.packages.get(name) or { return app.json('404') }
+	package := app.packages().get(name) or { return app.json('404') }
 
 	return app.json(package)
 }
 
 ['/api/packages/:name/incr_downloads'; post]
 pub fn (mut app App) incr_downloads(name string) vweb.Result {
-	app.packages.incr_downloads(name) or { return app.json('404') }
+	app.packages().incr_downloads(name) or { return app.json('404') }
 
 	return app.ok('ok')
 }
@@ -62,7 +100,7 @@ pub fn (mut app App) jsmod_deprecated(name string) vweb.Result {
 		.add('name', name)
 		.msg('jsMOD')
 
-	package := app.packages.get(name) or { return app.json('404') }
+	package := app.packages().get(name) or { return app.json('404') }
 	return app.json(package)
 }
 

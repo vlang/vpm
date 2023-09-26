@@ -98,7 +98,7 @@ fn (mut app App) auth() {
 
 	app.cur_user = User{}
 	if id != 0 {
-		cur_user := app.users.get(id, random_id) or { return }
+		cur_user := app.users().get(id, random_id) or { return }
 		app.cur_user = cur_user
 	}
 }
