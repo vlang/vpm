@@ -1,6 +1,6 @@
 @include 'header.html'
 
-<div class="flex flex-col lg:grid lg:grid-cols-3 gap-5">
+<div class="flex flex-col xl:grid xl:grid-cols-3 gap-5">
     <div class="col-span-2 panel inactive flex flex-col">
         <!-- Buttons Row -->
         <div class="flex flex-wrap gap-4 h-fit justify-between w-full">
@@ -30,11 +30,33 @@
         </div>
 
         <!-- Markdown -->
-        <div class="mt-8">
+        <div class="mt-8 prose prose-gray max-w-none">
+            <style>
+                h1,
+                h2 {
+                    padding-bottom: 0.3em;
+                    border-bottom: 1px solid #f0f0f0;
+                }
+
+                ul:has(> .task-list-item) {
+                    list-style-type: none;
+
+                }
+
+                /* .task-list-item {
+                    transform: translateX(-1.5rem);
+                } */
+
+                .task-list-item-checkbox {
+                    margin-right: .375rem;
+                    margin-top: 0;
+                    margin-bottom: 0;
+                }
+            </style>
             @pkg_readme
         </div>
     </div>
-    <div class="panel inactive flex flex-col gap-4">
+    <div class="panel inactive self-start flex flex-col gap-4">
         <div>
             <h3 class="mb-1 text-primary leading-8">About</h3>
             <div class="flex gap-4 items-center text-sub font-bold overflow-hidden">

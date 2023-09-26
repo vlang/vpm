@@ -90,7 +90,7 @@
   .panel,
   .package-card {
     transition: box-shadow 0.25s ease;
-    @apply p-4 rounded-xl bg-white border border-off-white;
+    @apply p-2 md:p-4 rounded-xl bg-white border border-off-white;
   }
   .panel:not(.inactive):hover,
   .package-card:not(.inactive):hover {

@@ -1,8 +1,8 @@
 module main
 
 import vweb
-import entity
 import lib.log
+import markdown
 
 ['/new']
 fn (mut app App) new() vweb.Result {
@@ -27,16 +27,18 @@ pub fn (mut app App) user(name string) vweb.Result {
 ['/packages/:name']
 pub fn (mut app App) package(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
-		log.error()
-			.add('error', err.str())
-			.msg('error getting package')
-
+		println(err)
 		return app.redirect('/')
 	}
 
-	pkg_readme := 'aboba'
+	readme := app.packages().get_package_markdown(name) or {
+		println(err)
+		return app.redirect('/')
+	}
 
-	return $vweb.html()
+	pkg_readme := markdown.to_html(readme)
+
+	return app.html($tmpl('./templates/package.html'))
 }
 
 ['/create_package'; post]
