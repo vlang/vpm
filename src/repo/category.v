@@ -106,7 +106,7 @@ pub fn categories(db orm.Connection) CategoryRepo {
 
 pub fn (r CategoryRepo) get_all() ![]Category {
 	return sql r.db {
-		select from Category
+		select from Category order by updated_at desc
 	}!
 }
 
