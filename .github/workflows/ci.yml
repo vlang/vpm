@@ -40,5 +40,6 @@ jobs:
       - name: Build VPM
         run: |
           cd vpm
+          ../v install
           ../v -prod .
           ls -lat
