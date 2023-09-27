@@ -8,6 +8,7 @@ pub fn (mut app App) index() vweb.Result {
 	if app.last_update == unsafe { nil } || app.last_update < time.now().add(-time.minute) {
 		p := app.packages()
 		app.categories = p.get_categories() or { [] }
+		app.categories.trim(12)
 		app.new_packages = p.get_new_packages()
 		app.recently_updated_packages = p.get_recently_updated_packages()
 		app.most_downloaded_packages = p.get_most_downloaded_packages()
