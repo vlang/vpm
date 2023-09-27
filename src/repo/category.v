@@ -82,6 +82,11 @@ pub fn migrate_categories(db orm.Connection) ! {
 		select from Category
 	}!
 
+	c := categories(db)
+	for category in existing_categories {
+		c.update_category_stats(category.id)!
+	}
+
 	existing_slugs := existing_categories.map(it.slug)
 
 	for category in repo.basic_categories {
@@ -132,4 +137,39 @@ pub fn (r CategoryRepo) get_package_categories(package_id int) ![]Category {
 	}!))
 
 	return ctgs
+}
+
+pub fn (r CategoryRepo) add_category_to_package(category_id int, package_id int) ! {
+	c2p := CategoryPackage{
+		category_id: category_id
+		package_id: package_id
+	}
+
+	sql r.db {
+		insert c2p into CategoryPackage
+	}!
+}
+
+pub fn (r CategoryRepo) get(slug string) !Category {
+	categories := sql r.db {
+		select from Category where slug == slug
+	}!
+
+	return categories[0]
+}
+
+pub fn (r CategoryRepo) update_category_stats(category_id int) ! {
+	categories := sql r.db {
+		select from Category where id == category_id
+	}!
+	ctg := categories[0]!
+
+	// TODO: will go bad when we would have 100000+ relations, rewrite to orm.@select for count
+	ctgs := sql r.db {
+		select from CategoryPackage where category_id == ctg.id
+	}!
+
+	sql r.db {
+		update Category set packages = ctgs.len where id == ctg.id
+	}!
 }
