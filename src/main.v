@@ -50,6 +50,15 @@ fn main() {
 		}
 	}
 
+	// Way to update stars on packages
+	// Limited by github rate limits
+	// go fn (p package.UseCase) {
+	// 	pkgs := p.get_new_packages()
+	// 	for pkg in pkgs {
+	// 		p.update_package_stats(pkg.id) or { println(err) }
+	// 	}
+	// }(app.packages())
+
 	app.mount_static_folder_at(os.resource_abs_path('./static'), '/')
 	vweb.run_at(app, port: conf.http.port, nr_workers: 1)!
 }
