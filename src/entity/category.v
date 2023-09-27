@@ -13,7 +13,6 @@ pub mut:
 
 	name        string [unique]
 	description string
-	nr_modules  int
 
 	created_at time.Time = time.now()
 	updated_at time.Time = time.now()
