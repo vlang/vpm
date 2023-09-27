@@ -41,17 +41,32 @@ curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/t
 chmod +x tailwindcss-linux-x64
 mv tailwindcss-linux-x64 tailwindcss
 ```
-You can edit the tailwind configuration in `tailwind.config.js` and add custom css to `css/index.css`.
+You can edit the tailwind configuration in `tailwind.config.js` and add custom css to `static/css/index.css`.
 
 ### Watching CSS
 Use the Standalone CLI to watch the css for changes
 ```bash
-./tailwindcss -i css/index.css -o css/dist.css --watch --minify
+./tailwindcss -i static/css/index.css -o static/css/dist.css --watch --minify
 ```
 
 ### Intellisense
-Use Tailwinds [CSS Intellisense][tailwindExtension] extension for VSCode to get code completion for 
+Use Tailwinds [CSS Intellisense][tailwindExtension] extension for VSCode to get code completion for
 all tailwinds classes.
+
+## Development database
+
+Instance of locally installed Postgres 15 or docker container:
+
+```bash
+docker run -it \
+  --name vpm-database \
+  -e POSTGRES_DB=vpm \
+  -e POSTGRES_USER=vpm \
+  -e POSTGRES_PASSWORD=vpm \
+  --mount source=vpm-data,target=/var/lib/postgresql/data \
+  -p 5432:5432 \
+  postgres:15
+```
 
 <!-- Reference links -->
 [vpm]: https://vpm.vlang.io

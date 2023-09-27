@@ -1,84 +1,66 @@
 module main
 
 import vweb
-import lib.log
-import entity { Category }
+import config
+import entity { Category, Package, User }
+import db.pg
+import usecase.package
+import lib.storage
+import usecase.user
+import net.urllib
+import repo
+import time
 
+struct App {
+	vweb.Context
+	config config.Config [vweb_global]
+pub mut:
+	db       pg.DB            [vweb_global]
+	title    string           [vweb_global]
+	cur_user User             [vweb_global]
+	storage  storage.Provider [vweb_global]
+
+	nr_packages               &string    [vweb_global] = unsafe { nil }
+	categories                []Category [vweb_global]
+	new_packages              []Package  [vweb_global]
+	recently_updated_packages []Package  [vweb_global]
+	most_downloaded_packages  []Package  [vweb_global]
+	last_update               &time.Time [vweb_global] = unsafe { nil }
+}
+
+// Whole app middleware
 pub fn (mut app App) before_request() {
-	app.recently_updated_packages = app.packages.get_recently_updated_packages()
-	app.nr_packages = app.packages.get_packages_count()
-	app.new_packages = app.packages.get_new_packages()
-	app.most_downloaded_packages = app.packages.get_most_downloaded_packages()
+	url := urllib.parse(app.req.url) or { panic(err) }
+
+	// Skip auth for static
+	if url.path == '/favicon.png' || url.path.starts_with('/css') || url.path.starts_with('/js') {
+		// Set cache for a week
+		app.add_header('Cache-Control', 'max-age=604800')
+		return
+	}
+
 	app.auth()
 }
 
-pub fn (mut app App) index() vweb.Result {
-	categories := []Category{}
-	app.set_cookie(
-		name: 'vpm'
-		value: '777'
-	)
-
-	log.info()
-		.add('cur user id', app.cur_user.id)
-		.msg('index()')
-
-	your_packages := app.packages.find_by_user(app.cur_user.id)
-
-	return $vweb.html()
+fn (mut app App) packages() package.UseCase {
+	return package.UseCase{
+		categories: repo.categories(app.db)
+		packages: repo.packages(app.db)
+		users: repo.users(app.db)
+	}
 }
 
-pub fn (mut app App) is_logged_in() bool {
-	log.info()
-		.add('user id', app.cur_user.id)
-		.add('username', app.cur_user.username)
-		.msg('user is logged in')
+fn (mut app App) users() user.UseCase {
+	return user.UseCase{
+		users: repo.users(app.db)
+	}
+}
 
+fn (mut app App) is_logged_in() bool {
 	return app.cur_user.username != ''
 }
 
-pub fn (mut app App) format_nr_packages() string {
-	if app.nr_packages == 1 {
-		return '${app.nr_packages} package'
-	}
-
-	return '${app.nr_packages} packages'
-}
-
-fn (mut app App) new() vweb.Result {
-	logged_in := app.cur_user.username != ''
-	log.info().msg('new() loggedin: ${logged_in}')
-
-	return $vweb.html()
-}
-
-['/packages/:name']
-pub fn (mut app App) package(name string) vweb.Result {
-	pkg := app.packages.get(name) or {
-		log.error()
-			.add('error', err.str())
-			.msg('error getting package')
-
-		return app.redirect('/')
-	}
-
-	return $vweb.html()
-}
-
-['/create_package'; post]
-pub fn (mut app App) create_package(name string, url string, description string) vweb.Result {
-	app.packages.create(name, url, description, app.cur_user) or {
-		log.error()
-			.add('error', err.str())
-			.add('url', url)
-			.add('name', name)
-			.add('description', description)
-			.add('user_id', app.cur_user.id)
-			.msg('error creating package')
-
-		app.error(err.msg())
-		return app.new()
-	}
-
-	return app.redirect('/')
+// used by templates
+fn less_than(i int, value int) bool {
+	return i < value
 }

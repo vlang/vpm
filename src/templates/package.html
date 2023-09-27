@@ -1,28 +1,28 @@
-@include 'header.html'
+@include 'partial/header.html'
 
-<div class="flex flex-col lg:grid lg:grid-cols-3 gap-5">
-    <div class="col-span-2 panel inactive flex">
+<div class="flex flex-col xl:grid xl:grid-cols-3 gap-5">
+    <div class="col-span-2 panel inactive flex flex-col">
         <!-- Buttons Row -->
         <div class="flex flex-wrap gap-4 h-fit justify-between w-full">
-            <button class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2 w-full md:w-fit"
-                    id="v-install-copy">
-                <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <button
+                class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2 w-full md:w-fit"
+                id="v-install-copy">
+                <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#copy_icon"></use>
                 </svg>
                 v install @pkg.format_name()
             </button>
             @if pkg.documentation.len > 0
-            <a class="button text-white whitespace-nowrap hover:no-underline bg-primary flex gap-2" href="$pkg.documentation"
-               target="_blank">
-                <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <a class="button text-white whitespace-nowrap hover:no-underline bg-primary flex gap-2"
+                href="$pkg.documentation" target="_blank">
+                <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#docs_icon"></use>
                 </svg>
                 Documentation
             </a>
             @end
-            <a class="button primary w-full md:w-fit" href="$pkg.url"
-               target="_blank">
-                <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <a class="button primary w-full md:w-fit" href="$pkg.url" target="_blank">
+                <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#repo_icon"></use>
                 </svg>
                 Repository
@@ -30,15 +30,59 @@
         </div>
 
         <!-- Markdown -->
-        <div class="mt-8">
-            <!--
-                TODO README
-                -->
+        <div
+            class="mt-8 prose prose-gray prose-h1:mt-6 prose-h1:mb-4 prose-p:mt-0 prose-p:mb-4 prose-ul:my-0 prose-li:my-0 prose-img:my-0 max-w-none">
+            <style>
+                h1,
+                h2 {
+                    padding-bottom: 0.3em;
+                    border-bottom: 1px solid #f0f0f0;
+                }
+
+                ul:has(> .task-list-item) {
+                    list-style-type: none;
+
+                }
+
+                /* .task-list-item {
+                    transform: translateX(-1.5rem);
+                } */
+
+                .task-list-item-checkbox {
+                    margin-right: .375rem;
+                    margin-top: 0;
+                    margin-bottom: 0;
+                }
+            </style>
+            @pkg_readme
         </div>
     </div>
-    <div class="panel inactive flex flex-col gap-4">
+    <div class="panel inactive xl:self-start flex flex-col gap-4">
         <div>
+            @if app.is_able_to_edit(pkg)
+            <div class="pb-2 flex flex-wrap gap-2">
+                <a class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2"
+                    href="/packages/@pkg.name/edit">
+                    <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <use href="#edit"></use>
+                    </svg>
+                    Edit
+                </a>
+                <a class="button text-white whitespace-nowrap hover:no-underline bg-error flex gap-2"
+                    href="/packages/@pkg.name/delete">
+                    <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <use href="#trash"></use>
+                    </svg>
+                    Delete
+                </a>
+            </div>
+            @end
             <h3 class="mb-1 text-primary leading-8">About</h3>
+            @if pkg.description.len > 0
+            <p class="mb-2">
+                @pkg.description
+            </p>
+            @end
             <div class="flex gap-4 items-center text-sub font-bold overflow-hidden">
                 <div class="package-card__stars flex gap-2 whitespace-nowrap">
                     <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +90,7 @@
                     </svg>
                     @pkg.stars
                 </div>
-                <div class="package-card__last-update flex gap-2 whitespace-nowrap">
+                <div class="package-card__downloads flex gap-2 whitespace-nowrap">
                     <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                         <use href="#download_icon"></use>
                     </svg>
@@ -56,26 +100,29 @@
                     <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                         <use href="#clock_icon"></use>
                     </svg>
-                    @pkg.updated_at.ymmdd()
+                    @pkg.updated_at.relative()
                 </div>
             </div>
         </div>
         <div class="flex flex-wrap gap-2">
-            <!--
-                for category in pkg.categories
-                <a class="category" href="/search?categories=category.slug">category.slug</a>
-                end
-                -->
+            @for category in categories
+            <a class="category" href="/search?category=@category.slug">
+                @category.name
+            </a>
+            @end
         </div>
         <div>
             <h3 class="mb-1 text-primary leading-8">Author</h3>
-            <a href="/@pkg.author.username">
-                <img alt="@pkg.author.username" class="w-8 h-8 rounded-full" src="@pkg.author.avatar_url"/>
+            <a href="/users/@pkg.author.username">
+                <img alt="@pkg.author.username" class="w-8 h-8 rounded-full"
+                    src="https://github.com/@{app.cur_user.username}.png" />
             </a>
         </div>
     </div>
 </div>
 
+<link rel="stylesheet" href="/css/prism.css">
+<script src="/js/prism.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/notyf@@3/notyf.min.js"></script>
 <script>
     // Thing that creates notifications
@@ -108,4 +155,4 @@
     });
 </script>
 
-@include 'footer.html'
+@include 'partial/footer.html'

@@ -5,13 +5,14 @@ import toml
 
 pub struct Config {
 pub mut:
-	root_url string
-	jwt      JWT
-	gh       Github
-	http     HTTP
-	pg       Postgres
-	is_dev   bool
-	dev_user string
+	root_url     string
+	jwt          JWT
+	gh           Github
+	http         HTTP
+	pg           Postgres
+	is_dev       bool
+	dev_user     string
+	storage_path string
 }
 
 pub struct JWT {
@@ -73,6 +74,7 @@ pub fn parse(data string) !Config {
 		}
 		is_dev: cfg.value('is_dev').default_to('false').bool()
 		dev_user: cfg.value('dev_user').default_to('test_user').string()
+		storage_path: cfg.value('storage_path').default_to('./vpm_storage').string()
 	}
 }
 

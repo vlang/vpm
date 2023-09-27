@@ -1,10 +1,5 @@
 <a class="package-card min-w-fit w-full" href="/packages/@pkg.name" id="package@pkg.id">
     <p class="package-card__title">@pkg.format_name()</p>
-    <!--
-    			@if pkg.belongs_to_user(app.cur_user.id)
-    				<span class='btn_delete' onclick='delete_package(@pkg.id)'>❌</span>
-    			@end
-    			-->
     <p class="package-card__description mb-2 text-small text-sub overflow-ellipsis">
         @pkg.description<br>
     </p>
@@ -22,11 +17,4 @@
             @pkg.nr_downloads
         </div>
     </div>
-    <!--
-    		<a class="package-card__chevron text-primary" href="/@pkg.author.username/@pkg.name" tabindex="-1">
-    			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-    				<use href="#chevron_right_icon"></use>
-    			</svg>
-    		</a>
-    		-->
 </a>

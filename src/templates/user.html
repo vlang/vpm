@@ -1,10 +1,9 @@
 @include 'partial/header.html'
-<h1>@title</h1>
 
 <div class="flex flex-col">
-	@for pkg in packages
-	@include './components/package.html'
-	@end
+    @for pkg in packages
+    @include './components/package.html'
+    @end
 </div>
 
 @include 'partial/footer.html'

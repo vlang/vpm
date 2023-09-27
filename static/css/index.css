@@ -1,0 +1,191 @@
+/**
+* This injects Tailwind's base styles and any base styles registered by
+* plugins.
+*/
+@tailwind base;
+
+/**
+* This injects Tailwind's component classes and any component classes
+* registered by plugins.
+*/
+@tailwind components;
+
+/**
+* This injects Tailwind's utility classes and any utility classes registered
+* by plugins.
+*/
+@tailwind utilities;
+
+/**
+* Use this directive to control where Tailwind injects the hover, focus,
+* responsive, dark mode, and other variants of each class.
+*
+* If omitted, Tailwind will append these classes to the very end of
+* your stylesheet by default.
+*/
+@tailwind variants;
+
+@layer base {
+  :root {
+    @apply font-sans font-semibold text-small text-general bg-base;
+    scroll-behavior: smooth;
+  }
+
+  *:focus {
+    @apply outline-offset-2;
+  }
+
+  *:focus-within {
+    @apply outline-offset-2 outline-primary;
+  }
+
+  h1 {
+    font-size: 32px;
+    @apply font-bold text-general md:text-display-medium leading-tight;
+  }
+
+  h2 {
+    @apply font-bold text-large md:text-large text-general;
+  }
+
+  h3 {
+    @apply font-bold text-medium text-general;
+  }
+
+  hr {
+    @apply text-off-white;
+  }
+
+  /* Use with class 'primary' to get the same look as buttons */
+  .select {
+    text-align-last: center;
+    /* Arrow icon */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='white' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E%0A");
+    background-position: right center;
+    background-size: 40px;
+    text-align-last: center;
+    @apply appearance-none relative w-full button focus:ring-0 focus:outline-none text-center bg-no-repeat;
+    padding-right: calc(2rem + 15px);
+  }
+
+  select::-ms-expand {
+    display: none;
+  }
+
+  .select option {
+    color: black;
+    font-weight: 400;
+    @apply bg-white text-center;
+  }
+
+  .prose > ul {
+    @apply pl-0;
+  }
+
+  .prose > ul > li:not(task-list-item) {
+    @apply indent-3 list-inside;
+  }
+
+  .prose > ul > li > input.task-list-item-checkbox {
+    @apply mr-3;
+  }
+
+  /* .prose > ul > li:not(task-list-item)::marker {
+    @apply pl-8;
+  } */
+}
+
+@layer components {
+  .button {
+    font-size: 16px;
+    @apply px-8 py-4 rounded-md font-bold flex justify-center gap-3;
+  }
+  .button.primary {
+    /* Styling */
+    @apply text-white bg-primary hover:bg-primary-dark active:bg-primary-darker hover:no-underline;
+    /* Transition */
+    @apply duration-150 hover:ease-out;
+  }
+
+  .panel,
+  .package-card {
+    transition: box-shadow 0.25s ease;
+    @apply p-4 rounded-xl bg-white border border-off-white;
+  }
+  .panel:not(.inactive):hover,
+  .package-card:not(.inactive):hover {
+    box-shadow: 0 0 0 3px #f0f0f0, 0px 3px 12px rgba(17, 17, 17, 0.08);
+  }
+
+  .category {
+    @apply px-4 py-2 rounded-lg whitespace-nowrap font-bold text-center text-dark-grey bg-off-white;
+  }
+
+  .category sup {
+    @apply -ml-1 leading-[0] text-[0.625rem] font-bold;
+  }
+
+  .footer-link {
+    @apply text-sub hover:text-primary hover:no-underline;
+  }
+
+  .notification-toast {
+    @apply pl-8 pr-6 rounded-lg font-bold text-small;
+  }
+
+  .package-card {
+    @apply w-full flex flex-col items-center;
+  }
+  .package-card__title {
+    @apply mb-1 block font-bold text-medium text-primary overflow-hidden whitespace-nowrap overflow-ellipsis;
+  }
+  .package-card__description {
+    @apply line-clamp-1;
+  }
+
+  .package-card__attribute:not(
+      *[data-package-stars] .package-card__attribute.package-card__stars,
+      *[data-package-downloads]
+        .package-card__attribute.package-card__downloads,
+      *[data-package-last-update]
+        .package-card__attribute.package-card__last-update
+    ) {
+    @apply lg:hidden;
+  }
+
+  .package {
+    @apply px-1 py-4;
+  }
+
+  .package:first-child {
+    @apply pt-0;
+  }
+
+  .package:last-child {
+    @apply pb-1;
+  }
+
+  .active-border {
+    transition: 0.3s ease-out;
+    bottom: -1px;
+    @apply block absolute border-b box-content;
+  }
+
+  .content-section {
+    @apply flex-auto w-full transition-opacity duration-150 md:duration-300 md:top-[70px] row-start-2 col-start-1;
+  }
+
+  .content-section-btn {
+    @apply text-center font-bold text-large py-4 px-2;
+  }
+
+  .content-section-t:not([data-active]) {
+    @apply hidden lg:block;
+  }
+}
+
+@layer utilities {
+  .clip-zero {
+    clip-path: inset(0 0 0 0);
+  }
+}

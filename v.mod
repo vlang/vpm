@@ -5,5 +5,7 @@ Module{
 	repo_url: 'https://github.com/vlang/vpm'
 	description: 'V Package Manager'
 	license: 'GPL-3.0'
-	dependencies: []
+	dependencies: [
+		'markdown',
+	]
 }

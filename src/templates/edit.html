@@ -1,0 +1,31 @@
+@include 'partial/header.html'
+
+<div class="w-full md:p-0 md:w-[512px] md:mx-auto">
+    <h1>
+        Edit "@pkg.name"
+    </h1>
+
+    @if app.form_error.len>0
+    <p>@app.form_error</p>
+    @end
+
+    @if !app.is_logged_in()
+    <a href='@app.login_link()'>
+        Log in via GitHub
+    </a>
+    @else
+    <form class="w-full flex flex-col gap-4 mt-4" action='/packages/@pkg.name/edit' method='POST'>
+        <input class="p-2 rounded-lg border border-off-white" type='text' placeholder='Package name' required
+            maxlength=10 pattern="[A-Za-z0-9]+" title="Only letters and numbers are allowed" name='name'
+            value="@pkg_name">
+        <input class="p-2 rounded-lg border border-off-white" type='url' placeholder='GitHub URL' required
+            maxlength=@max_package_url_len name='url' pattern='(https://github.com/)(.*?)'
+            title='Only GitHub repositories are allowed for now' value="@pkg.url">
+        <textarea class="p-2 rounded-lg border border-off-white" name='description' rows="10"
+            placeholder='Module description' required maxlength=800>@pkg.description</textarea>
+        <input class="button primary cursor-pointer" type='submit' value='Save'>
+    </form>
+    @end
+</div>
+
+@include 'partial/footer.html'
