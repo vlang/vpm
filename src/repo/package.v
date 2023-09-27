@@ -141,3 +141,9 @@ pub fn (p PackagesRepo) get_most_downloaded_packages() []Package {
 		select from Package order by nr_downloads desc limit 10
 	} or { [] }
 }
+
+pub fn (p PackagesRepo) update_package_stars(package_id int, stars int) ! {
+	sql p.db {
+		update Package set stars = stars where id == package_id
+	}!
+}

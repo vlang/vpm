@@ -3,6 +3,8 @@ module package
 import entity { Package, User }
 import lib.log
 import net.http
+import net.urllib
+import x.json2
 
 // Used in search and packages view (index page)
 pub const per_page = 6
@@ -47,6 +49,7 @@ interface PackagesRepo {
 	get_packages_count() int
 	get_new_packages() []Package
 	get_most_downloaded_packages() []Package
+	update_package_stars(package_id int, stars int) !
 }
 
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
@@ -121,6 +124,23 @@ pub fn (u UseCase) get_new_packages() []Package {
 
 pub fn (u UseCase) get_most_downloaded_packages() []Package {
 	return u.packages.get_most_downloaded_packages()
+}
+
+pub fn (u UseCase) update_package_stats(package_id int) ! {
+	pkg := u.packages.get_by_id(package_id)!
+	url := urllib.parse(pkg.url)!
+
+	// Getting default git branch
+	bb := 'https://api.github.com/repos${url.path}'
+	api_repo := http.get(bb)!
+	if api_repo.status() != http.Status.ok {
+		return error('repo status is not 200, real ${api_repo.status()}')
+	}
+
+	// Updatin stars
+	body := json2.raw_decode(api_repo.body)!
+	any_stars := body.as_map()['stargazers_count'] or { json2.Any(0) }
+	u.packages.update_package_stars(pkg.id, any_stars.int())!
 }
 
 fn check_vcs(url string, username string) !string {
