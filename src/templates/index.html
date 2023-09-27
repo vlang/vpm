@@ -1,4 +1,4 @@
-@include 'header.html'
+@include 'partial/header.html'
 
 <section class="flex gap-4 flex-col items-start mx-auto">
     <h1>
@@ -10,8 +10,8 @@
         work. It's all about exploring, learning, and growing together.
     </p>
 
-    <div class="mt-6 w-full flex flex-col justify-start items-center md:flex-row gap-4 md:gap-8">
-        <div class="flex flex-col justify-start items-center md:flex-row gap-4">
+    <div class="mt-6 w-full flex flex-col justify-start items-center sm:flex-row gap-4 sm:gap-8">
+        <div class="flex flex-col justify-start items-center min-[530px]:flex-row gap-4">
             <a class="button primary" href="/search">
                 <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#browse_icon"></use>
@@ -30,12 +30,12 @@
 </section>
 
 <section>
-    <h2 class="mb-4 font-bold text-center md:text-left">Popular categories</h2>
+    <h2 class="mb-4">Popular categories</h2>
     <div class="panel">
-        <div class=" flex flex-wrap gap-2 md:h-10 md:overflow-hidden md:justify-between">
+        <div class=" flex flex-wrap gap-2 lg:h-10 lg:overflow-hidden lg:justify-between">
             @for category in app.categories
-            <a class="category flex-1 md:flex-none" href="/search?category=@category.slug">
-                @category.name
+            <a class="category flex-1" href="/search?category=@category.slug">
+                @category.slug
                 @if category.packages > 0
                 <sup>@category.packages</sup>
                 @end
@@ -45,75 +45,72 @@
     </div>
 </section>
 
-<div class="grid grid-cols-1 gap-0" id="content-container">
-    <div class="hidden content-selector relative z-[1] md:flex md:justify-center md:gap-12 ">
-        <button class="content-section-btn" onclick="setActive(0)">New packages</button>
-        <button class="content-section-btn" onclick="setActive(1)">Most downloaded</button>
-        <button class="content-section-btn" onclick="setActive(2)">Recently updated</button>
-        <span class="active-border"></span>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-x-5" id="content-container">
+    <div class="hidden relative col-span-3 lg:flex lg:justify-center lg:gap-x-5">
+        <h2 class="flex-1 mb-4" onclick="setActive(0)">New packages</h2>
+        <h2 class="flex-1 mb-4" onclick="setActive(1)">Most downloaded</h2>
+        <h2 class="flex-1 mb-4" onclick="setActive(2)">Recently updated</h2>
     </div>
     <!-- Select on mobile -->
-    <section class="md:hidden content-selector relative z-[1] flex justify-center p-6 w-full">
-        <select class="primary" id="mobile-content-selector" name="content-selector" onchange="onSelectChange()">
+    <h2 class="lg:hidden mb-4 flex items-center">
+        <select class="w-full flex-none pr-7 primary appearance-none bg-transparent" id="mobile-content-selector"
+            name="content-selector" onchange="onSelectChange()">
             <option selected value="0">New packages</option>
             <option value="1">Most downloaded</option>
             <option value="2">Recently updated</option>
         </select>
-    </section>
-    <section class="content-section ease " id="content-0">
-        <div class="flex flex-col">
-            @for pkg in app.new_packages
+        <svg class="flex-none -ml-6 pointer-events-none" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <use href="#arrow_up_down"></use>
+        </svg>
+    </h2>
+    <section class="panel content-section-t" data-active id="content-0">
+        <div class="flex flex-col" data-package-last-update>
+            @for i, pkg in app.new_packages
             @include './components/package.html'
+            @if less_than(i, app.new_packages.len - 1)
+            <hr />
+            @end
             @end
         </div>
     </section>
-    <section class="content-section ease pointer-events-none opacity-0" id="content-1">
-        <div class="flex flex-col">
-            @for pkg in app.most_downloaded_packages
+    <section class="panel content-section-t" id="content-1">
+        <div class="flex flex-col" data-package-downloads data-package-stars>
+            @for i, pkg in app.most_downloaded_packages
             @include './components/package.html'
+            @if less_than(i, app.new_packages.len - 1)
+            <hr />
+            @end
             @end
         </div>
     </section>
-    <section class="content-section mease pointer-events-none opacity-0" id="content-2">
-        <div class="flex flex-col">
-            @for pkg in app.recently_updated_packages
+    <section class="panel content-section-t" id="content-2">
+        <div class="flex flex-col" data-package-last-update data-package-stars data-package-tag>
+            @for i, pkg in app.recently_updated_packages
             @include './components/package.html'
+            @if less_than(i, app.new_packages.len - 1)
+            <hr />
+            @end
             @end
         </div>
     </section>
 </div>
 
 <script>
-    const indicator = document.querySelector('span.active-border');
     const container = document.querySelector('#content-container');
     const mobileSelect = document.querySelector('#mobile-content-selector');
 
     let activeContentIndex = 0;
-    let currentTimeout = 0;
 
     // change content in "new packages, most downloaded" sections
     function setActive(index, resizing) {
-        const el = document.querySelector('.content-selector');
-        const activeElement = el.children.item(index);
-
-        indicator.style.width = (activeElement.clientWidth + 10) + 'px';
-        indicator.style.left = (activeElement.offsetLeft - 5) + 'px';
-
         if (index != activeContentIndex || resizing) {
-            window.clearTimeout(currentTimeout);
-
             const prev = document.querySelector('#content-' + activeContentIndex);
-            prev.classList.add('opacity-0');
-            prev.classList.add('pointer-events-none');
-            // pretty css animation
-            currentTimeout = window.setTimeout(() => {
-                const current = document.querySelector('#content-' + index);
-                current.classList.remove('opacity-0');
-                current.classList.remove('pointer-events-none');
+            prev.removeAttribute('data-active', '');
 
-                activeContentIndex = index;
-                mobileSelect.selectedIndex = index;
-            }, 150);
+            const current = document.querySelector('#content-' + index);
+            current.setAttribute('data-active', '');
+
+            activeContentIndex = index;
         }
     }
 
@@ -125,4 +122,4 @@
     }
 </script>
 
-@include 'footer.html'
+@include 'partial/footer.html'

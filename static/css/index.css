@@ -52,8 +52,12 @@
     @apply font-bold text-medium text-general;
   }
 
+  hr {
+    @apply text-off-white;
+  }
+
   /* Use with class 'primary' to get the same look as buttons */
-  select {
+  .select {
     text-align-last: center;
     /* Arrow icon */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='white' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E%0A");
@@ -68,11 +72,27 @@
     display: none;
   }
 
-  select option {
+  .select option {
     color: black;
     font-weight: 400;
     @apply bg-white text-center;
   }
+
+  .prose > ul {
+    @apply pl-0;
+  }
+
+  .prose > ul > li:not(task-list-item) {
+    @apply indent-3 list-inside;
+  }
+
+  .prose > ul > li > input.task-list-item-checkbox {
+    @apply mr-3;
+  }
+
+  /* .prose > ul > li:not(task-list-item)::marker {
+    @apply pl-8;
+  } */
 }
 
 @layer components {
@@ -90,7 +110,7 @@
   .panel,
   .package-card {
     transition: box-shadow 0.25s ease;
-    @apply p-2 md:p-4 rounded-xl bg-white border border-off-white;
+    @apply p-4 rounded-xl bg-white border border-off-white;
   }
   .panel:not(.inactive):hover,
   .package-card:not(.inactive):hover {
@@ -102,7 +122,7 @@
   }
 
   .category sup {
-    @apply ml-[0.065rem] leading-[0] text-[0.625rem] font-bold;
+    @apply -ml-1 leading-[0] text-[0.625rem] font-bold;
   }
 
   .footer-link {
@@ -120,14 +140,29 @@
     @apply mb-1 block font-bold text-medium text-primary overflow-hidden whitespace-nowrap overflow-ellipsis;
   }
   .package-card__description {
-    @apply line-clamp-2 h-12;
+    @apply line-clamp-1;
+  }
+
+  .package-card__attribute:not(
+      *[data-package-stars] .package-card__attribute.package-card__stars,
+      *[data-package-downloads]
+        .package-card__attribute.package-card__downloads,
+      *[data-package-last-update]
+        .package-card__attribute.package-card__last-update
+    ) {
+    @apply lg:hidden;
   }
 
   .package {
-    @apply border-b border-off-white px-1 py-4;
+    @apply px-1 py-4;
   }
+
   .package:first-child {
-    @apply border-t;
+    @apply pt-0;
+  }
+
+  .package:last-child {
+    @apply pb-1;
   }
 
   .active-border {
@@ -142,6 +177,10 @@
 
   .content-section-btn {
     @apply text-center font-bold text-large py-4 px-2;
+  }
+
+  .content-section-t:not([data-active]) {
+    @apply hidden lg:block;
   }
 }
 
