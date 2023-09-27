@@ -5,6 +5,7 @@ import config
 import entity { Category, Package, User }
 import db.pg
 import usecase.package
+import lib.storage
 import usecase.user
 import repo
 import time
@@ -13,9 +14,10 @@ struct App {
 	vweb.Context
 	config config.Config [vweb_global]
 pub mut:
-	db       pg.DB  [vweb_global]
-	title    string [vweb_global]
-	cur_user User   [vweb_global]
+	db       pg.DB            [vweb_global]
+	title    string           [vweb_global]
+	cur_user User             [vweb_global]
+	storage  storage.Provider [vweb_global]
 
 	nr_packages               &string    [vweb_global] = unsafe { nil }
 	categories                []Category [vweb_global]

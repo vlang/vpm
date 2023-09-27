@@ -29,6 +29,7 @@ fn main() {
 
 	repo.migrate(db)!
 
+	st := local.new(conf.storage_path)!
 	nr := 'packages'
 	upd := time.unix(0)
 
@@ -36,6 +37,7 @@ fn main() {
 		config: conf
 		db: db
 		title: 'vpm'
+		storage: st
 		nr_packages: &nr
 		last_update: &upd
 	}

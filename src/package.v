@@ -2,6 +2,7 @@ module main
 
 import vweb
 import lib.log
+import lib.storage
 import markdown
 
 ['/new']
@@ -33,12 +34,32 @@ pub fn (mut app App) package(name string) vweb.Result {
 
 	categories := app.packages().get_package_categories(pkg.id) or { [] }
 
-	readme := app.packages().get_package_markdown(name) or {
-		println(err)
-		return app.redirect('/')
+	// Getting README from repo or storage
+	readme_path := '/packages_readme/${pkg.id}/README.html'
+	data := app.storage.read(readme_path) or {
+		if err != storage.err_not_found {
+			println('failed to read readme from storage: ${err}')
+			return app.redirect('/')
+		}
+
+		println('fetching readme from repo for `${pkg.name}`')
+
+		// TODO: figure out when to update readme
+		readme := app.packages().get_package_markdown(name) or {
+			println('failed to get readme from repo: ${err}')
+			return app.redirect('/')
+		}
+
+		rendered := markdown.to_html(readme).bytes()
+
+		app.storage.save(readme_path, rendered) or {
+			println('failed to save readme to storage: ${err}')
+		}
+
+		rendered
 	}
 
-	pkg_readme := markdown.to_html(readme)
+	pkg_readme := data.bytestr()
 
 	return app.html($tmpl('./templates/package.html'))
 }

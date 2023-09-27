@@ -11,7 +11,6 @@ pub fn (u UseCase) get_package_markdown(name string) !string {
 
 	// Getting default git branch
 	bb := 'https://api.github.com/repos${url.path}'
-	println(bb)
 	api_repo := http.get(bb)!
 	if api_repo.status() != http.Status.ok {
 		return error('repo status is not 200, real ${api_repo.status()}')
@@ -21,7 +20,6 @@ pub fn (u UseCase) get_package_markdown(name string) !string {
 
 	// Getting raw readme markdown
 	aa := 'https://raw.githubusercontent.com${url.path}/${branch}/README.md'
-	println(aa)
 	readme := http.get(aa)!
 	if readme.status() != http.Status.ok {
 		return error('readme status is not 200, real ${api_repo.status()}')
