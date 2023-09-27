@@ -147,3 +147,9 @@ pub fn (p PackagesRepo) update_package_stars(package_id int, stars int) ! {
 		update Package set stars = stars where id == package_id
 	}!
 }
+
+pub fn (p PackagesRepo) update_package_info(package_id int, name string, url string, description string) ! {
+	sql p.db {
+		update Package set name = name, url = url, description = description where id == package_id
+	}!
+}

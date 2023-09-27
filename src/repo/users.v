@@ -30,6 +30,16 @@ fn (u UsersRepo) get(id int, random_id string) ?User {
 	return users[0]
 }
 
+fn (u UsersRepo) get_by_id(id int) ?User {
+	users := sql u.db {
+		select from User where id == id
+	} or { return none }
+	if users.len == 0 {
+		return none
+	}
+	return users[0]
+}
+
 fn (u UsersRepo) get_by_name(username string) ?User {
 	users := sql u.db {
 		select from User where username == username

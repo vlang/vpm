@@ -50,6 +50,11 @@ interface PackagesRepo {
 	get_new_packages() []Package
 	get_most_downloaded_packages() []Package
 	update_package_stars(package_id int, stars int) !
+	update_package_info(package_id int, name string, url string, description string) !
+}
+
+interface UsersRepo {
+	get_by_id(id int) ?User
 }
 
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
@@ -143,7 +148,41 @@ pub fn (u UseCase) update_package_stats(package_id int) ! {
 	u.packages.update_package_stars(pkg.id, any_stars.int())!
 }
 
-fn check_vcs(url string, username string) !string {
+pub fn (u UseCase) update_package_info(package_id int, name string, url string, description string) ! {
+	name_lower := name.to_lower()
+	if !is_valid_mod_name(name_lower) {
+		return error('not valid mod name')
+	}
+
+	pkg := u.packages.get_by_id(package_id)!
+	usr := u.users.get_by_id(pkg.user_id) or {
+		return error('package ${package_id} user_id is not valid')
+	}
+
+	repo_url := url.replace('<', '&lt;').limit(package.max_package_url_len)
+	check_vcs(repo_url, usr.username)!
+
+	resp := http.get(repo_url) or { return error('Failed to fetch package URL') }
+	if resp.status_code == 404 {
+		return error('This package URL does not exist (404)')
+	}
+
+	if u.packages.count_by_user(usr.id) > 100 {
+		return error('One user can submit no more than 100 packages')
+	}
+
+	// Make sure the URL is unique
+	if pkg.url != repo_url {
+		existing := u.packages.find_by_url(repo_url)
+		if existing.len > 0 {
+			return error('This URL has already been submitted')
+		}
+	}
+
+	u.packages.update_package_info(package_id, usr.username + '.' + name.limit(package.max_name_len), repo_url, description)!
+}
+
+pub fn check_vcs(url string, username string) !string {
 	for vcs in package.allowed_vcs {
 		for protocol in vcs.protocols {
 			for host in vcs.hosts {
@@ -164,7 +203,7 @@ fn check_vcs(url string, username string) !string {
 	return error('unsupported vcs')
 }
 
-fn is_valid_mod_name(s string) bool {
+pub fn is_valid_mod_name(s string) bool {
 	if s.len > package.max_name_len || s.len < 2 {
 		return false
 	}

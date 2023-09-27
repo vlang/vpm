@@ -7,6 +7,7 @@ import db.pg
 import usecase.package
 import lib.storage
 import usecase.user
+import net.urllib
 import repo
 import time
 
@@ -29,9 +30,12 @@ pub mut:
 
 // Whole app middleware
 pub fn (mut app App) before_request() {
+	url := urllib.parse(app.req.url) or { panic(err) }
+
 	// Skip auth for static
-	if app.req.url.ends_with('/favicon.png') || app.req.url.ends_with('/dist.css') {
-		app.add_header('Cache-Control', 'max-age=86400')
+	if url.path == '/favicon.png' || url.path.starts_with('/css') || url.path.starts_with('/js') {
+		// Set cache for a week
+		app.add_header('Cache-Control', 'max-age=604800')
 		return
 	}
 
@@ -42,6 +46,7 @@ fn (mut app App) packages() package.UseCase {
 	return package.UseCase{
 		categories: repo.categories(app.db)
 		packages: repo.packages(app.db)
+		users: repo.users(app.db)
 	}
 }
 
@@ -53,4 +58,9 @@ fn (mut app App) users() user.UseCase {
 
 fn (mut app App) is_logged_in() bool {
 	return app.cur_user.username != ''
+}
+
+// used by templates
+fn less_than(i int, value int) bool {
+	return i < value
 }

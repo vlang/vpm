@@ -1,4 +1,4 @@
-@include 'header.html'
+@include 'partial/header.html'
 
 <div class="flex flex-col xl:grid xl:grid-cols-3 gap-5">
     <div class="col-span-2 panel inactive flex flex-col">
@@ -30,7 +30,8 @@
         </div>
 
         <!-- Markdown -->
-        <div class="mt-8 prose prose-gray max-w-none">
+        <div
+            class="mt-8 prose prose-gray prose-h1:mt-6 prose-h1:mb-4 prose-p:mt-0 prose-p:mb-4 prose-ul:my-0 prose-li:my-0 prose-img:my-0 max-w-none">
             <style>
                 h1,
                 h2 {
@@ -56,9 +57,32 @@
             @pkg_readme
         </div>
     </div>
-    <div class="panel inactive self-start flex flex-col gap-4">
+    <div class="panel inactive xl:self-start flex flex-col gap-4">
         <div>
+            @if app.is_able_to_edit(pkg)
+            <div class="pb-2 flex flex-wrap gap-2">
+                <a class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2"
+                    href="/packages/@pkg.name/edit">
+                    <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <use href="#edit"></use>
+                    </svg>
+                    Edit
+                </a>
+                <a class="button text-white whitespace-nowrap hover:no-underline bg-error flex gap-2"
+                    href="/packages/@pkg.name/delete">
+                    <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <use href="#trash"></use>
+                    </svg>
+                    Delete
+                </a>
+            </div>
+            @end
             <h3 class="mb-1 text-primary leading-8">About</h3>
+            @if pkg.description.len > 0
+            <p class="mb-2">
+                @pkg.description
+            </p>
+            @end
             <div class="flex gap-4 items-center text-sub font-bold overflow-hidden">
                 <div class="package-card__stars flex gap-2 whitespace-nowrap">
                     <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
@@ -66,7 +90,7 @@
                     </svg>
                     @pkg.stars
                 </div>
-                <div class="package-card__last-update flex gap-2 whitespace-nowrap">
+                <div class="package-card__downloads flex gap-2 whitespace-nowrap">
                     <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                         <use href="#download_icon"></use>
                     </svg>
@@ -82,7 +106,7 @@
         </div>
         <div class="flex flex-wrap gap-2">
             @for category in categories
-            <a class="category flex-1 md:flex-none" href="/search?category=@category.slug">
+            <a class="category" href="/search?category=@category.slug">
                 @category.name
             </a>
             @end
@@ -90,12 +114,15 @@
         <div>
             <h3 class="mb-1 text-primary leading-8">Author</h3>
             <a href="/users/@pkg.author.username">
-                <img alt="@pkg.author.username" class="w-8 h-8 rounded-full" src="@pkg.author.avatar_url" />
+                <img alt="@pkg.author.username" class="w-8 h-8 rounded-full"
+                    src="https://github.com/@{app.cur_user.username}.png" />
             </a>
         </div>
     </div>
 </div>
 
+<link rel="stylesheet" href="/css/prism.css">
+<script src="/js/prism.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/notyf@@3/notyf.min.js"></script>
 <script>
     // Thing that creates notifications
@@ -128,4 +155,4 @@
     });
 </script>
 
-@include 'footer.html'
+@include 'partial/footer.html'

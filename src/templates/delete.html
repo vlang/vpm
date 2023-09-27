@@ -1,0 +1,29 @@
+@include 'partial/header.html'
+
+<div class="w-full md:p-0 md:w-[512px] md:mx-auto">
+    <h1>
+        You want to delete<br>"@pkg.name"????
+    </h1>
+
+    <p class="mt-2">
+        To verify, type package name
+    </p>
+
+    @if app.form_error.len>0
+    <p>@app.form_error</p>
+    @end
+
+    @if !app.is_logged_in()
+    <a href='@app.login_link()'>
+        Log in via GitHub
+    </a>
+    @else
+    <form class="w-full flex flex-col gap-4 mt-4" action='/packages/@pkg.name/delete' method='POST'>
+        <input class="p-2 rounded-lg border border-off-white" type='text' placeholder='Type package name'
+            requiredtitle="Only letters and numbers are allowed" name='name'>
+        <input class="button text-white bg-error cursor-pointer" type='submit' value='Delete'>
+    </form>
+    @end
+</div>
+
+@include 'partial/footer.html'

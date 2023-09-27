@@ -1,4 +1,4 @@
-@include 'header.html'
+@include 'partial/header.html'
 
 <div class="w-full md:p-0 md:w-[512px] md:mx-auto">
 	<h1>
@@ -9,11 +9,10 @@
 	<p>@app.form_error</p>
 	@end
 
-	@if !logged_in
-	<a href='https://github.com/login/oauth/authorize?response_type=code&client_id=3c7c2836a3afa00cd79e'>
+	@if !app.is_logged_in()
+	<a href='@app.login_link()'>
 		Log in via GitHub
 	</a>
-
 	@else
 	<form class="w-full flex flex-col gap-4 mt-4" action='/create_package' method='POST'>
 		<input class="p-2 rounded-lg border border-off-white" type='text' placeholder='Package name' required
@@ -28,4 +27,4 @@
 	@end
 </div>
 
-@include 'footer.html'
+@include 'partial/footer.html'
