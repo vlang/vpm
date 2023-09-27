@@ -6,38 +6,39 @@ jobs:
   code-formatting:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout V
-      uses: actions/checkout@v2
-      with:
-        repository: vlang/v
-    - name: Checkout VPM
-      uses: actions/checkout@v2
-      with:
-        path: vpm
-    - name: Build V
-      run: make
-    - name: v fmt -verify
-      run: |
-        cd vpm
-        ../v fmt -verify .
+      - name: Checkout V
+        uses: actions/checkout@v2
+        with:
+          repository: vlang/v
+      - name: Checkout VPM
+        uses: actions/checkout@v2
+        with:
+          path: vpm
+      - name: Build V
+        run: make
+      - name: v fmt -verify
+        run: |
+          cd vpm
+          ../v install
+          ../v fmt -verify .
 
   ubuntu:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout V
-      uses: actions/checkout@v2
-      with:
-        repository: vlang/v
-    - name: Checkout VPM
-      uses: actions/checkout@v2
-      with:
-        path: vpm
-    - name: Install dependencies
-      run: sudo apt-get install --quiet -y postgresql libpq-dev libssl-dev
-    - name: Build V
-      run: make
-    - name: Build VPM
-      run: |
-        cd vpm
-        ../v -prod .
-        ls -lat
+      - name: Checkout V
+        uses: actions/checkout@v2
+        with:
+          repository: vlang/v
+      - name: Checkout VPM
+        uses: actions/checkout@v2
+        with:
+          path: vpm
+      - name: Install dependencies
+        run: sudo apt-get install --quiet -y postgresql libpq-dev libssl-dev
+      - name: Build V
+        run: make
+      - name: Build VPM
+        run: |
+          cd vpm
+          ../v -prod .
+          ls -lat
