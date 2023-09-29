@@ -90,6 +90,7 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 		description: description
 		vcs: vcs_name.limit(3)
 		user_id: user.id
+		author: user
 	}) or { return err }
 
 	return
@@ -179,7 +180,8 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 		}
 	}
 
-	u.packages.update_package_info(package_id, usr.username + '.' + name.limit(package.max_name_len), repo_url, description)!
+	u.packages.update_package_info(package_id, usr.username + '.' + name.limit(package.max_name_len),
+		repo_url, description)!
 }
 
 pub fn check_vcs(url string, username string) !string {
