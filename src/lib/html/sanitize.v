@@ -149,6 +149,12 @@ pub fn sanitize(text string) string {
 }
 
 fn traverse_and_sanitize(tag &&net_html.Tag) {
+	if tag.name == 'br' {
+		unsafe {
+			tag.close_type = .in_name
+		}
+	}
+
 	// Filter allowed tags
 	if tag.name !in html.allowed_tags {
 		match true {
