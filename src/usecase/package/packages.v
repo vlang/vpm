@@ -179,7 +179,8 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 		}
 	}
 
-	u.packages.update_package_info(package_id, usr.username + '.' + name.limit(package.max_name_len), repo_url, description)!
+	u.packages.update_package_info(package_id, usr.username + '.' + name.limit(package.max_name_len),
+		repo_url, description)!
 }
 
 pub fn check_vcs(url string, username string) !string {
