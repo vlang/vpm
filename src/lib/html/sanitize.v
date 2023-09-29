@@ -3,7 +3,6 @@ module html
 import maps
 import net.html as net_html
 import net.urllib
-// import encoding.html as enc_html
 
 const allowed_tags = [
 	'h1',
@@ -57,7 +56,7 @@ const allowed_tags = [
 	'strike',
 	'summary',
 	'details',
-]
+]!
 
 const allowed_attributes = [
 	'abbr',
@@ -128,7 +127,7 @@ const allowed_attributes = [
 	'vspace',
 	'width',
 	'itemprop',
-]
+]!
 
 pub fn sanitize(text string) string {
 	dom := net_html.parse(text)
@@ -179,7 +178,7 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 					if k == 'href' {
 						url := urllib.parse(v) or { urllib.URL{} }
 						if url.scheme in ['http', 'https', 'mailto', 'github-windows', 'github-mac',
-							'x-github-client'] {
+							'x-github-client']! {
 							attributes['href'] = v
 						}
 					} else if k in html.allowed_attributes {
@@ -189,12 +188,12 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 				tag.attributes = attributes.move()
 			}
 			// Filter protocols for specific tags
-			tag.name in ['blockquote', 'del', 'ins', 'q'] {
+			tag.name in ['blockquote', 'del', 'ins', 'q']! {
 				mut attributes := map[string]string{}
 				for k, v in tag.attributes {
 					if k == 'cite' {
 						url := urllib.parse(v) or { urllib.URL{} }
-						if url.scheme in ['http', 'https'] {
+						if url.scheme in ['http', 'https']! {
 							attributes['cite'] = v
 						}
 					} else if k in html.allowed_attributes {
@@ -207,9 +206,9 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 			tag.name == 'img' {
 				mut attributes := map[string]string{}
 				for k, v in tag.attributes {
-					if k in ['src', 'longdesc'] {
+					if k in ['src', 'longdesc']! {
 						url := urllib.parse(v) or { urllib.URL{} }
-						if url.scheme in ['http', 'https'] {
+						if url.scheme in ['http', 'https']! {
 							attributes[k] = v
 						}
 					} else if k in html.allowed_attributes {
