@@ -3,6 +3,7 @@ module main
 import vweb
 import lib.log
 import lib.storage
+import lib.html
 import markdown
 import entity { Package }
 
@@ -71,7 +72,7 @@ pub fn (mut app App) package(name string) vweb.Result {
 			return app.redirect('/')
 		}
 
-		rendered := markdown.to_html(readme).bytes()
+		rendered := html.sanitize(markdown.to_html(readme)).bytes()
 
 		app.storage.save(readme_path, rendered) or {
 			println('failed to save readme to storage: ${err}')
