@@ -96,7 +96,9 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 }
 
 pub fn (u UseCase) get(name string) !Package {
-	return u.packages.get(name)
+	mut pkg := u.packages.get(name)!
+	pkg.author = u.users.get_by_id(pkg.user_id) or { return error("package author doesn't exist") }
+	return pkg
 }
 
 pub fn (u UseCase) delete(package_id int, user_id int) ! {
