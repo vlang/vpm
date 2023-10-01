@@ -130,7 +130,9 @@ const allowed_attributes = [
 ]!
 
 pub fn sanitize(text string) string {
-	dom := net_html.parse(text)
+	// !!! '<c>' is workaround, parse returns first tag as dom root,
+	// !!! so first tag in readme wraps whole content
+	dom := net_html.parse('<c>' + text + '</c>')
 
 	mut root := dom.get_root()
 	if root == unsafe { nil } {
@@ -144,7 +146,7 @@ pub fn sanitize(text string) string {
 	unsafe {
 		root.children = root.children.filter(it != nil)
 	}
-	return root.str()
+	return root.str()#[3..-4]
 }
 
 fn traverse_and_sanitize(tag &&net_html.Tag) {
