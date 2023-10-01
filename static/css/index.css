@@ -79,7 +79,7 @@
   }
 
   .prose > ul {
-    @apply pl-0;
+    @apply pl-0 mb-4;
   }
 
   .prose > ul > li:not(task-list-item) {
@@ -88,6 +88,29 @@
 
   .prose > ul > li > input.task-list-item-checkbox {
     @apply mr-3;
+  }
+
+  .prose img {
+    display: initial;
+  }
+
+  .prose code:before,
+  .prose code:after {
+    content: none;
+  }
+
+  .prose code:not(pre code) {
+    @apply bg-off-white;
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    white-space: break-spaces;
+    border-radius: 6px;
+  }
+
+  .prose pre:has(code) {
+    background-color: #f5f2f0;
+    color: #000;
   }
 
   /* .prose > ul > li:not(task-list-item)::marker {
