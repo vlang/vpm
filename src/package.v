@@ -63,18 +63,27 @@ pub fn (mut app App) package(name string) vweb.Result {
 
 	// Getting README from repo or storage
 	readme_path := '/packages_readme/${pkg.id}/README.html'
+	data := app.get_readme(pkg.name, readme_path) or {
+		println(err)
+		''
+	}
+
+	pkg_readme := data
+
+	return app.html($tmpl('./templates/package.html'))
+}
+
+fn (mut app App) get_readme(name string, readme_path string) !string {
 	data := app.storage.read(readme_path) or {
 		if err != storage.err_not_found {
-			println('failed to read readme from storage: ${err}')
-			return app.redirect('/')
+			return error('failed to read readme from storage: ${err}')
 		}
 
-		println('fetching readme from repo for `${pkg.name}`')
+		println('fetching readme from repo for `${name}`')
 
 		// TODO: figure out when to update readme
 		readme := app.packages().get_package_markdown(name) or {
-			println('failed to get readme from repo: ${err}')
-			return app.redirect('/')
+			return error('failed to get readme from repo: ${err}')
 		}
 
 		rendered := html.sanitize(markdown.to_html(readme)).bytes()
@@ -85,10 +94,7 @@ pub fn (mut app App) package(name string) vweb.Result {
 
 		rendered
 	}
-
-	pkg_readme := data.bytestr()
-
-	return app.html($tmpl('./templates/package.html'))
+	return data.bytestr()
 }
 
 ['/packages/:name/edit']
