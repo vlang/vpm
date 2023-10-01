@@ -58,13 +58,3 @@ fn (p Provider) ensure_still_provider_folder(target string) ! {
 		return error('target path escaped provider directory, target=`${target}`, local_storage=`${p.dir_path}`')
 	}
 }
-
-// red
-// normalize
-// check if we out of our dir
-// read
-
-// write
-// normalize
-// check if we out of dir
-// write
