@@ -38,7 +38,7 @@ pub fn (mut app App) user(name string) vweb.Result {
 		return app.html($tmpl('./templates/error.html'))
 	}
 
-	app.title = user.username + ' | vpm'
+	app.title = user.username + ' packages | vpm'
 
 	packages := app.packages().find_by_user(user.id)
 
