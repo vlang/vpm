@@ -9,6 +9,7 @@ import entity { Package }
 
 ['/new']
 fn (mut app App) new() vweb.Result {
+	app.title = 'Creating package | vpm'
 	return $vweb.html()
 }
 
@@ -37,6 +38,8 @@ pub fn (mut app App) user(name string) vweb.Result {
 		return app.html($tmpl('./templates/error.html'))
 	}
 
+	app.title = user.username + ' | vpm'
+
 	packages := app.packages().find_by_user(user.id)
 
 	return $vweb.html()
@@ -53,6 +56,8 @@ pub fn (mut app App) package(name string) vweb.Result {
 		println(err)
 		return app.redirect('/')
 	}
+
+	app.title = pkg.name + ' | vpm'
 
 	categories := app.packages().get_package_categories(pkg.id) or { [] }
 
@@ -93,6 +98,7 @@ pub fn (mut app App) edit(name string) vweb.Result {
 		return app.edit(name)
 	}
 
+	app.title = 'Editing «${pkg.name}» | vpm'
 	if !app.is_able_to_edit(pkg) {
 		return app.redirect('/packages/${name}')
 	}
@@ -134,6 +140,8 @@ pub fn (mut app App) delete(name string) vweb.Result {
 		app.error(err.msg())
 		return app.delete(name)
 	}
+
+	app.title = 'Deleting «${pkg.name}» | vpm'
 
 	if !app.is_able_to_edit(pkg) {
 		return app.redirect('/packages/${name}')
