@@ -5,7 +5,7 @@
             <use href="#search_icon"></use>
         </svg>
         <input class="flex-1 appearance-none focus:text-general focus:border-0 focus:outline-none bg-transparent"
-            name="q" type="search" placeholder="Search" pattern="[A-Za-z0-9-.]{(1, 100)}"
+            name="q" type="search" placeholder="Search" pattern="[A-Za-z0-9-.]{(1, 100)}" value="@{app.query['q']}"
             title="Must match rules of github repo naming">
     </label>
 </form>
