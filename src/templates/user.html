@@ -1,8 +1,11 @@
 @include 'partial/header.html'
 
-<div class="flex flex-col" data-package-downloads data-package-last-update data-package-stars data-package-tag>
-    @for pkg in packages
+<div class="panel flex flex-col" data-package-show-all>
+    @for i, pkg in packages
     @include './components/package.html'
+    @if less_than(i, packages.len - 1)
+    <hr />
+    @end
     @end
 </div>
 
