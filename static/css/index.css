@@ -148,7 +148,8 @@
       *[data-package-downloads]
         .package-card__attribute.package-card__downloads,
       *[data-package-last-update]
-        .package-card__attribute.package-card__last-update
+        .package-card__attribute.package-card__last-update,
+      *[data-package-show-all] .package-card__attribute
     ) {
     @apply lg:hidden;
   }
