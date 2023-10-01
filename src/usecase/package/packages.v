@@ -105,8 +105,11 @@ pub fn (u UseCase) delete(package_id int, user_id int) ! {
 	return u.packages.delete(package_id, user_id)
 }
 
-pub fn (u UseCase) query(query string) []Package {
-	return u.packages.find_by_query(query)
+pub fn (u UseCase) query(query string, sort string) []Package {
+	mut pkgs := u.packages.find_by_query(query)
+	package_sort := PackageSort.new(sort)
+	pkgs.sort_with_compare(package_sort.compare)
+	return pkgs
 }
 
 pub fn (u UseCase) find_by_user(user_id int) []Package {
