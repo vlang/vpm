@@ -220,6 +220,20 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 				}
 				tag.attributes = attributes.move()
 			}
+			tag.name in ['pre', 'code'] {
+				mut attributes := map[string]string{}
+				for k, v in tag.attributes {
+					if k == 'class' {
+						if tag.class_set.exists('language-vlang') {
+							attributes['class'] = 'language-v ' + v
+							println(attributes)
+						}
+					} else if k in html.allowed_attributes {
+						attributes[k] = v
+					}
+				}
+				tag.attributes = attributes.move()
+			}
 			else {
 				tag.attributes = maps.filter(tag.attributes, fn (k string, v string) bool {
 					return k in html.allowed_attributes
