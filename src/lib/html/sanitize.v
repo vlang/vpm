@@ -226,7 +226,8 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 					if k == 'class' {
 						if tag.class_set.exists('language-vlang') {
 							attributes['class'] = 'language-v ' + v
-							println(attributes)
+						} else {
+							attributes['class'] = v
 						}
 					} else if k in html.allowed_attributes {
 						attributes[k] = v
