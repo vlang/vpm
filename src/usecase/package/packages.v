@@ -34,7 +34,7 @@ const allowed_vcs = [
 	},
 ]
 
-interface PackagesRepo {
+pub interface PackagesRepo {
 	all() []Package
 	get(name string) !Package
 	get_by_id(id int) !Package
@@ -53,7 +53,7 @@ interface PackagesRepo {
 	update_package_info(package_id int, name string, url string, description string) !
 }
 
-interface UsersRepo {
+pub interface UsersRepo {
 	get_by_id(id int) ?User
 }
 

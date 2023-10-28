@@ -2,7 +2,7 @@ module user
 
 import entity { User }
 
-interface UsersRepo {
+pub interface UsersRepo {
 	get(id int, random_id string) ?User
 	get_by_name(username string) ?User
 }
