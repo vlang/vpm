@@ -3,7 +3,7 @@ module package
 import entity { Category, Package }
 import arrays
 
-interface CategoriesRepo {
+pub interface CategoriesRepo {
 	add_category_to_package(category_id int, package_id int) !
 	get(slug string) !Category
 	get_all() ![]Category
