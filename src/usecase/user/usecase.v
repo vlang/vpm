@@ -8,6 +8,7 @@ pub interface UsersRepo {
 }
 
 pub struct UseCase {
+pub:
 	users UsersRepo @[required]
 }
 
