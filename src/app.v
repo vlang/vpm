@@ -13,19 +13,19 @@ import time
 
 struct App {
 	vweb.Context
-	config config.Config [vweb_global]
+	config config.Config @[vweb_global]
 pub mut:
-	db       pg.DB            [vweb_global]
-	title    string           [vweb_global]
-	cur_user User             [vweb_global]
-	storage  storage.Provider [vweb_global]
+	db       pg.DB            @[vweb_global]
+	title    string           @[vweb_global]
+	cur_user User             @[vweb_global]
+	storage  storage.Provider @[vweb_global]
 
-	nr_packages               &string    [vweb_global] = unsafe { nil }
-	categories                []Category [vweb_global]
-	new_packages              []Package  [vweb_global]
-	recently_updated_packages []Package  [vweb_global]
-	most_downloaded_packages  []Package  [vweb_global]
-	last_update               &time.Time [vweb_global] = unsafe { nil }
+	nr_packages               &string = unsafe { nil }    @[vweb_global]
+	categories                []Category @[vweb_global]
+	new_packages              []Package  @[vweb_global]
+	recently_updated_packages []Package  @[vweb_global]
+	most_downloaded_packages  []Package  @[vweb_global]
+	last_update               &time.Time = unsafe { nil } @[vweb_global]
 }
 
 // Whole app middleware

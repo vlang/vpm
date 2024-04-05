@@ -5,7 +5,7 @@ import entity { User }
 
 pub struct UsersRepo {
 mut:
-	db orm.Connection [required]
+	db orm.Connection @[required]
 }
 
 pub fn migrate_users(db orm.Connection) ! {

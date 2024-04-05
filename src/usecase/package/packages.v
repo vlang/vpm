@@ -9,10 +9,8 @@ import x.json2
 // Used in search and packages view (index page)
 pub const per_page = 6
 
-const (
-	max_name_len        = 35
-	max_package_url_len = 75
-)
+const max_name_len = 35
+const max_package_url_len = 75
 
 fn default_url_formatter(protocol string, host string, username string) string {
 	return '${protocol}://${host}/${username}'

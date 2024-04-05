@@ -6,7 +6,7 @@ import entity { Package, User }
 
 // Old definition
 struct Mod {
-	id           int    [primary; sql: serial]
+	id           int    @[primary; sql: serial]
 	name         string
 	description  string
 	url          string

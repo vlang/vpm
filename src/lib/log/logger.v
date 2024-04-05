@@ -7,7 +7,7 @@ import x.json2 as j2
 
 pub const logging_level = level_from_str(os.getenv('VPM_LOG'))
 
-[noinit]
+@[noinit]
 pub struct Logger {
 	level  Level
 	fields []Field

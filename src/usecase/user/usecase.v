@@ -8,7 +8,7 @@ pub interface UsersRepo {
 }
 
 pub struct UseCase {
-	users UsersRepo [required]
+	users UsersRepo @[required]
 }
 
 pub fn (u UseCase) get(id int, random_id string) ?User {

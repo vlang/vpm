@@ -9,7 +9,7 @@ const supported_vcs_systems = ['git']
 
 pub struct PackagesRepo {
 mut:
-	db orm.Connection [required]
+	db orm.Connection @[required]
 }
 
 pub fn migrate_packages(db orm.Connection) ! {

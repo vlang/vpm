@@ -3,7 +3,7 @@ module local
 import os
 import lib.storage
 
-[noinit]
+@[noinit]
 pub struct Provider {
 pub:
 	dir_path string

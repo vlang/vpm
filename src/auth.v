@@ -11,9 +11,7 @@ struct GitHubUser {
 	login string
 }
 
-const (
-	random = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
-)
+const random = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
 
 fn random_string(len int) string {
 	mut buf := [`0`].repeat(len)

@@ -7,13 +7,13 @@ import lib.html
 import markdown
 import entity { Package }
 
-['/new']
+@['/new']
 fn (mut app App) new() vweb.Result {
 	app.title = 'Creating package | vpm'
 	return $vweb.html()
 }
 
-['/create_package'; post]
+@['/create_package'; post]
 pub fn (mut app App) create_package(name string, url string, description string) vweb.Result {
 	app.packages().create(name, url, description, app.cur_user) or {
 		log.error()
@@ -31,7 +31,7 @@ pub fn (mut app App) create_package(name string, url string, description string)
 	return app.redirect('/')
 }
 
-['/users/:name']
+@['/users/:name']
 pub fn (mut app App) user(name string) vweb.Result {
 	user := app.users().get_by_name(name) or {
 		error_msg := 'Not found such user'
@@ -45,12 +45,12 @@ pub fn (mut app App) user(name string) vweb.Result {
 	return $vweb.html()
 }
 
-['/packages']
+@['/packages']
 pub fn (mut app App) packages_redir() vweb.Result {
 	return app.redirect('/search')
 }
 
-['/packages/:name']
+@['/packages/:name']
 pub fn (mut app App) package(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
 		println(err)
@@ -97,7 +97,7 @@ fn (mut app App) get_readme(name string, readme_path string) !string {
 	return data.bytestr()
 }
 
-['/packages/:name/edit']
+@['/packages/:name/edit']
 pub fn (mut app App) edit(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
 		app.error(err.msg())
@@ -114,7 +114,7 @@ pub fn (mut app App) edit(name string) vweb.Result {
 	return $vweb.html()
 }
 
-['/packages/:name/edit'; POST]
+@['/packages/:name/edit'; POST]
 pub fn (mut app App) perform_edit(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
 		app.error(err.msg())
@@ -140,7 +140,7 @@ pub fn (mut app App) perform_edit(name string) vweb.Result {
 	return app.redirect('/')
 }
 
-['/packages/:name/delete']
+@['/packages/:name/delete']
 pub fn (mut app App) delete(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
 		app.error(err.msg())
@@ -156,7 +156,7 @@ pub fn (mut app App) delete(name string) vweb.Result {
 	return $vweb.html()
 }
 
-['/packages/:name/delete'; POST]
+@['/packages/:name/delete'; POST]
 pub fn (mut app App) perform_delete(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
 		app.error(err.msg())

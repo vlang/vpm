@@ -69,7 +69,7 @@ const basic_categories = [
 
 pub struct CategoryRepo {
 mut:
-	db orm.Connection [required]
+	db orm.Connection @[required]
 }
 
 pub fn migrate_categories(db orm.Connection) ! {

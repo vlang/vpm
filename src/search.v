@@ -2,7 +2,7 @@ module main
 
 import vweb
 
-['/search']
+@['/search']
 pub fn (mut app App) search() vweb.Result {
 	query := app.query['q']
 	category := app.query['category']
