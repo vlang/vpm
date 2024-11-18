@@ -78,6 +78,7 @@ fn (mut app App) oauth_cb() vweb.Result {
 	return app.redirect('/new')
 }
 
+@[markused]
 fn (mut app App) auth() {
 	id_cookie := app.get_cookie('id') or { return }
 	id := id_cookie.int()
