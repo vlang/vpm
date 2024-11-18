@@ -41,7 +41,7 @@ fn (s PackageSort) get_param(p &Package) int {
 	match s.order {
 		.stars { return p.stars }
 		.downloads { return p.nr_downloads }
-		.updated_at { return int(p.updated_at.unix_time()) }
+		.updated_at { return int(p.updated_at.unix()) }
 	}
 }
 
