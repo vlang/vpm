@@ -23,6 +23,7 @@ Instantly publish your modules and install them. Use the API to interact and fin
 To run it locally, just run
 
 ```bash
+v install
 v .
 ```
 
