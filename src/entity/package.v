@@ -13,7 +13,8 @@ pub mut:
 	nr_downloads  int
 	vcs           string = 'git'
 	user_id       int
-	author        User      @[fkey: 'id']
+	author_id     int       @[json: '-']
+	author        User      @[sql: '-']
 	stars         int
 	is_flatten    bool // No need to mention author of package, example `ui`
 	updated_at    time.Time = time.now()
