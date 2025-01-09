@@ -7,20 +7,20 @@ import x.json2
 // https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes
 // each possible path a readme can be read from, in descending order of priority
 const readme_paths = [
-	'/.github/'
-	'/'
-	'/docs/'
+	'/.github/',
+	'/',
+	'/docs/',
 ]
 
 // common readme file cases
-const readme_cases = [ 'README', 'readme' ]
+const readme_cases = ['README', 'readme']
 
 // vpm can only render markdown and plaintext, but github supports a large amount of formats:
 // https://stackoverflow.com/a/41112364
 const readme_exts = [
-	'md'
-	'txt'
-	'' // readmes with no file extension are plaintext by default
+	'md',
+	'txt',
+	'', // readmes with no file extension are plaintext by default
 ]
 
 const valid_readme_paths = get_possible_readme_paths()
