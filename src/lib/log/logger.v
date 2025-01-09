@@ -58,7 +58,7 @@ pub fn (logger Logger) add_map[T](key string, value map[string]T) Logger {
 pub fn (logger Logger) add_json(key string, value j2.Any) Logger {
 	mut fields := logger.fields.clone()
 	fields << Field{
-		key: key
+		key:   key
 		value: value
 	}
 	return Logger{
@@ -68,7 +68,7 @@ pub fn (logger Logger) add_json(key string, value j2.Any) Logger {
 }
 
 pub fn (logger Logger) msg(message string) {
-	if int(log.logging_level) < int(logger.level) {
+	if int(logging_level) < int(logger.level) {
 		return
 	}
 

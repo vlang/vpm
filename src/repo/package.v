@@ -99,7 +99,7 @@ pub fn (p PackagesRepo) delete(package_id int, user_id int) ! {
 }
 
 pub fn (p PackagesRepo) create_package(package Package) ! {
-	for bad_name in repo.banned_names {
+	for bad_name in banned_names {
 		if package.name.contains(bad_name) {
 			return error('Package name contains banned word ${bad_name}')
 		}
@@ -109,7 +109,7 @@ pub fn (p PackagesRepo) create_package(package Package) ! {
 		return error('Package url contains invalid characters')
 	}
 
-	if package.vcs !in repo.supported_vcs_systems {
+	if package.vcs !in supported_vcs_systems {
 		return error('Package vcs system ${package.vcs} is not supported')
 	}
 

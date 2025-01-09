@@ -158,7 +158,7 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 	}
 
 	// Filter allowed tags
-	if tag.name !in html.allowed_tags {
+	if tag.name !in allowed_tags {
 		match true {
 			tag.name == 'input' && tag.attributes['type'] == 'checkbox' {}
 			else {
@@ -184,7 +184,7 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 							'x-github-client'] {
 							attributes['href'] = v
 						}
-					} else if k in html.allowed_attributes {
+					} else if k in allowed_attributes {
 						attributes[k] = v
 					}
 				}
@@ -199,7 +199,7 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 						if url.scheme in ['http', 'https'] {
 							attributes['cite'] = v
 						}
-					} else if k in html.allowed_attributes {
+					} else if k in allowed_attributes {
 						attributes[k] = v
 					}
 				}
@@ -214,7 +214,7 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 						if url.scheme in ['http', 'https'] {
 							attributes[k] = v
 						}
-					} else if k in html.allowed_attributes {
+					} else if k in allowed_attributes {
 						attributes[k] = v
 					}
 				}
@@ -229,7 +229,7 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 						} else {
 							attributes['class'] = v
 						}
-					} else if k in html.allowed_attributes {
+					} else if k in allowed_attributes {
 						attributes[k] = v
 					}
 				}
@@ -237,7 +237,7 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 			}
 			else {
 				tag.attributes = maps.filter(tag.attributes, fn (k string, v string) bool {
-					return k in html.allowed_attributes
+					return k in allowed_attributes
 				})
 			}
 		}

@@ -5,7 +5,7 @@ import time
 @[json: 'user']
 pub struct User {
 pub mut:
-	id         int    @[primary; sql: serial]
+	id         int @[primary; sql: serial]
 	github_id  int
 	username   string @[unique]
 	avatar_url string

@@ -6,63 +6,63 @@ import entity { Category, CategoryPackage, Package }
 
 const basic_categories = [
 	Category{
-		slug: 'cli'
-		name: 'CLI'
+		slug:        'cli'
+		name:        'CLI'
 		description: 'Argument parsers, line-editing, or output coloring and formatting.'
 	},
 	Category{
-		slug: 'web'
-		name: 'Web'
+		slug:        'web'
+		name:        'Web'
 		description: 'Routing, HTTP, Websocket, SSE'
 	},
 	Category{
-		slug: 'networking'
-		name: 'Networking'
+		slug:        'networking'
+		name:        'Networking'
 		description: 'Network protocols such as FTP, HTTP, or SSH, or lower-level TCP or UDP.'
 	},
 	Category{
-		slug: 'gamedev'
-		name: 'Gamedev'
+		slug:        'gamedev'
+		name:        'Gamedev'
 		description: 'Engines and tools for creating games.'
 	},
 	Category{
-		slug: 'rendering'
-		name: 'Rendering'
+		slug:        'rendering'
+		name:        'Rendering'
 		description: 'Real-time or offline rendering of 2D or 3D graphics, usually on a GPU.'
 	},
 	Category{
-		slug: 'graphics'
-		name: 'Graphics'
+		slug:        'graphics'
+		name:        'Graphics'
 		description: "APIs Direct access to the hardware's or the operating system's rendering capabilities."
 	},
 	Category{
-		slug: 'databases'
-		name: 'Databases'
+		slug:        'databases'
+		name:        'Databases'
 		description: 'Database interfaces, implementations and related.'
 	},
 	Category{
-		slug: 'text-processing'
-		name: 'Text processing'
+		slug:        'text-processing'
+		name:        'Text processing'
 		description: 'Parsers, processors, serialization, much stuff to do with text.'
 	},
 	Category{
-		slug: 'visualization'
-		name: 'Visualization'
+		slug:        'visualization'
+		name:        'Visualization'
 		description: 'Plotting and graphing for data.'
 	},
 	Category{
-		slug: 'gui'
-		name: 'GUI'
+		slug:        'gui'
+		name:        'GUI'
 		description: 'Graphical user interface.'
 	},
 	Category{
-		slug: 'os'
-		name: 'OS'
+		slug:        'os'
+		name:        'OS'
 		description: 'APIs for interacting with OS and other platform specific tools.'
 	},
 	Category{
-		slug: 'audio'
-		name: 'Audio'
+		slug:        'audio'
+		name:        'Audio'
 		description: 'Record, output or process audio.'
 	},
 ]
@@ -89,7 +89,7 @@ pub fn migrate_categories(db orm.Connection) ! {
 
 	existing_slugs := existing_categories.map(it.slug)
 
-	for category in repo.basic_categories {
+	for category in basic_categories {
 		if category.slug in existing_slugs {
 			sql db {
 				update Category set name = category.name, description = category.description
@@ -142,7 +142,7 @@ pub fn (r CategoryRepo) get_package_categories(package_id int) ![]Category {
 pub fn (r CategoryRepo) add_category_to_package(category_id int, package_id int) ! {
 	c2p := CategoryPackage{
 		category_id: category_id
-		package_id: package_id
+		package_id:  package_id
 	}
 
 	sql r.db {

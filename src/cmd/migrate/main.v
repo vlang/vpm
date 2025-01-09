@@ -6,7 +6,7 @@ import entity { Package, User }
 
 // Old definition
 struct Mod {
-	id           int    @[primary; sql: serial]
+	id           int @[primary; sql: serial]
 	name         string
 	description  string
 	url          string
@@ -29,11 +29,11 @@ fn main() {
 	}
 
 	db := pg.connect(pg.Config{
-		host: conf.pg.host
-		dbname: conf.pg.db
-		user: conf.pg.user
+		host:     conf.pg.host
+		dbname:   conf.pg.db
+		user:     conf.pg.user
 		password: conf.pg.password
-		port: conf.pg.port
+		port:     conf.pg.port
 	}) or { panic(err) }
 
 	migrate_old_packages(db)!
@@ -65,7 +65,7 @@ fn migrate_old_packages(db pg.DB) ! {
 		}
 
 		new_user := User{
-			username: user.name
+			username:  user.name
 			random_id: user.random_id
 		}
 		sql db {
@@ -77,12 +77,12 @@ fn migrate_old_packages(db pg.DB) ! {
 		}!
 
 		pkg := Package{
-			name: mod.name
-			description: mod.description
-			url: mod.url
+			name:         mod.name
+			description:  mod.description
+			url:          mod.url
 			nr_downloads: mod.nr_downloads
-			vcs: mod.vcs
-			user_id: new_user2[0].id
+			vcs:          mod.vcs
+			user_id:      new_user2[0].id
 		}
 		sql db {
 			insert pkg into Package

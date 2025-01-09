@@ -38,7 +38,7 @@ fn (mut app App) oauth_cb() vweb.Result {
 	token := resp.body.find_between('access_token=', '&')
 	println('token =${token}')
 	user_js := http.fetch(
-		url: 'https://api.github.com/user'
+		url:    'https://api.github.com/user'
 		method: .get
 		header: http.new_header(key: .authorization, value: 'token ${token}')
 	) or { panic(err) }
@@ -53,7 +53,7 @@ fn (mut app App) oauth_cb() vweb.Result {
 	println('login =${login}')
 	mut random_id := random_string(20)
 	user := User{
-		username: login
+		username:  login
 		random_id: random_id
 	}
 	sql app.db {
@@ -67,11 +67,11 @@ fn (mut app App) oauth_cb() vweb.Result {
 		panic(err)
 	}
 	app.set_cookie(
-		name: 'id'
+		name:  'id'
 		value: user_id.str()
 	)
 	app.set_cookie(
-		name: 'q'
+		name:  'q'
 		value: random_id
 	)
 	println('redirecting to /new')

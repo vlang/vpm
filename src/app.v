@@ -45,8 +45,8 @@ pub fn (mut app App) before_request() {
 fn (mut app App) packages() package.UseCase {
 	return package.UseCase{
 		categories: repo.categories(app.db)
-		packages: repo.packages(app.db)
-		users: repo.users(app.db)
+		packages:   repo.packages(app.db)
+		users:      repo.users(app.db)
 	}
 }
 

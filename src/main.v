@@ -17,11 +17,11 @@ fn main() {
 	conf := config.parse_file(config_file)!
 
 	db := pg.connect(pg.Config{
-		host: conf.pg.host
-		dbname: conf.pg.db
-		user: conf.pg.user
+		host:     conf.pg.host
+		dbname:   conf.pg.db
+		user:     conf.pg.user
 		password: conf.pg.password
-		port: conf.pg.port
+		port:     conf.pg.port
 	})!
 
 	defer {
@@ -35,10 +35,10 @@ fn main() {
 	upd := time.unix(0)
 
 	mut app := &App{
-		config: conf
-		db: db
-		title: 'vpm'
-		storage: st
+		config:      conf
+		db:          db
+		title:       'vpm'
+		storage:     st
 		nr_packages: &nr
 		last_update: &upd
 	}

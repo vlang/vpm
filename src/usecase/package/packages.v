@@ -25,9 +25,9 @@ struct Vcs {
 
 const allowed_vcs = [
 	Vcs{
-		name: 'github'
-		hosts: ['github.com']
-		protocols: ['https', 'http']
+		name:       'github'
+		hosts:      ['github.com']
+		protocols:  ['https', 'http']
 		format_url: default_url_formatter
 	},
 ]
@@ -62,7 +62,7 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 		return error('not valid mod name cur_user="${user.username}"')
 	}
 
-	url := vcsUrl.replace('<', '&lt;').limit(package.max_package_url_len)
+	url := vcsUrl.replace('<', '&lt;').limit(max_package_url_len)
 	log.info().add('url', name).msg('create package')
 
 	vcs_name := check_vcs(url, user.username) or { return err }
@@ -83,11 +83,11 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 	}
 
 	u.packages.create_package(Package{
-		name: user.username + '.' + name.limit(package.max_name_len)
-		url: url
+		name:        user.username + '.' + name.limit(max_name_len)
+		url:         url
 		description: description
-		vcs: vcs_name.limit(3)
-		user_id: user.id
+		vcs:         vcs_name.limit(3)
+		user_id:     user.id
 	}) or { return err }
 
 	return
@@ -162,7 +162,7 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 		return error('package ${package_id} user_id is not valid')
 	}
 
-	repo_url := url.replace('<', '&lt;').limit(package.max_package_url_len)
+	repo_url := url.replace('<', '&lt;').limit(max_package_url_len)
 	check_vcs(repo_url, usr.username)!
 
 	resp := http.get(repo_url) or { return error('Failed to fetch package URL') }
@@ -182,12 +182,12 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 		}
 	}
 
-	u.packages.update_package_info(package_id, usr.username + '.' + name.limit(package.max_name_len),
+	u.packages.update_package_info(package_id, usr.username + '.' + name.limit(max_name_len),
 		repo_url, description)!
 }
 
 pub fn check_vcs(url string, username string) !string {
-	for vcs in package.allowed_vcs {
+	for vcs in allowed_vcs {
 		for protocol in vcs.protocols {
 			for host in vcs.hosts {
 				if !url.starts_with(vcs.format_url(protocol, host, '')) {
@@ -208,7 +208,7 @@ pub fn check_vcs(url string, username string) !string {
 }
 
 pub fn is_valid_mod_name(s string) bool {
-	if s.len > package.max_name_len || s.len < 2 {
+	if s.len > max_name_len || s.len < 2 {
 		return false
 	}
 	for c in s {

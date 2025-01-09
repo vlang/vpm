@@ -23,7 +23,7 @@ fn PackageSort.new(sort string) PackageSort {
 			'updated_at' { PackageSortOrder.updated_at }
 			else { PackageSortOrder.downloads }
 		}
-		desc: if sort.starts_with('-') || sort.len == 0 { -1 } else { 1 }
+		desc:  if sort.starts_with('-') || sort.len == 0 { -1 } else { 1 }
 	}
 }
 
