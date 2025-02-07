@@ -142,14 +142,14 @@ pub fn (p PackagesRepo) get_most_downloaded_packages() []Package {
 	} or { [] }
 }
 
-pub fn (p PackagesRepo) update_package_stars(package_id int, stars int) ! {
+pub fn (p PackagesRepo) update_package_stars(package_id int, stars_ int) ! {
 	sql p.db {
-		update Package set stars = stars where id == package_id
+		update Package set stars = stars_ where id == package_id
 	}!
 }
 
-pub fn (p PackagesRepo) update_package_info(package_id int, name string, url string, description string) ! {
+pub fn (p PackagesRepo) update_package_info(package_id int, name_ string, url_ string, description_ string) ! {
 	sql p.db {
-		update Package set name = name, url = url, description = description where id == package_id
+		update Package set name = name_, url = url_, description = description_ where id == package_id
 	}!
 }
