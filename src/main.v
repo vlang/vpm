@@ -25,7 +25,7 @@ fn main() {
 	})!
 
 	defer {
-		db.close()
+		db.close() or {}
 	}
 
 	repo.migrate(db)!
