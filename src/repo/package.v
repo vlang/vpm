@@ -47,7 +47,7 @@ pub fn (p PackagesRepo) get_by_id(id int) !Package {
 fn (p PackagesRepo) find_by_query(query string) []Package {
 	q := '%' + query + '%'
 	pkgs := sql p.db {
-		select from Package where name like q
+		select from Package where name ilike q || description ilike q
 	} or { [] }
 
 	return pkgs
