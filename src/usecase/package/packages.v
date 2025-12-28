@@ -146,7 +146,7 @@ pub fn (u UseCase) update_package_stats(package_id int) ! {
 	}
 
 	// Updatin stars
-	body := json2.raw_decode(api_repo.body)!
+	body := json2.decode[json2.Any](api_repo.body)!
 	any_stars := body.as_map()['stargazers_count'] or { json2.Any(0) }
 	u.packages.update_package_stars(pkg.id, any_stars.int())!
 }
