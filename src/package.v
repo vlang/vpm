@@ -100,8 +100,8 @@ fn (mut app App) get_readme(name string, readme_path string) !string {
 @['/packages/:name/edit']
 pub fn (mut app App) edit(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
-		app.error(err.msg())
-		return app.edit(name)
+		app.set_status(404, '')
+		return app.text(err.msg())
 	}
 
 	app.title = 'Editing «${pkg.name}» | vpm'
@@ -117,8 +117,8 @@ pub fn (mut app App) edit(name string) vweb.Result {
 @['/packages/:name/edit'; POST]
 pub fn (mut app App) perform_edit(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
-		app.error(err.msg())
-		return app.edit(name)
+		app.set_status(404, '')
+		return app.text(err.msg())
 	}
 
 	if !app.is_able_to_edit(pkg) {
@@ -126,15 +126,15 @@ pub fn (mut app App) perform_edit(name string) vweb.Result {
 	}
 
 	mut pkg_name := app.form['name'] or {
-		app.error('package name not been provided')
-		return app.edit(name)
+		app.set_status(404, '')
+		return app.text('package name not been provided')
 	}
 
 	url := app.form['url'] or { pkg.url }
 	description := app.form['description'] or { pkg.description }
 	app.packages().update_package_info(pkg.id, pkg_name, url, description) or {
-		app.error(err.msg())
-		return app.edit(name)
+		app.set_status(404, '')
+		return app.text(err.msg())
 	}
 
 	return app.redirect('/')
@@ -143,8 +143,8 @@ pub fn (mut app App) perform_edit(name string) vweb.Result {
 @['/packages/:name/delete']
 pub fn (mut app App) delete(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
-		app.error(err.msg())
-		return app.delete(name)
+		app.set_status(404, '')
+		return app.text(err.msg())
 	}
 
 	app.title = 'Deleting «${pkg.name}» | vpm'
@@ -159,8 +159,8 @@ pub fn (mut app App) delete(name string) vweb.Result {
 @['/packages/:name/delete'; POST]
 pub fn (mut app App) perform_delete(name string) vweb.Result {
 	pkg := app.packages().get(name) or {
-		app.error(err.msg())
-		return app.delete(name)
+		app.set_status(404, '')
+		return app.text(err.msg())
 	}
 
 	if !app.is_able_to_edit(pkg) {
@@ -170,14 +170,14 @@ pub fn (mut app App) perform_delete(name string) vweb.Result {
 	pkg_name := app.form['name'] or { '' }
 
 	if pkg_name != pkg.name {
-		app.error('name is not matching')
-		return app.delete(name)
+		app.set_status(404, '')
+		return app.text('name is not matching')
 	}
 
 	user_id := if app.cur_user.is_admin { pkg.user_id } else { app.cur_user.id }
 	app.packages().delete(pkg.id, user_id) or {
-		app.error(err.msg())
-		return app.delete(name)
+		app.set_status(404, '')
+		return app.text(err.msg())
 	}
 
 	return app.redirect('/')
