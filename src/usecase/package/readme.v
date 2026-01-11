@@ -48,7 +48,7 @@ pub fn (u UseCase) get_package_markdown(name string) !string {
 	if api_repo.status() != http.Status.ok {
 		return error('repo status is not 200, real ${api_repo.status()}')
 	}
-	body := json2.raw_decode(api_repo.body)!
+	body := json2.decode[json2.Any](api_repo.body)!
 	branch := body.as_map()['default_branch'] or { json2.Any('main') }
 
 	// Getting raw readme markdown
