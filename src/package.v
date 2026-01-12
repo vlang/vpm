@@ -15,7 +15,11 @@ fn (mut app App) new() vweb.Result {
 
 @['/create_package'; post]
 pub fn (mut app App) create_package(name string, url string, description string) vweb.Result {
-	app.packages().create(name, url, description, app.cur_user) or {
+	// Get user's organizations
+	orgs_repo := repo.organizations(app.db)
+	user_orgs := orgs_repo.get_user_org_names(app.cur_user.id)
+
+	app.packages().create_with_orgs(name, url, description, app.cur_user, user_orgs) or {
 		log.error()
 			.add('error', err.str())
 			.add('url', url)
