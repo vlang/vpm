@@ -110,7 +110,7 @@ pub fn (u UseCase) create_with_orgs(name string, vcsUrl string, description stri
 	// Determine package name prefix (user or organization)
 	owner := extract_owner_from_url(url)
 	mut pkg_prefix := user.username
-	
+
 	// If URL belongs to an organization the user is a member of, use org name as prefix
 	if owner != user.username && owner in user_orgs {
 		pkg_prefix = owner

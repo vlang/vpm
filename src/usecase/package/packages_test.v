@@ -61,7 +61,8 @@ fn test_check_vcs_unsupported_vcs() {
 // Test check_vcs_with_orgs function (new functionality)
 fn test_check_vcs_with_orgs_own_account() {
 	// User can still publish from their own account
-	result := check_vcs_with_orgs('https://github.com/meiseayoung/my-package', 'meiseayoung', []) or {
+	result := check_vcs_with_orgs('https://github.com/meiseayoung/my-package', 'meiseayoung',
+		[]) or {
 		assert false, 'should not fail for own account'
 		return
 	}
@@ -71,7 +72,8 @@ fn test_check_vcs_with_orgs_own_account() {
 fn test_check_vcs_with_orgs_member_org() {
 	// User can publish from organization they belong to
 	user_orgs := ['v-hono', 'another-org']
-	result := check_vcs_with_orgs('https://github.com/v-hono/v-hono-core', 'meiseayoung', user_orgs) or {
+	result := check_vcs_with_orgs('https://github.com/v-hono/v-hono-core', 'meiseayoung',
+		user_orgs) or {
 		assert false, 'should not fail for member organization: ${err}'
 		return
 	}
@@ -100,14 +102,14 @@ fn test_check_vcs_with_orgs_empty_orgs() {
 fn test_check_vcs_with_orgs_multiple_orgs() {
 	// User belongs to multiple organizations
 	user_orgs := ['org1', 'org2', 'v-hono', 'org3']
-	
+
 	// Can publish from any of them
 	result1 := check_vcs_with_orgs('https://github.com/org1/package', 'user', user_orgs) or {
 		assert false, 'should work for org1'
 		return
 	}
 	assert result1 == 'github'
-	
+
 	result2 := check_vcs_with_orgs('https://github.com/v-hono/package', 'user', user_orgs) or {
 		assert false, 'should work for v-hono'
 		return
@@ -146,7 +148,7 @@ fn test_is_valid_mod_name_max_length() {
 	// max_name_len is 35
 	valid_name := 'a'.repeat(35)
 	assert is_valid_mod_name(valid_name) == true
-	
+
 	invalid_name := 'a'.repeat(36)
 	assert is_valid_mod_name(invalid_name) == false
 }

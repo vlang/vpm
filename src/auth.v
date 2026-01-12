@@ -77,11 +77,11 @@ fn (mut app App) oauth_cb() vweb.Result {
 		url:    'https://api.github.com/user/orgs'
 		method: .get
 		header: http.new_header(key: .authorization, value: 'token ${token}')
-	) or { 
+	) or {
 		println('failed to fetch orgs: ${err}')
 		http.Response{}
 	}
-	
+
 	if orgs_resp.status_code == 200 {
 		gh_orgs := json.decode([]GitHubOrg, orgs_resp.body) or { [] }
 		mut org_names := []string{cap: gh_orgs.len}
