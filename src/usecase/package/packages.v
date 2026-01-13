@@ -55,7 +55,32 @@ pub interface UsersRepo {
 	get_by_id(id int) ?User
 }
 
+pub interface OrganizationsRepo {
+	get_user_org_names(user_id int) []string
+	user_belongs_to_org(user_id int, org_name string) bool
+}
+
+// Extract owner from GitHub URL (e.g., "https://github.com/v-hono/repo" -> "v-hono")
+fn extract_owner_from_url(url string) string {
+	// Remove protocol
+	mut path := url.replace('https://', '').replace('http://', '')
+	// Remove host
+	if path.starts_with('github.com/') {
+		path = path.replace('github.com/', '')
+	}
+	// Get first path segment (owner)
+	parts := path.split('/')
+	if parts.len > 0 {
+		return parts[0]
+	}
+	return ''
+}
+
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
+	return u.create_with_orgs(name, vcsUrl, description, user, [])
+}
+
+pub fn (u UseCase) create_with_orgs(name string, vcsUrl string, description string, user User, user_orgs []string) ! {
 	name_lower := name.to_lower()
 	log.info().add('name', name).msg('create package')
 	if user.username == '' || !is_valid_mod_name(name_lower) {
@@ -65,7 +90,7 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 	url := vcsUrl.replace('<', '&lt;').limit(max_package_url_len)
 	log.info().add('url', name).msg('create package')
 
-	vcs_name := check_vcs(url, user.username) or { return err }
+	vcs_name := check_vcs_with_orgs(url, user.username, user_orgs) or { return err }
 
 	resp := http.get(url) or { return error('Failed to fetch package URL') }
 	if resp.status_code == 404 {
@@ -82,8 +107,17 @@ pub fn (u UseCase) create(name string, vcsUrl string, description string, user U
 		return error('This URL has already been submitted')
 	}
 
+	// Determine package name prefix (user or organization)
+	owner := extract_owner_from_url(url)
+	mut pkg_prefix := user.username
+
+	// If URL belongs to an organization the user is a member of, use org name as prefix
+	if owner != user.username && owner in user_orgs {
+		pkg_prefix = owner
+	}
+
 	u.packages.create_package(Package{
-		name:        user.username + '.' + name.limit(max_name_len)
+		name:        pkg_prefix + '.' + name.limit(max_name_len)
 		url:         url
 		description: description
 		vcs:         vcs_name.limit(3)
@@ -187,6 +221,10 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 }
 
 pub fn check_vcs(url string, username string) !string {
+	return check_vcs_with_orgs(url, username, [])
+}
+
+pub fn check_vcs_with_orgs(url string, username string, user_orgs []string) !string {
 	for vcs in allowed_vcs {
 		for protocol in vcs.protocols {
 			for host in vcs.hosts {
@@ -194,12 +232,24 @@ pub fn check_vcs(url string, username string) !string {
 					continue
 				}
 
-				if !url.starts_with(vcs.format_url(protocol, host, username))
-					&& username != 'medvednikov' {
-					return error('You must submit a package from your own account')
+				// Check if URL belongs to user's account
+				if url.starts_with(vcs.format_url(protocol, host, username)) {
+					return vcs.name
 				}
 
-				return vcs.name
+				// Check if URL belongs to one of user's organizations
+				for org in user_orgs {
+					if url.starts_with(vcs.format_url(protocol, host, org)) {
+						return vcs.name
+					}
+				}
+
+				// Special case for admin
+				if username == 'medvednikov' {
+					return vcs.name
+				}
+
+				return error('You must submit a package from your own account or an organization you belong to')
 			}
 		}
 	}

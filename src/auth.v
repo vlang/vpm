@@ -6,8 +6,13 @@ import json
 import vweb
 import entity { User }
 import lib.log
+import repo
 
 struct GitHubUser {
+	login string
+}
+
+struct GitHubOrg {
 	login string
 }
 
@@ -66,6 +71,30 @@ fn (mut app App) oauth_cb() vweb.Result {
 	random_id = app.db.q_string("select random_id from \"User\" where username='${login}' ") or {
 		panic(err)
 	}
+
+	// Fetch user's GitHub organizations
+	orgs_resp := http.fetch(
+		url:    'https://api.github.com/user/orgs'
+		method: .get
+		header: http.new_header(key: .authorization, value: 'token ${token}')
+	) or {
+		println('failed to fetch orgs: ${err}')
+		http.Response{}
+	}
+
+	if orgs_resp.status_code == 200 {
+		gh_orgs := json.decode([]GitHubOrg, orgs_resp.body) or { [] }
+		mut org_names := []string{cap: gh_orgs.len}
+		for org in gh_orgs {
+			org_names << org.login
+		}
+		// Save organizations to database
+		orgs_repo := repo.organizations(app.db)
+		orgs_repo.save_user_organizations(user_id, org_names) or {
+			println('failed to save orgs: ${err}')
+		}
+	}
+
 	app.set_cookie(
 		name:  'id'
 		value: user_id.str()
