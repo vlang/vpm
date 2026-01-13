@@ -6,6 +6,7 @@ import lib.storage
 import lib.html
 import markdown
 import entity { Package }
+import repo
 
 @['/new']
 fn (mut app App) new() vweb.Result {
