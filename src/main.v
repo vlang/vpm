@@ -3,7 +3,7 @@ module main
 import veb
 import db.pg
 import config
-import entity { User }
+import entity
 import lib.storage.local
 import os
 import repo
@@ -41,11 +41,10 @@ fn main() {
 		last_update: &upd
 	}
 
-    // Static file handling
+	// Static file handling
 	app.mount_static_folder_at(os.resource_abs_path('./static'), '/')!
 
-    
-    // Register Middleware (replaces before_request)
+	// Register Middleware (replaces before_request)
 	app.use(handler: app.auth_middleware)
 
 	// Run veb
@@ -63,8 +62,8 @@ pub fn auth_middleware(mut ctx Context) bool {
 
 	// Call the auth logic (moved to auth.v or defined here)
     // We need to call the logic that populates ctx.cur_user
-    ctx.auth() 
-    
+    ctx.auth()
+
     return true
 }
 */

@@ -5,7 +5,7 @@ import time
 
 pub fn (mut app App) index(mut ctx Context) veb.Result {
 	// Cachable index page
-    // Note: app.last_update is a pointer in the struct, so we dereference to check
+	// Note: app.last_update is a pointer in the struct, so we dereference to check
 	if app.last_update == unsafe { nil } || *app.last_update < time.now().add(-time.minute) {
 		p := app.packages()
 		app.categories = p.get_categories() or { [] }
@@ -21,10 +21,10 @@ pub fn (mut app App) index(mut ctx Context) veb.Result {
 		}
 	}
 
-    // In templates, you access fields via the receiver variable name usually,
-    // or pass them explicitly.
-    // veb templates usually capture local variables.
-    // Ensure the template uses `app.categories`, `ctx.cur_user`, etc.
+	// In templates, you access fields via the receiver variable name usually,
+	// or pass them explicitly.
+	// veb templates usually capture local variables.
+	// Ensure the template uses `app.categories`, `ctx.cur_user`, etc.
 
 	return $veb.html()
 }

@@ -86,7 +86,7 @@ fn (app &App) auth_user(mut ctx Context) {
 
 	ctx.cur_user = User{}
 	if id != 0 {
-        // App has the DB connection
+		// App has the DB connection
 		cur_user := app.users().get(id, random_id) or { return }
 		ctx.cur_user = cur_user
 	}
@@ -94,8 +94,9 @@ fn (app &App) auth_user(mut ctx Context) {
 
 pub fn (app &App) auth_middleware(mut ctx Context) bool {
 	app.auth_user(mut ctx)
-    return true
+	return true
 }
+
 /*
 // @[markused]
 fn (mut app App) auth() {
