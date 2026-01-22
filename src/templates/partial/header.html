@@ -6,7 +6,7 @@
 	<meta name="description" content="" />
 	<link rel="icon" href="/favicon.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>@app.title</title>
+	<title>@ctx.title</title>
 	@include 'assets/styles.html'
 </head>
 
@@ -26,7 +26,7 @@
 			</div>
 			<div class="flex-1 flex justify-end items-center gap-6">
 
-				@if !app.is_logged_in()
+				@if !ctx.is_logged_in()
 				<a class="button bg-general text-white hover:bg-[#303030] hover:no-underline focus:bg-[#424242] flex justify-center gap-2"
 					rel="external" href="@app.login_link()" aria-label="Login with Github">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
@@ -35,9 +35,9 @@
 					Login
 				</a>
 				@else
-				<a href="/users/@app.cur_user.username">
-					<img class="w-12 h-12 rounded-full" title="@app.cur_user.username" alt="@app.cur_user.username"
-						src="https://github.com/@{app.cur_user.username}.png" />
+				<a href="/users/@ctx.cur_user.username">
+					<img class="w-12 h-12 rounded-full" title="@ctx.cur_user.username" alt="@ctx.cur_user.username"
+						src="https://github.com/@{ctx.cur_user.username}.png" />
 				</a>
 				@end
 			</div>

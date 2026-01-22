@@ -59,7 +59,7 @@
     </div>
     <div class="panel inactive xl:self-start flex flex-col gap-4">
         <div>
-            @if app.is_able_to_edit(pkg)
+            @if ctx.is_able_to_edit(pkg)
             <div class="pb-2 flex flex-wrap gap-2">
                 <a class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2"
                     href="/packages/@pkg.name/edit">

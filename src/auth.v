@@ -3,7 +3,7 @@ module main
 import rand
 import net.http
 import json
-import vweb
+import veb
 import entity { User }
 import lib.log
 
@@ -22,18 +22,18 @@ fn random_string(len int) string {
 	return buf.str()
 }
 
-fn (mut app App) oauth_cb() vweb.Result {
-	code := app.req.url.all_after('code=')
+fn (app &App) oauth_cb(mut ctx Context) veb.Result {
+	code := ctx.req.url.all_after('code=')
 	println(code)
 	if code == '' {
-		return app.redirect('/')
+		return ctx.redirect('/')
 	}
 
 	resp := http.post_form('https://github.com/login/oauth/access_token', {
 		'client_id':     app.config.gh.client_id
 		'client_secret': app.config.gh.secret
 		'code':          code
-	}) or { return app.redirect('/') }
+	}) or { return ctx.redirect('/') }
 	println('resp text=' + resp.body)
 	token := resp.body.find_between('access_token=', '&')
 	println('token =${token}')
@@ -44,11 +44,11 @@ fn (mut app App) oauth_cb() vweb.Result {
 	) or { panic(err) }
 	gh_user := json.decode(GitHubUser, user_js.body) or {
 		println('cant decode')
-		return app.redirect('/')
+		return ctx.redirect('/')
 	}
 	login := gh_user.login.replace(' ', '')
 	if login.len < 2 {
-		return app.redirect('/new')
+		return ctx.redirect('/new')
 	}
 	println('login =${login}')
 	mut random_id := random_string(20)
@@ -66,18 +66,37 @@ fn (mut app App) oauth_cb() vweb.Result {
 	random_id = app.db.q_string("select random_id from \"User\" where username='${login}' ") or {
 		panic(err)
 	}
-	app.set_cookie(
+	ctx.set_cookie(
 		name:  'id'
 		value: user_id.str()
 	)
-	app.set_cookie(
+	ctx.set_cookie(
 		name:  'q'
 		value: random_id
 	)
 	println('redirecting to /new')
-	return app.redirect('/new')
+	return ctx.redirect('/new')
 }
 
+fn (app &App) auth_user(mut ctx Context) {
+	id_cookie := ctx.get_cookie('id') or { return }
+	id := id_cookie.int()
+	q_cookie := ctx.get_cookie('q') or { return }
+	random_id := q_cookie.trim_space()
+
+	ctx.cur_user = User{}
+	if id != 0 {
+        // App has the DB connection
+		cur_user := app.users().get(id, random_id) or { return }
+		ctx.cur_user = cur_user
+	}
+}
+
+pub fn (app &App) auth_middleware(mut ctx Context) bool {
+	app.auth_user(mut ctx)
+    return true
+}
+/*
 // @[markused]
 fn (mut app App) auth() {
 	id_cookie := app.get_cookie('id') or { return }
@@ -95,12 +114,13 @@ fn (mut app App) auth() {
 		.add('qq', random_id)
 		.msg('auth')
 
-	app.cur_user = User{}
+	ctx.cur_user = User{}
 	if id != 0 {
 		cur_user := app.users().get(id, random_id) or { return }
-		app.cur_user = cur_user
+		ctx.cur_user = cur_user
 	}
 }
+*/
 
 fn (app &App) login_link() string {
 	return 'https://github.com/login/oauth/authorize?response_type=code&client_id=${app.config.gh.client_id}'

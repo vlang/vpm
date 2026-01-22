@@ -1,17 +1,17 @@
 module main
 
-import vweb
+import veb
 
 @['/search']
-pub fn (mut app App) search() vweb.Result {
-	query := app.query['q']
-	category := app.query['category']
-	sort := app.query['sort']
+pub fn (app &App) search(mut ctx Context) veb.Result {
+	query := ctx.query['q']
+	category := ctx.query['category']
+	sort := ctx.query['sort']
 
 	title := if query == '' { 'All Packages' } else { 'Search Results' }
-	app.title = title + ' | vpm'
+	ctx.title = title + ' | vpm'
 
-	mut packages := app.packages().query(query, sort) // NOTE: packages variable is used in search.html template
+	mut packages := app.packages().query(query, sort)
 	if category.len > 0 {
 		if cpkgs := app.packages().get_category_packages(category) {
 			ids := cpkgs.map(it.id)
@@ -19,5 +19,5 @@ pub fn (mut app App) search() vweb.Result {
 		}
 	}
 
-	return $vweb.html()
+	return $veb.html()
 }
