@@ -63,7 +63,7 @@ pub fn (app &App) package(mut ctx Context, name string) veb.Result {
 	// pass ctx to helpers if they need request context, otherwise pass nothing
 	data := app.get_readme(pkg.name, readme_path) or { '' }
 
-	pkg_readme := data
+	pkg_readme := veb.RawHtml(data)
 
 	return $veb.html()
 }
