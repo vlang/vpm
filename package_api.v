@@ -2,7 +2,6 @@ module main
 
 import veb
 import lib.log
-import net.http
 
 @['/api/packages'; post]
 pub fn (app &App) api_create_package(mut ctx Context, name string, vcsUrl string, description string) veb.Result {

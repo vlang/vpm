@@ -3,7 +3,6 @@ module main
 import veb
 import db.pg
 import config
-import entity
 import lib.storage.local
 import os
 import repo

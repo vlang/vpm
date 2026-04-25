@@ -5,7 +5,6 @@ import net.http
 import json
 import veb
 import entity { User }
-import lib.log
 
 struct GitHubUser {
 	login string
