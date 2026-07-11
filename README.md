@@ -69,6 +69,20 @@ docker run -it \
   postgres:15
 ```
 
+```sql
+CREATE DATABASE vpm;
+CREATE USER vpm WITH PASSWORD 'vpm';
+GRANT ALL PRIVILEGES ON DATABASE vpm TO vpm;
+\c vpm postgres
+GRANT ALL ON SCHEMA public TO vpm;
+```
+
+
+
+
+
+
+
 <!-- Reference links -->
 [vpm]: https://vpm.vlang.io
 <!-- [GettingStarted]: https://vpm.vlang.io/docs/getting-started -->

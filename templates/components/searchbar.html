@@ -4,8 +4,9 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
             <use href="#search_icon"></use>
         </svg>
+		<!-- TODO q -->
         <input class="flex-1 appearance-none focus:text-general focus:border-0 focus:outline-none bg-transparent"
-            name="q" type="search" placeholder="Search" pattern="[A-Za-z0-9-.]{(1, 100)}" value="@{app.query['q']}"
+            name="q" type="search" placeholder="Search" pattern="[A-Za-z0-9-.]{(1, 100)}" value="@{ctx.query['q']}"
             title="Must match rules of github repo naming">
     </label>
 </form>

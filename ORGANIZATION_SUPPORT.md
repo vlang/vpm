@@ -16,13 +16,13 @@ This prevents users from publishing packages from GitHub organizations they belo
 ## Files Changed
 
 ### New Files
-- `src/entity/organization.v` - UserOrganization entity
-- `src/repo/organization.v` - Database operations for organizations
+- `entity/organization.v` - UserOrganization entity
+- `repo/organization.v` - Database operations for organizations
 
 ### Modified Files
-- `src/auth.v` - Fetch user's organizations during OAuth login
-- `src/usecase/package/packages.v` - Support organization URLs and prefixes
-- `src/package.v` - Pass organization info to create function
+- `auth.v` - Fetch user's organizations during OAuth login
+- `usecase/package/packages.v` - Support organization URLs and prefixes
+- `package.v` - Pass organization info to create function
 
 ## How It Works
 

@@ -26,3 +26,4 @@ vpm_storage
 fns.txt
 *.code-workspace
 tailwindcss
+static/css/*.css
