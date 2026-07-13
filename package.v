@@ -6,7 +6,6 @@ import lib.storage
 import lib.html
 import markdown
 import entity { Package }
-import repo
 
 @['/new']
 fn (app &App) new(mut ctx Context) veb.Result {
@@ -16,10 +15,7 @@ fn (app &App) new(mut ctx Context) veb.Result {
 
 @['/create_package'; post]
 pub fn (app &App) create_package(mut ctx Context, name string, url string, description string) veb.Result {
-	orgs_repo := repo.organizations(app.db)
-	user_orgs := orgs_repo.get_user_org_names(ctx.cur_user.id)
-
-	app.packages().create_with_orgs(name, url, description, ctx.cur_user, user_orgs) or {
+	app.packages().create(name, url, description, ctx.cur_user) or {
 		log.error()
 			.add('error', err.str())
 			.add('url', url)

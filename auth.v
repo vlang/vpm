@@ -26,6 +26,35 @@ fn random_string(len int) string {
 	return buf.str()
 }
 
+const orgs_per_page = 100
+
+fn fetch_all_user_org_names(token string) ![]string {
+	mut names := []string{}
+	mut page := 1
+	for {
+		resp := http.fetch(
+			url:    'https://api.github.com/user/orgs?per_page=${orgs_per_page}&page=${page}'
+			method: .get
+			header: http.new_header(key: .authorization, value: 'token ${token}')
+		)!
+
+		if resp.status_code != 200 {
+			return error('GitHub returned status ${resp.status_code} while fetching organizations')
+		}
+
+		gh_orgs := json.decode([]GitHubOrg, resp.body)!
+		for org in gh_orgs {
+			names << org.login
+		}
+
+		if gh_orgs.len < orgs_per_page {
+			break
+		}
+		page++
+	}
+	return names
+}
+
 fn (app &App) oauth_cb(mut ctx Context) veb.Result {
 	code := ctx.req.url.all_after('code=')
 	println(code)
@@ -71,26 +100,13 @@ fn (app &App) oauth_cb(mut ctx Context) veb.Result {
 		panic(err)
 	}
 	// Fetch user's GitHub organizations
-	orgs_resp := http.fetch(
-		url:    'https://api.github.com/user/orgs'
-		method: .get
-		header: http.new_header(key: .authorization, value: 'token ${token}')
-	) or {
-		println('failed to fetch orgs: ${err}')
-		http.Response{}
+	orgs_repo := repo.organizations(app.db)
+	org_names := fetch_all_user_org_names(token) or {
+		println('failed to fetch orgs, failing closed: ${err}')
+		[]string{}
 	}
-
-	if orgs_resp.status_code == 200 {
-		gh_orgs := json.decode([]GitHubOrg, orgs_resp.body) or { [] }
-		mut org_names := []string{cap: gh_orgs.len}
-		for org in gh_orgs {
-			org_names << org.login
-		}
-		// Save organizations to database
-		orgs_repo := repo.organizations(app.db)
-		orgs_repo.save_user_organizations(user_id, org_names) or {
-			println('failed to save orgs: ${err}')
-		}
+	orgs_repo.save_user_organizations(user_id, org_names) or {
+		println('failed to save orgs: ${err}')
 	}
 
 	ctx.set_cookie(
@@ -151,5 +167,5 @@ fn (mut app App) auth() {
 */
 
 fn (app &App) login_link() string {
-	return 'https://github.com/login/oauth/authorize?response_type=code&client_id=${app.config.gh.client_id}'
+	return 'https://github.com/login/oauth/authorize?response_type=code&client_id=${app.config.gh.client_id}&scope=read:org'
 }

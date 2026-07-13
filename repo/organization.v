@@ -43,12 +43,10 @@ pub fn (o OrganizationsRepo) user_belongs_to_org(user_id int, org_name string) b
 }
 
 pub fn (o OrganizationsRepo) save_user_organizations(user_id int, org_names []string) ! {
-	// Delete existing organizations for this user
 	sql o.db {
 		delete from UserOrganization where user_id == user_id
-	} or {}
+	}!
 
-	// Insert new organizations
 	for org_name in org_names {
 		org := UserOrganization{
 			user_id:  user_id
@@ -56,6 +54,6 @@ pub fn (o OrganizationsRepo) save_user_organizations(user_id int, org_names []st
 		}
 		sql o.db {
 			insert org into UserOrganization
-		} or { continue }
+		}!
 	}
 }

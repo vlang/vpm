@@ -2,7 +2,8 @@ module package
 
 pub struct UseCase {
 pub:
-	categories CategoriesRepo @[required]
-	packages   PackagesRepo   @[required]
-	users      UsersRepo      @[required]
+	categories    CategoriesRepo    @[required]
+	packages      PackagesRepo      @[required]
+	users         UsersRepo         @[required]
+	organizations OrganizationsRepo @[required]
 }

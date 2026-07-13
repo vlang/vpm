@@ -115,6 +115,31 @@ fn test_check_vcs_with_orgs_multiple_orgs() {
 	assert result2 == 'github'
 }
 
+fn test_check_vcs_with_orgs_org_prefix_bypass() {
+	user_orgs := ['acme']
+	check_vcs_with_orgs('https://github.com/acme-inc/some-repository', 'someone', user_orgs) or {
+		assert err.msg().contains('own account') || err.msg().contains('organization')
+		return
+	}
+	assert false, 'membership in acme must not authorize acme-inc'
+}
+
+fn test_check_vcs_with_orgs_account_prefix_bypass() {
+	check_vcs_with_orgs('https://github.com/meiseayoung-clone/repo', 'meiseayoung', []) or {
+		assert err.msg().contains('own account') || err.msg().contains('organization')
+		return
+	}
+	assert false, 'own-account prefix match must not authorize a different account'
+}
+
+fn test_check_vcs_with_orgs_case_insensitive() {
+	result := check_vcs_with_orgs('https://github.com/Acme/repo', 'someone', ['acme']) or {
+		assert false, 'organization match should be case-insensitive: ${err}'
+		return
+	}
+	assert result == 'github'
+}
+
 fn test_check_vcs_with_orgs_http_protocol() {
 	// Should work with http protocol too
 	user_orgs := ['v-hono']
@@ -123,6 +148,40 @@ fn test_check_vcs_with_orgs_http_protocol() {
 		return
 	}
 	assert result == 'github'
+}
+
+fn test_resolve_owner_prefix_own_account() {
+	assert resolve_owner_prefix('https://github.com/meiseayoung/pkg', 'meiseayoung', []) == 'meiseayoung'
+}
+
+fn test_resolve_owner_prefix_member_org() {
+	prefix := resolve_owner_prefix('https://github.com/v-hono/pkg', 'meiseayoung', [
+		'v-hono',
+		'other',
+	])
+	assert prefix == 'v-hono'
+}
+
+fn test_resolve_owner_prefix_falls_back_to_username() {
+	// If the URL's owner isn't the user's own account or a known
+	// organization, fall back to the user's own namespace rather than
+	// letting an arbitrary owner segment become the package prefix.
+	prefix := resolve_owner_prefix('https://github.com/some-other-org/pkg', 'meiseayoung', [
+		'v-hono',
+	])
+	assert prefix == 'meiseayoung'
+}
+
+fn test_resolve_owner_prefix_bypass() {
+	prefix := resolve_owner_prefix('https://github.com/acme-inc/pkg', 'someone', [
+		'acme',
+	])
+	assert prefix == 'someone'
+}
+
+fn test_resolve_owner_prefix_case_insensitive() {
+	prefix := resolve_owner_prefix('https://github.com/Acme/pkg', 'someone', ['acme'])
+	assert prefix == 'acme'
 }
 
 // Test is_valid_mod_name function

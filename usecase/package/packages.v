@@ -76,8 +76,22 @@ fn extract_owner_from_url(url string) string {
 	return ''
 }
 
+fn resolve_owner_prefix(url string, username string, user_orgs []string) string {
+	owner := extract_owner_from_url(url).to_lower()
+	if owner == username.to_lower() {
+		return username
+	}
+	for org in user_orgs {
+		if owner == org.to_lower() {
+			return org
+		}
+	}
+	return username
+}
+
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
-	return u.create_with_orgs(name, vcsUrl, description, user, [])
+	user_orgs := u.organizations.get_user_org_names(user.id)
+	return u.create_with_orgs(name, vcsUrl, description, user, user_orgs)
 }
 
 pub fn (u UseCase) create_with_orgs(name string, vcsUrl string, description string, user User, user_orgs []string) ! {
@@ -108,13 +122,7 @@ pub fn (u UseCase) create_with_orgs(name string, vcsUrl string, description stri
 	}
 
 	// Determine package name prefix (user or organization)
-	owner := extract_owner_from_url(url)
-	mut pkg_prefix := user.username
-
-	// If URL belongs to an organization the user is a member of, use org name as prefix
-	if owner != user.username && owner in user_orgs {
-		pkg_prefix = owner
-	}
+	pkg_prefix := resolve_owner_prefix(url, user.username, user_orgs)
 
 	u.packages.create_package(Package{
 		name:        pkg_prefix + '.' + name.limit(max_name_len)
@@ -197,7 +205,8 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 	}
 
 	repo_url := url.replace('<', '&lt;').limit(max_package_url_len)
-	check_vcs(repo_url, usr.username)!
+	user_orgs := u.organizations.get_user_org_names(usr.id)
+	check_vcs_with_orgs(repo_url, usr.username, user_orgs) or { return err }
 
 	resp := http.get(repo_url) or { return error('Failed to fetch package URL') }
 	if resp.status_code == 404 {
@@ -216,7 +225,8 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 		}
 	}
 
-	u.packages.update_package_info(package_id, usr.username + '.' + name.limit(max_name_len),
+	pkg_prefix := resolve_owner_prefix(repo_url, usr.username, user_orgs)
+	u.packages.update_package_info(package_id, pkg_prefix + '.' + name.limit(max_name_len),
 		repo_url, description)!
 }
 
@@ -232,14 +242,17 @@ pub fn check_vcs_with_orgs(url string, username string, user_orgs []string) !str
 					continue
 				}
 
+				owner := extract_owner_from_url(url).to_lower()
+				username_lower := username.to_lower()
+
 				// Check if URL belongs to user's account
-				if url.starts_with(vcs.format_url(protocol, host, username)) {
+				if owner == username_lower {
 					return vcs.name
 				}
 
 				// Check if URL belongs to one of user's organizations
 				for org in user_orgs {
-					if url.starts_with(vcs.format_url(protocol, host, org)) {
+					if owner == org.to_lower() {
 						return vcs.name
 					}
 				}
