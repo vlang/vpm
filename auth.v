@@ -106,7 +106,8 @@ fn (app &App) oauth_cb(mut ctx Context) veb.Result {
 		[]string{}
 	}
 	orgs_repo.save_user_organizations(user_id, org_names) or {
-		println('failed to save orgs: ${err}')
+		println('failed to save orgs, aborting login: ${err}')
+		return ctx.redirect('/')
 	}
 
 	ctx.set_cookie(
