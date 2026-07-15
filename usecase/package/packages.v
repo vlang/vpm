@@ -57,10 +57,10 @@ pub interface UsersRepo {
 
 pub interface OrganizationsRepo {
 	get_user_org_names(user_id int) []string
-	user_belongs_to_org(user_id int, org_name string) bool
 }
 
 // Extract owner from GitHub URL (e.g., "https://github.com/v-hono/repo" -> "v-hono")
+// Not meant to be called on its own outside parse_repo_url.
 fn extract_owner_from_url(url string) string {
 	// Remove protocol
 	mut path := url.replace('https://', '').replace('http://', '')
@@ -76,8 +76,51 @@ fn extract_owner_from_url(url string) string {
 	return ''
 }
 
+fn extract_repo_name_from_url(url string) string {
+	mut path := url.replace('https://', '').replace('http://', '')
+	if path.starts_with('github.com/') {
+		path = path.replace('github.com/', '')
+	}
+	parts := path.split('/')
+	if parts.len < 2 {
+		return ''
+	}
+	mut name := parts[1].all_before('?').all_before('#')
+	if name.ends_with('.git') {
+		name = name[..name.len - 4]
+	}
+	return name
+}
+
+// ParsedRepoUrl is an (owner, repo) pair that has been confirmed to come
+// from a URL matching one of allowed_vcs's configured hosts/protocols.
+struct ParsedRepoUrl {
+	vcs_name  string
+	owner     string
+	repo_name string
+}
+
+fn parse_repo_url(url string) !ParsedRepoUrl {
+	for vcs in allowed_vcs {
+		for protocol in vcs.protocols {
+			for host in vcs.hosts {
+				if !url.starts_with(vcs.format_url(protocol, host, '')) {
+					continue
+				}
+				return ParsedRepoUrl{
+					vcs_name:  vcs.name
+					owner:     extract_owner_from_url(url)
+					repo_name: extract_repo_name_from_url(url)
+				}
+			}
+		}
+	}
+	return error('unsupported vcs')
+}
+
 fn resolve_owner_prefix(url string, username string, user_orgs []string) string {
-	owner := extract_owner_from_url(url).to_lower()
+	parsed := parse_repo_url(url) or { return username }
+	owner := parsed.owner.to_lower()
 	if owner == username.to_lower() {
 		return username
 	}
@@ -87,6 +130,54 @@ fn resolve_owner_prefix(url string, username string, user_orgs []string) string 
 		}
 	}
 	return username
+}
+
+fn resolve_package_prefix(url string, username string, user_orgs []string, is_admin bool) string {
+	if is_admin {
+		parsed := parse_repo_url(url) or { return username }
+		if parsed.owner != '' {
+			return parsed.owner
+		}
+	}
+	return resolve_owner_prefix(url, username, user_orgs)
+}
+
+fn user_has_repo_write_access(token string, owner string, repo_name string) bool {
+	if token == '' || owner == '' || repo_name == '' {
+		return false
+	}
+	resp := http.fetch(
+		url:    'https://api.github.com/repos/${owner}/${repo_name}'
+		method: .get
+		header: http.new_header(key: .authorization, value: 'token ${token}')
+	) or { return false }
+	if resp.status_code != 200 {
+		return false
+	}
+	body := json2.decode[json2.Any](resp.body) or { return false }
+	permissions := body.as_map()['permissions'] or { return false }
+	perms_map := permissions.as_map()
+	push := perms_map['push'] or { json2.Any(false) }
+	admin := perms_map['admin'] or { json2.Any(false) }
+	return push.bool() || admin.bool()
+}
+
+// Require live repository write access for organization owned packages.
+// Personal repositories and admin operations bypass this check.
+//
+// Use the URL owner for this decision because flattened package names don't
+// preserve the owner's username in their prefix.
+fn require_repo_write_access(url string, username string, pkg_prefix string, github_token string, is_admin bool) ! {
+	if is_admin {
+		return
+	}
+	parsed := parse_repo_url(url)!
+	if parsed.owner.to_lower() == username.to_lower() {
+		return
+	}
+	if !user_has_repo_write_access(github_token, parsed.owner, parsed.repo_name) {
+		return error('You do not have push access to this repository in ${pkg_prefix}')
+	}
 }
 
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
@@ -104,7 +195,7 @@ pub fn (u UseCase) create_with_orgs(name string, vcsUrl string, description stri
 	url := vcsUrl.replace('<', '&lt;').limit(max_package_url_len)
 	log.info().add('url', name).msg('create package')
 
-	vcs_name := check_vcs_with_orgs(url, user.username, user_orgs) or { return err }
+	vcs_name := check_vcs_with_orgs(url, user.username, user_orgs, user.is_admin) or { return err }
 
 	resp := http.get(url) or { return error('Failed to fetch package URL') }
 	if resp.status_code == 404 {
@@ -122,7 +213,10 @@ pub fn (u UseCase) create_with_orgs(name string, vcsUrl string, description stri
 	}
 
 	// Determine package name prefix (user or organization)
-	pkg_prefix := resolve_owner_prefix(url, user.username, user_orgs)
+	pkg_prefix := resolve_package_prefix(url, user.username, user_orgs, user.is_admin)
+	require_repo_write_access(url, user.username, pkg_prefix, user.github_token, user.is_admin) or {
+		return err
+	}
 
 	u.packages.create_package(Package{
 		name:        pkg_prefix + '.' + name.limit(max_name_len)
@@ -141,8 +235,43 @@ pub fn (u UseCase) get(name string) !Package {
 	return pkg
 }
 
-pub fn (u UseCase) delete(package_id int, user_id int) ! {
-	return u.packages.delete(package_id, user_id)
+// Return the namespace before the first dot in a stored package name.
+fn package_prefix(pkg_name string) string {
+	parts := pkg_name.split('.')
+	if parts.len == 0 {
+		return ''
+	}
+	return parts[0]
+}
+
+fn stored_package_requires_repo_write_access(pkg Package, username string) bool {
+	parsed := parse_repo_url(pkg.url) or { return false }
+	if parsed.owner.to_lower() == username.to_lower() {
+		return false
+	}
+	return package_prefix(pkg.name).to_lower() == parsed.owner.to_lower()
+}
+
+// Delete a package after verifying ownership and for organization packages,
+// current repository write access. Admins bypass these checks.
+//
+// The repository delete must use the package's recorded owner ID because its
+// query is scoped by both package ID and user ID.
+pub fn (u UseCase) delete(package_id int, user_id int, is_admin bool) ! {
+	pkg := u.packages.get_by_id(package_id)!
+	if !is_admin {
+		if pkg.user_id != user_id {
+			return error('you do not have permission to delete this package')
+		}
+		owner := u.users.get_by_id(pkg.user_id) or {
+			return error('package ${package_id} user_id is not valid')
+		}
+		if stored_package_requires_repo_write_access(pkg, owner.username) {
+			require_repo_write_access(pkg.url, owner.username, package_prefix(pkg.name),
+				owner.github_token, false) or { return err }
+		}
+	}
+	return u.packages.delete(package_id, pkg.user_id)
 }
 
 pub fn (u UseCase) query(query string, sort string) []Package {
@@ -193,7 +322,7 @@ pub fn (u UseCase) update_package_stats(package_id int) ! {
 	u.packages.update_package_stars(pkg.id, any_stars.int())!
 }
 
-pub fn (u UseCase) update_package_info(package_id int, name string, url string, description string) ! {
+pub fn (u UseCase) update_package_info(package_id int, name string, url string, description string, caller_is_admin bool) ! {
 	name_lower := name.to_lower()
 	if !is_valid_mod_name(name_lower) {
 		return error('not valid mod name')
@@ -206,7 +335,9 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 
 	repo_url := url.replace('<', '&lt;').limit(max_package_url_len)
 	user_orgs := u.organizations.get_user_org_names(usr.id)
-	check_vcs_with_orgs(repo_url, usr.username, user_orgs) or { return err }
+	check_vcs_with_orgs(repo_url, usr.username, user_orgs, usr.is_admin || caller_is_admin) or {
+		return err
+	}
 
 	resp := http.get(repo_url) or { return error('Failed to fetch package URL') }
 	if resp.status_code == 404 {
@@ -225,49 +356,52 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 		}
 	}
 
-	pkg_prefix := resolve_owner_prefix(repo_url, usr.username, user_orgs)
+	// Preserve the repository owner as the package prefix during admin edits.
+	// Unlike cached organization membership, the URL owner reflects the stored package namespace directly.
+	pkg_prefix := if caller_is_admin {
+		parse_repo_url(repo_url) or {
+			ParsedRepoUrl{
+				owner: package_prefix(pkg.name)
+			}
+		}.owner
+	} else {
+		resolve_owner_prefix(repo_url, usr.username, user_orgs)
+	}
+	if !caller_is_admin {
+		require_repo_write_access(repo_url, usr.username, pkg_prefix, usr.github_token, false) or {
+			return err
+		}
+	}
 	u.packages.update_package_info(package_id, pkg_prefix + '.' + name.limit(max_name_len),
 		repo_url, description)!
 }
 
-pub fn check_vcs(url string, username string) !string {
-	return check_vcs_with_orgs(url, username, [])
+pub fn check_vcs(url string, username string, is_admin bool) !string {
+	return check_vcs_with_orgs(url, username, [], is_admin)
 }
 
-pub fn check_vcs_with_orgs(url string, username string, user_orgs []string) !string {
-	for vcs in allowed_vcs {
-		for protocol in vcs.protocols {
-			for host in vcs.hosts {
-				if !url.starts_with(vcs.format_url(protocol, host, '')) {
-					continue
-				}
+pub fn check_vcs_with_orgs(url string, username string, user_orgs []string, is_admin bool) !string {
+	parsed := parse_repo_url(url)!
+	owner := parsed.owner.to_lower()
+	username_lower := username.to_lower()
 
-				owner := extract_owner_from_url(url).to_lower()
-				username_lower := username.to_lower()
+	// Check if URL belongs to user's account
+	if owner == username_lower {
+		return parsed.vcs_name
+	}
 
-				// Check if URL belongs to user's account
-				if owner == username_lower {
-					return vcs.name
-				}
-
-				// Check if URL belongs to one of user's organizations
-				for org in user_orgs {
-					if owner == org.to_lower() {
-						return vcs.name
-					}
-				}
-
-				// Special case for admin
-				if username == 'medvednikov' {
-					return vcs.name
-				}
-
-				return error('You must submit a package from your own account or an organization you belong to')
-			}
+	// Check if URL belongs to one of user's organizations
+	for org in user_orgs {
+		if owner == org.to_lower() {
+			return parsed.vcs_name
 		}
 	}
 
-	return error('unsupported vcs')
+	if is_admin {
+		return parsed.vcs_name
+	}
+
+	return error('You must submit a package from your own account or an organization you belong to')
 }
 
 pub fn is_valid_mod_name(s string) bool {

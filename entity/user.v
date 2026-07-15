@@ -14,7 +14,13 @@ pub mut:
 	block_reason string
 	is_admin     bool
 
-	random_id string // TODO remove once more advanced authentication is migrated
+	// Session credential used for cookie authentication. It must never be
+	// included in serialized User values.
+	random_id string @[json: '-']
+
+	// GitHub OAuth token used for repository permission checks during package operations.
+	// It must never be included in serialized User values.
+	github_token string @[json: '-']
 
 	created_at time.Time = time.now()
 	updated_at time.Time = time.now()

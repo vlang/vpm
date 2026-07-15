@@ -94,20 +94,29 @@ fn (app &App) oauth_cb(mut ctx Context) veb.Result {
 	} or {
 		// can already exist, do nothing
 	}
-	// Fetch the new or already existing user and set cookies
-	user_id := app.db.q_int("select id from \"User\" where username='${login}' ") or { panic(err) }
-	random_id = app.db.q_string("select random_id from \"User\" where username='${login}' ") or {
-		panic(err)
+	// Fetch the newly created or existing user through UsersRepo and set the
+	// authentication cookies. Using the repository keeps this lookup consistent with the ORM's
+	// lowercase `user` table name and avoids relying on a raw, incorrectly quoted `"User"` query.
+	existing_user := app.users().get_by_name(login) or {
+		panic('user was just inserted but could not be found by username: ${login}')
 	}
-	// Fetch user's GitHub organizations
-	orgs_repo := repo.organizations(app.db)
-	org_names := fetch_all_user_org_names(token) or {
-		println('failed to fetch orgs, failing closed: ${err}')
-		[]string{}
-	}
-	orgs_repo.save_user_organizations(user_id, org_names) or {
-		println('failed to save orgs, aborting login: ${err}')
+	user_id := existing_user.id
+	random_id = existing_user.random_id
+	// Store the GitHub token for repository level permission checks during package creation and updates.
+	repo.users(app.db).update_github_token(user_id, token) or {
+		println('failed to save github token, aborting login: ${err}')
 		return ctx.redirect('/')
+	}
+	// Refresh cached organization memberships without clearing them on a transient GitHub failure.
+	// Package operations still require a live repository permission check.
+	mut orgs_repo := repo.organizations(app.db)
+	if org_names := fetch_all_user_org_names(token) {
+		orgs_repo.save_user_organizations(user_id, org_names) or {
+			println('failed to save orgs, aborting login: ${err}')
+			return ctx.redirect('/')
+		}
+	} else {
+		println('failed to fetch orgs, keeping existing memberships this login: ${err}')
 	}
 
 	ctx.set_cookie(

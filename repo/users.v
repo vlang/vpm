@@ -12,6 +12,8 @@ pub fn migrate_users(db orm.Connection) ! {
 	sql db {
 		create table User
 	}!
+	mut db_mut := db
+	db_mut.execute('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS github_token TEXT NOT NULL DEFAULT \'\'')!
 }
 
 pub fn users(db orm.Connection) UsersRepo {
@@ -48,4 +50,10 @@ fn (u UsersRepo) get_by_name(username string) ?User {
 		return none
 	}
 	return users[0]
+}
+
+pub fn (u UsersRepo) update_github_token(user_id int, token string) ! {
+	sql u.db {
+		update User set github_token = token where id == user_id
+	}!
 }
