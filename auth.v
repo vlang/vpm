@@ -2,7 +2,7 @@ module main
 
 import rand
 import net.http
-import json
+import json2
 import veb
 import entity { User }
 import repo
@@ -42,7 +42,7 @@ fn fetch_all_user_org_names(token string) ![]string {
 			return error('GitHub returned status ${resp.status_code} while fetching organizations')
 		}
 
-		gh_orgs := json.decode([]GitHubOrg, resp.body)!
+		gh_orgs := json2.decode[[]GitHubOrg](resp.body)!
 		for org in gh_orgs {
 			names << org.login
 		}
@@ -75,7 +75,7 @@ fn (app &App) oauth_cb(mut ctx Context) veb.Result {
 		method: .get
 		header: http.new_header(key: .authorization, value: 'token ${token}')
 	) or { panic(err) }
-	gh_user := json.decode(GitHubUser, user_js.body) or {
+	gh_user := json2.decode[GitHubUser](user_js.body) or {
 		println('cant decode')
 		return ctx.redirect('/')
 	}
