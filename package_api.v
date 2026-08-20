@@ -18,7 +18,9 @@ pub fn (app &App) delete_package(mut ctx Context, package_id int) veb.Result {
 		})
 	}
 
-	app.packages().delete(package_id, ctx.cur_user.id) or { return ctx.not_found() }
+	app.packages().delete(package_id, ctx.cur_user.id, ctx.cur_user.is_admin) or {
+		return ctx.not_found()
+	}
 
 	return ctx.ok('ok')
 }

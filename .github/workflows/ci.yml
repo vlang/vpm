@@ -35,8 +35,21 @@ jobs:
           path: vpm
       - name: Install dependencies
         run: sudo apt-get install --quiet -y postgresql libpq-dev libssl-dev
+      - name: Start PostgreSQL for tests
+        run: |
+          sudo systemctl start postgresql.service
+          sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
+          PG_HBA=$(sudo -u postgres psql -tAc "SHOW hba_file" | tr -d '[:space:]')
+          sudo sed -i -E 's/^(host\s+all\s+all\s+127\.0\.0\.1\/32\s+)\S+\s*$/\1trust/' "$PG_HBA"
+          sudo sed -i -E 's/^(host\s+all\s+all\s+::1\/128\s+)\S+\s*$/\1trust/' "$PG_HBA"
+          sudo systemctl restart postgresql.service
       - name: Build V
         run: make
+      - name: Run tests
+        run: |
+          cd vpm
+          ../v install
+          ../v test .
       - name: Build VPM
         run: |
           cd vpm

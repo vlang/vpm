@@ -41,9 +41,10 @@ pub mut:
 // Helper accessors now take the App (global)
 fn (app &App) packages() package.UseCase {
 	return package.UseCase{
-		categories: repo.categories(app.db)
-		packages:   repo.packages(app.db)
-		users:      repo.users(app.db)
+		categories:    repo.categories(app.db)
+		packages:      repo.packages(app.db)
+		users:         repo.users(app.db)
+		organizations: repo.organizations(app.db)
 	}
 }
 

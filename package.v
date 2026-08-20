@@ -129,7 +129,7 @@ pub fn (mut app App) perform_edit(mut ctx Context, name string) veb.Result {
 
 	url := ctx.form['url'] or { pkg.url }
 	description := ctx.form['description'] or { pkg.description }
-	app.packages().update_package_info(pkg.id, pkg_name, url, description) or {
+	app.packages().update_package_info(pkg.id, pkg_name, url, description, ctx.cur_user.is_admin) or {
 		return ctx.text('package cant be udpated')
 		// app.error(err.msg())
 		// return app.edit(name)
@@ -175,8 +175,7 @@ pub fn (mut app App) perform_delete(mut ctx Context, name string) veb.Result {
 		return ctx.text('name is not matching')
 	}
 
-	user_id := if ctx.cur_user.is_admin { pkg.user_id } else { ctx.cur_user.id }
-	app.packages().delete(pkg.id, user_id) or {
+	app.packages().delete(pkg.id, ctx.cur_user.id, ctx.cur_user.is_admin) or {
 		// app.error(err.msg())
 		// return app.delete(name)
 		return ctx.text('can not delete package')
