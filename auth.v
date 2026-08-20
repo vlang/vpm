@@ -2,6 +2,7 @@ module main
 
 import rand
 import net.http
+import net.urllib
 import json2
 import veb
 import entity { User }
@@ -13,6 +14,12 @@ struct GitHubUser {
 
 struct GitHubOrg {
 	login string
+}
+
+struct GitHubAccessTokenResponse {
+	access_token      string
+	error             string
+	error_description string
 }
 
 const random = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
@@ -55,10 +62,60 @@ fn fetch_all_user_org_names(token string) ![]string {
 	return names
 }
 
-fn (app &App) oauth_cb(mut ctx Context) veb.Result {
-	code := ctx.req.url.all_after('code=')
-	println(code)
+fn extract_github_access_token(body string) !string {
+	trimmed_body := body.trim_space()
+	if trimmed_body == '' {
+		return error('GitHub OAuth response was empty')
+	}
+	if trimmed_body.starts_with('{') {
+		token_resp := json2.decode[GitHubAccessTokenResponse](trimmed_body)!
+		if token_resp.access_token != '' {
+			return token_resp.access_token
+		}
+		if token_resp.error_description != '' {
+			return error(token_resp.error_description)
+		}
+		if token_resp.error != '' {
+			return error(token_resp.error)
+		}
+		return error('GitHub OAuth response didn't include access_token')
+	}
+
+	values := urllib.parse_query(trimmed_body)!
+	if token := values.get('access_token') {
+		if token != '' {
+			return token
+		}
+	}
+	if err_description := values.get('error_description') {
+		if err_description != '' {
+			return error(err_description)
+		}
+	}
+	if err_name := values.get('error') {
+		if err_name != '' {
+			return error(err_name)
+		}
+	}
+	return error('GitHub OAuth response did not include access_token')
+}
+
+fn extract_github_oauth_code(raw_url string) !string {
+	mut query := raw_url
+	if question_mark_idx := raw_url.index('?') {
+		query = raw_url[question_mark_idx + 1..]
+	}
+	values := urllib.parse_query(query)!
+	code := values.get('code') or { return error('GitHub OAuth callback didn't include code') }
 	if code == '' {
+		return error('GitHub OAuth callback code was empty')
+	}
+	return code
+}
+
+fn (app &App) oauth_cb(mut ctx Context) veb.Result {
+	code := extract_github_oauth_code(ctx.req.url) or {
+		println('failed to get GitHub OAuth code: ${err}')
 		return ctx.redirect('/')
 	}
 
@@ -67,14 +124,19 @@ fn (app &App) oauth_cb(mut ctx Context) veb.Result {
 		'client_secret': app.config.gh.secret
 		'code':          code
 	}) or { return ctx.redirect('/') }
-	println('resp text=' + resp.body)
-	token := resp.body.find_between('access_token=', '&')
-	println('token =${token}')
+	token := extract_github_access_token(resp.body) or {
+		println('failed to get GitHub access token: ${err}')
+		return ctx.redirect('/')
+	}
 	user_js := http.fetch(
 		url:    'https://api.github.com/user'
 		method: .get
 		header: http.new_header(key: .authorization, value: 'token ${token}')
 	) or { panic(err) }
+	if user_js.status_code != 200 {
+		println('GitHub returned status ${user_js.status_code} while fetching user')
+		return ctx.redirect('/')
+	}
 	gh_user := json2.decode[GitHubUser](user_js.body) or {
 		println('cant decode')
 		return ctx.redirect('/')
