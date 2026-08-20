@@ -78,7 +78,7 @@ fn extract_github_access_token(body string) !string {
 		if token_resp.error != '' {
 			return error(token_resp.error)
 		}
-		return error('GitHub OAuth response didn't include access_token')
+		return error('GitHub OAuth response did not include access_token')
 	}
 
 	values := urllib.parse_query(trimmed_body)!
@@ -106,7 +106,7 @@ fn extract_github_oauth_code(raw_url string) !string {
 		query = raw_url[question_mark_idx + 1..]
 	}
 	values := urllib.parse_query(query)!
-	code := values.get('code') or { return error('GitHub OAuth callback didn't include code') }
+	code := values.get('code') or { return error('GitHub OAuth callback did not include code') }
 	if code == '' {
 		return error('GitHub OAuth callback code was empty')
 	}
