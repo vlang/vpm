@@ -14,14 +14,14 @@
             </button>
             @if pkg.documentation.len > 0
             <a class="button text-white whitespace-nowrap hover:no-underline bg-primary flex gap-2"
-                href="$pkg.documentation" target="_blank">
+                href="@pkg.documentation" target="_blank">
                 <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#docs_icon"></use>
                 </svg>
                 Documentation
             </a>
             @end
-            <a class="button primary w-full md:w-fit" href="$pkg.url" target="_blank">
+            <a class="button primary w-full md:w-fit" href="@pkg.url" target="_blank">
                 <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <use href="#repo_icon"></use>
                 </svg>
