@@ -241,3 +241,11 @@ fn (mut app App) auth() {
 fn (app &App) login_link() string {
 	return 'https://github.com/login/oauth/authorize?response_type=code&client_id=${app.config.gh.client_id}&scope=read:org'
 }
+
+fn github_oauth_app_access_link(client_id string) string {
+	return 'https://github.com/settings/connections/applications/${client_id}'
+}
+
+fn (app &App) github_oauth_app_access_link() string {
+	return github_oauth_app_access_link(app.config.gh.client_id)
+}

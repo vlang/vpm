@@ -3,7 +3,6 @@ module html
 import maps
 import net.html as net_html
 import net.urllib
-import strings
 
 const allowed_tags = [
 	'h1',
@@ -252,23 +251,5 @@ fn traverse_and_sanitize(tag &&net_html.Tag) {
 }
 
 fn to_string(tag &net_html.Tag) string {
-	mut html_str := strings.new_builder(64)
-	html_str.write_string('<${tag.name}')
-	for key, value in tag.attributes {
-		html_str.write_string(' ${key}')
-		if value.len > 0 {
-			html_str.write_string('="${value}"')
-		}
-	}
-	html_str.write_string(if tag.closed && tag.close_type == .in_name { '/>' } else { '>' })
-	html_str.write_string(tag.content)
-	if tag.children.len > 0 {
-		for child in tag.children {
-			html_str.write_string('\n' + to_string(child))
-		}
-	}
-	if !tag.closed || tag.close_type == .new_tag {
-		html_str.write_string('</${tag.name}>')
-	}
-	return html_str.str()
+	return tag.str()
 }

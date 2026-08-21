@@ -26,7 +26,8 @@ pub fn (app &App) create_package(mut ctx Context, name string, url string, descr
 
 		// app.error(err.msg())
 		// return app.new()
-		return ctx.text(err.msg())
+		ctx.error(err.msg())
+		return app.new(mut ctx)
 	}
 
 	return ctx.redirect('/')
@@ -74,22 +75,35 @@ fn (app &App) get_readme(name string, readme_path string) !string {
 			return error('failed to read readme from storage: ${err}')
 		}
 
-		println('fetching readme from repo for `${name}`')
-
-		// TODO: figure out when to update readme
-		readme := app.packages().get_package_markdown(name) or {
-			return error('failed to get readme from repo: ${err}')
-		}
-
-		rendered := html.sanitize(markdown.to_html(readme)).bytes()
-
-		app.storage.save(readme_path, rendered) or {
-			println('failed to save readme to storage: ${err}')
-		}
-
-		rendered
+		return app.fetch_and_cache_readme(name, readme_path)
+	}
+	if data.len == 0 {
+		return app.fetch_and_cache_readme(name, readme_path)
 	}
 	return data.bytestr()
+}
+
+fn (app &App) fetch_and_cache_readme(name string, readme_path string) !string {
+	println('fetching readme from repo for `${name}`')
+
+	// TODO: figure out when to update readme
+	readme := app.packages().get_package_markdown(name) or {
+		return error('failed to get readme from repo: ${err}')
+	}
+	if readme.trim_space() == '' {
+		return ''
+	}
+
+	rendered := html.sanitize(markdown.to_html(readme)).bytes()
+	if rendered.len == 0 {
+		return ''
+	}
+
+	app.storage.save(readme_path, rendered) or {
+		println('failed to save readme to storage: ${err}')
+	}
+
+	return rendered.bytestr()
 }
 
 @['/packages/:name/edit']

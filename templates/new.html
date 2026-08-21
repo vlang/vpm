@@ -6,7 +6,7 @@
 	</h1>
 
 	@if ctx.form_error.len>0
-	<p>@ctx.form_error</p>
+	<p class="mt-4 text-error">@ctx.form_error</p>
 	@end
 
 	@if !ctx.is_logged_in()
@@ -14,6 +14,12 @@
 		Log in via GitHub
 	</a>
 	@else
+	<p class="mt-4 text-small text-sub">
+		Publishing from a restricted organization?
+		<a class="text-primary hover:underline" rel="external" href="@app.github_oauth_app_access_link()">
+			Review VPM access on GitHub
+		</a>
+	</p>
 	<form class="w-full flex flex-col gap-4 mt-4" action='/create_package' method='POST'>
 		<input class="p-2 rounded-lg border border-off-white" type='text' placeholder='Package name' required
 			maxlength=10 pattern="[A-Za-z0-9]+" title="Only letters and numbers are allowed" name='name'>
