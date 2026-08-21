@@ -29,15 +29,13 @@ fn main() {
 	repo.migrate(db)!
 
 	st := local.new(conf.storage_path)!
-	nr := 'packages'
-	upd := time.unix(0)
 
 	mut app := &App{
 		config:      conf
 		db:          db
 		storage:     st
-		nr_packages: &nr
-		last_update: &upd
+		nr_packages: 'packages'
+		last_update: time.unix(0)
 	}
 
 	// Static file handling

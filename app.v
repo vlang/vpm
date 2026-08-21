@@ -30,12 +30,12 @@ pub mut:
 
 	// Shared cache data (Requires synchronization if updated concurrently,
 	// but assuming single-threaded worker or simple reads for now)
-	nr_packages               &string = unsafe { nil }
+	nr_packages               string
 	categories                []Category
 	new_packages              []Package
 	recently_updated_packages []Package
 	most_downloaded_packages  []Package
-	last_update               &time.Time = unsafe { nil }
+	last_update               time.Time
 }
 
 // Helper accessors now take the App (global)
