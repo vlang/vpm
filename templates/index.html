@@ -45,11 +45,10 @@
     </div>
 </section>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-x-5" id="content-container">
-    <div class="hidden relative col-span-3 lg:flex lg:justify-center lg:gap-x-5">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-5" id="content-container">
+    <div class="hidden relative col-span-2 lg:flex lg:justify-center lg:gap-x-5">
         <h2 class="flex-1 mb-4" onclick="setActive(0)">New packages</h2>
         <h2 class="flex-1 mb-4" onclick="setActive(1)">Most downloaded</h2>
-        <h2 class="flex-1 mb-4" onclick="setActive(2)">Recently updated</h2>
     </div>
     <!-- Select on mobile -->
     <h2 class="lg:hidden mb-4 flex items-center">
@@ -57,7 +56,6 @@
             name="content-selector" onchange="onSelectChange()">
             <option selected value="0">New packages</option>
             <option value="1">Most downloaded</option>
-            <option value="2">Recently updated</option>
         </select>
         <svg class="flex-none -ml-6 pointer-events-none" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
             <use href="#arrow_up_down"></use>
@@ -76,16 +74,6 @@
     <section class="panel content-section-t" id="content-1">
         <div class="flex flex-col" data-package-downloads data-package-stars>
             @for i, pkg in app.most_downloaded_packages
-            @include './components/package.html'
-            @if less_than(i, app.new_packages.len - 1)
-            <hr />
-            @end
-            @end
-        </div>
-    </section>
-    <section class="panel content-section-t" id="content-2">
-        <div class="flex flex-col" data-package-last-update data-package-stars data-package-tag>
-            @for i, pkg in app.recently_updated_packages
             @include './components/package.html'
             @if less_than(i, app.new_packages.len - 1)
             <hr />
