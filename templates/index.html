@@ -62,7 +62,7 @@
         </svg>
     </h2>
     <div class="lg:flex lg:gap-x-5">
-        <section class="flex-1 panel content-section-t" data-active id="content-0">
+        <section class="flex-1 min-w-0 panel content-section-t" data-active id="content-0">
             <div class="flex flex-col" data-package-last-update>
                 @for i, pkg in app.new_packages
                 @include './components/package.html'
@@ -72,7 +72,7 @@
                 @end
             </div>
         </section>
-        <section class="flex-1 panel content-section-t" id="content-1">
+        <section class="flex-1 min-w-0 panel content-section-t" id="content-1">
             <div class="flex flex-col" data-package-downloads data-package-stars>
                 @for i, pkg in app.most_downloaded_packages
                 @include './components/package.html'
