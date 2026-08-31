@@ -45,8 +45,8 @@
     </div>
 </section>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-5" id="content-container">
-    <div class="hidden relative col-span-2 lg:flex lg:justify-center lg:gap-x-5">
+<div id="content-container">
+    <div class="hidden lg:flex lg:gap-x-5">
         <h2 class="flex-1 mb-4" onclick="setActive(0)">New packages</h2>
         <h2 class="flex-1 mb-4" onclick="setActive(1)">Most downloaded</h2>
     </div>
@@ -61,26 +61,28 @@
             <use href="#arrow_up_down"></use>
         </svg>
     </h2>
-    <section class="panel content-section-t" data-active id="content-0">
-        <div class="flex flex-col" data-package-last-update>
-            @for i, pkg in app.new_packages
-            @include './components/package.html'
-            @if less_than(i, app.new_packages.len - 1)
-            <hr />
-            @end
-            @end
-        </div>
-    </section>
-    <section class="panel content-section-t" id="content-1">
-        <div class="flex flex-col" data-package-downloads data-package-stars>
-            @for i, pkg in app.most_downloaded_packages
-            @include './components/package.html'
-            @if less_than(i, app.new_packages.len - 1)
-            <hr />
-            @end
-            @end
-        </div>
-    </section>
+    <div class="lg:flex lg:gap-x-5">
+        <section class="flex-1 panel content-section-t" data-active id="content-0">
+            <div class="flex flex-col" data-package-last-update>
+                @for i, pkg in app.new_packages
+                @include './components/package.html'
+                @if less_than(i, app.new_packages.len - 1)
+                <hr />
+                @end
+                @end
+            </div>
+        </section>
+        <section class="flex-1 panel content-section-t" id="content-1">
+            <div class="flex flex-col" data-package-downloads data-package-stars>
+                @for i, pkg in app.most_downloaded_packages
+                @include './components/package.html'
+                @if less_than(i, app.new_packages.len - 1)
+                <hr />
+                @end
+                @end
+            </div>
+        </section>
+    </div>
 </div>
 
 <script>
