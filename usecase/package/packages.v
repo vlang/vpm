@@ -180,6 +180,12 @@ fn require_repo_write_access(url string, username string, pkg_prefix string, git
 	}
 }
 
+fn ensure_package_limit_not_reached(package_count int) ! {
+	if package_count >= 100 {
+		return error('One user can submit no more than 100 packages')
+	}
+}
+
 pub fn (u UseCase) create(name string, vcsUrl string, description string, user User) ! {
 	user_orgs := u.organizations.get_user_org_names(user.id)
 	return u.create_with_orgs(name, vcsUrl, description, user, user_orgs)
@@ -202,9 +208,7 @@ pub fn (u UseCase) create_with_orgs(name string, vcsUrl string, description stri
 		return error('This package URL does not exist (404)')
 	}
 
-	if u.packages.count_by_user(user.id) > 100 {
-		return error('One user can submit no more than 100 packages')
-	}
+	ensure_package_limit_not_reached(u.packages.count_by_user(user.id))!
 
 	// Make sure the URL is unique
 	existing := u.packages.find_by_url(url)
@@ -342,10 +346,6 @@ pub fn (u UseCase) update_package_info(package_id int, name string, url string, 
 	resp := http.get(repo_url) or { return error('Failed to fetch package URL') }
 	if resp.status_code == 404 {
 		return error('This package URL does not exist (404)')
-	}
-
-	if u.packages.count_by_user(usr.id) > 100 {
-		return error('One user can submit no more than 100 packages')
 	}
 
 	// Make sure the URL is unique
