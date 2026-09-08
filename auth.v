@@ -170,22 +170,18 @@ fn (app &App) login(mut ctx Context) veb.Result {
 fn (app &App) oauth_cb(mut ctx Context) veb.Result {
 	code := extract_github_oauth_code(ctx.req.url) or {
 		println('failed to get GitHub OAuth code: ${err}')
-		ctx.clear_oauth_state_cookie()
 		return ctx.redirect('/')
 	}
 	state := extract_github_oauth_state(ctx.req.url) or {
 		println('failed to get GitHub OAuth state: ${err}')
-		ctx.clear_oauth_state_cookie()
 		return ctx.redirect('/')
 	}
 	cookie_state := ctx.get_cookie(oauth_state_cookie) or {
 		println('missing GitHub OAuth state cookie')
-		ctx.clear_oauth_state_cookie()
 		return ctx.redirect('/')
 	}
 	validate_github_oauth_state(state, cookie_state) or {
 		println('invalid GitHub OAuth state')
-		ctx.clear_oauth_state_cookie()
 		return ctx.redirect('/')
 	}
 	ctx.clear_oauth_state_cookie()
