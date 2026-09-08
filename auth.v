@@ -1,5 +1,8 @@
 module main
 
+import crypto.hmac
+import crypto.rand as crypto_rand
+import encoding.base64
 import rand
 import net.http
 import net.urllib
@@ -23,14 +26,21 @@ struct GitHubAccessTokenResponse {
 }
 
 const random = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
+const oauth_state_cookie = 'oauth_state'
+const oauth_state_bytes = 32
+const oauth_state_max_age = 600
 
 fn random_string(len int) string {
-	mut buf := [`0`].repeat(len)
+	mut buf := []u8{len: len, init: `0`}
 	for i := 0; i < len; i++ {
 		idx := rand.intn(random.len) or { 0 }
 		buf[i] = random[idx]
 	}
 	return buf.str()
+}
+
+fn new_oauth_state() !string {
+	return base64.url_encode(crypto_rand.bytes(oauth_state_bytes)!)
 }
 
 const orgs_per_page = 100
@@ -100,17 +110,61 @@ fn extract_github_access_token(body string) !string {
 	return error('GitHub OAuth response did not include access_token')
 }
 
-fn extract_github_oauth_code(raw_url string) !string {
+fn extract_github_oauth_query_param(raw_url string, key string) !string {
 	mut query := raw_url
 	if question_mark_idx := raw_url.index('?') {
 		query = raw_url[question_mark_idx + 1..]
 	}
 	values := urllib.parse_query(query)!
-	code := values.get('code') or { return error('GitHub OAuth callback did not include code') }
-	if code == '' {
-		return error('GitHub OAuth callback code was empty')
+	value := values.get(key) or { return error('GitHub OAuth callback did not include ${key}') }
+	if value == '' {
+		return error('GitHub OAuth callback ${key} was empty')
 	}
-	return code
+	return value
+}
+
+fn extract_github_oauth_code(raw_url string) !string {
+	return extract_github_oauth_query_param(raw_url, 'code')
+}
+
+fn extract_github_oauth_state(raw_url string) !string {
+	return extract_github_oauth_query_param(raw_url, 'state')
+}
+
+fn validate_github_oauth_state(callback_state string, cookie_state string) ! {
+	if callback_state == '' || cookie_state == '' {
+		return error('GitHub OAuth state was empty')
+	}
+	if !hmac.equal(callback_state.bytes(), cookie_state.bytes()) {
+		return error('GitHub OAuth state mismatch')
+	}
+}
+
+fn (mut ctx Context) clear_oauth_state_cookie() {
+	ctx.set_cookie(http.Cookie{
+		name:    oauth_state_cookie
+		value:   ''
+		path:    '/oauth_cb'
+		max_age: -1
+	})
+}
+
+@['/login']
+fn (app &App) login(mut ctx Context) veb.Result {
+	state := new_oauth_state() or {
+		println('failed to create GitHub OAuth state')
+		return ctx.redirect('/')
+	}
+	ctx.set_cookie(http.Cookie{
+		name:      oauth_state_cookie
+		value:     state
+		path:      '/oauth_cb'
+		max_age:   oauth_state_max_age
+		http_only: true
+		secure:    app.config.root_url.starts_with('https://')
+		same_site: .same_site_lax_mode
+	})
+	return ctx.redirect(app.github_authorize_link(state))
 }
 
 fn (app &App) oauth_cb(mut ctx Context) veb.Result {
@@ -118,6 +172,19 @@ fn (app &App) oauth_cb(mut ctx Context) veb.Result {
 		println('failed to get GitHub OAuth code: ${err}')
 		return ctx.redirect('/')
 	}
+	state := extract_github_oauth_state(ctx.req.url) or {
+		println('failed to get GitHub OAuth state: ${err}')
+		return ctx.redirect('/')
+	}
+	cookie_state := ctx.get_cookie(oauth_state_cookie) or {
+		println('missing GitHub OAuth state cookie')
+		return ctx.redirect('/')
+	}
+	validate_github_oauth_state(state, cookie_state) or {
+		println('invalid GitHub OAuth state')
+		return ctx.redirect('/')
+	}
+	ctx.clear_oauth_state_cookie()
 
 	resp := http.post_form('https://github.com/login/oauth/access_token', {
 		'client_id':     app.config.gh.client_id
@@ -128,11 +195,13 @@ fn (app &App) oauth_cb(mut ctx Context) veb.Result {
 		println('failed to get GitHub access token: ${err}')
 		return ctx.redirect('/')
 	}
+	// TODO: Handle GitHub user fetch failures without panicking the request.
 	user_js := http.fetch(
 		url:    'https://api.github.com/user'
 		method: .get
 		header: http.new_header(key: .authorization, value: 'token ${token}')
 	) or { panic(err) }
+
 	if user_js.status_code != 200 {
 		println('GitHub returned status ${user_js.status_code} while fetching user')
 		return ctx.redirect('/')
@@ -239,7 +308,20 @@ fn (mut app App) auth() {
 */
 
 fn (app &App) login_link() string {
-	return 'https://github.com/login/oauth/authorize?response_type=code&client_id=${app.config.gh.client_id}&scope=read:org'
+	return '/login'
+}
+
+fn github_authorize_link(client_id string, state string) string {
+	mut values := urllib.new_values()
+	values.set('response_type', 'code')
+	values.set('client_id', client_id)
+	values.set('scope', 'read:org')
+	values.set('state', state)
+	return 'https://github.com/login/oauth/authorize?${values.encode()}'
+}
+
+fn (app &App) github_authorize_link(state string) string {
+	return github_authorize_link(app.config.gh.client_id, state)
 }
 
 fn github_oauth_app_access_link(client_id string) string {
