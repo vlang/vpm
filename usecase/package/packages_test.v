@@ -2,27 +2,6 @@ module package
 
 import entity { Category, Package, User }
 
-// Test helper function: extract_owner_from_url
-fn test_extract_owner_from_url_https() {
-	assert extract_owner_from_url('https://github.com/v-hono/v-hono-core') == 'v-hono'
-	assert extract_owner_from_url('https://github.com/meiseayoung/my-package') == 'meiseayoung'
-	assert extract_owner_from_url('https://github.com/vlang/vpm') == 'vlang'
-}
-
-fn test_extract_owner_from_url_http() {
-	assert extract_owner_from_url('http://github.com/v-hono/v-hono-core') == 'v-hono'
-	assert extract_owner_from_url('http://github.com/meiseayoung/my-package') == 'meiseayoung'
-}
-
-fn test_extract_owner_from_url_edge_cases() {
-	// Empty URL
-	assert extract_owner_from_url('') == ''
-	// URL without path
-	assert extract_owner_from_url('https://github.com/') == ''
-	// URL with only owner
-	assert extract_owner_from_url('https://github.com/owner') == 'owner'
-}
-
 // Test check_vcs function (backward compatibility)
 fn test_check_vcs_own_account() {
 	// User can publish from their own account
@@ -233,15 +212,6 @@ fn test_is_valid_mod_name_max_length() {
 	assert is_valid_mod_name(invalid_name) == false
 }
 
-fn test_extract_repo_name_from_url() {
-	assert extract_repo_name_from_url('https://github.com/v-hono/v-hono-core') == 'v-hono-core'
-	assert extract_repo_name_from_url('https://github.com/vlang/vpm.git') == 'vpm'
-	assert extract_repo_name_from_url('https://github.com/vlang/vpm/') == 'vpm'
-	assert extract_repo_name_from_url('https://github.com/vlang/vpm/issues/1') == 'vpm'
-	assert extract_repo_name_from_url('https://github.com/owner') == ''
-	assert extract_repo_name_from_url('') == ''
-}
-
 fn test_parse_repo_url_accepts_known_host() {
 	parsed := parse_repo_url('https://github.com/v-hono/v-hono-core') or {
 		assert false, 'should accept a github.com URL: ${err}'
@@ -250,6 +220,47 @@ fn test_parse_repo_url_accepts_known_host() {
 	assert parsed.vcs_name == 'github'
 	assert parsed.owner == 'v-hono'
 	assert parsed.repo_name == 'v-hono-core'
+}
+
+fn test_parse_repo_url_accepts_supported_repository_forms() {
+	valid_urls := [
+		'https://github.com/vlang/vpm.git',
+		'https://github.com/vlang/vpm/',
+		'https://github.com/vlang/vpm?tab=readme-ov-file',
+		'https://github.com/vlang/vpm#readme',
+	]
+	for url in valid_urls {
+		parsed := parse_repo_url(url) or {
+			assert false, 'should accept ${url}: ${err}'
+			return
+		}
+		assert parsed.vcs_name == 'github'
+		assert parsed.owner == 'vlang'
+		assert parsed.repo_name == 'vpm'
+	}
+}
+
+fn test_parse_repo_url_rejects_non_repository_paths() {
+	invalid_urls := [
+		'https://github.com/',
+		'https://github.com/vlang',
+		'https://github.com/vlang/vpm/issues/1',
+		'https://github.com/vlang/vpm/tree/master',
+		'https://github.com/vlang//vpm',
+		'https://user@github.com/vlang/vpm',
+		'https://github.com:443/vlang/vpm',
+	]
+	for url in invalid_urls {
+		if parsed := parse_repo_url(url) {
+			assert false, 'should reject ${url}, got ${parsed}'
+		}
+	}
+}
+
+fn test_check_vcs_admin_rejects_non_repository_path() {
+	if vcs := check_vcs('https://github.com/vlang/vpm/issues/1', 'admin', true) {
+		assert false, 'admin should not bypass repository URL validation, got ${vcs}'
+	}
 }
 
 fn test_parse_repo_url_rejects_unknown_host() {
