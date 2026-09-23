@@ -12,23 +12,17 @@ pub const per_page = 6
 const max_name_len = 35
 const max_package_url_len = 75
 
-fn default_url_formatter(protocol string, host string, username string) string {
-	return '${protocol}://${host}/${username}'
-}
-
 struct Vcs {
-	name       string
-	hosts      []string
-	protocols  []string
-	format_url fn (protocol string, host string, username string) string = default_url_formatter
+	name      string
+	hosts     []string
+	protocols []string
 }
 
 const allowed_vcs = [
 	Vcs{
-		name:       'github'
-		hosts:      ['github.com']
-		protocols:  ['https', 'http']
-		format_url: default_url_formatter
+		name:      'github'
+		hosts:     ['github.com']
+		protocols: ['https', 'http']
 	},
 ]
 
@@ -59,39 +53,6 @@ pub interface OrganizationsRepo {
 	get_user_org_names(user_id int) []string
 }
 
-// Extract owner from GitHub URL (e.g., "https://github.com/v-hono/repo" -> "v-hono")
-// Not meant to be called on its own outside parse_repo_url.
-fn extract_owner_from_url(url string) string {
-	// Remove protocol
-	mut path := url.replace('https://', '').replace('http://', '')
-	// Remove host
-	if path.starts_with('github.com/') {
-		path = path.replace('github.com/', '')
-	}
-	// Get first path segment (owner)
-	parts := path.split('/')
-	if parts.len > 0 {
-		return parts[0]
-	}
-	return ''
-}
-
-fn extract_repo_name_from_url(url string) string {
-	mut path := url.replace('https://', '').replace('http://', '')
-	if path.starts_with('github.com/') {
-		path = path.replace('github.com/', '')
-	}
-	parts := path.split('/')
-	if parts.len < 2 {
-		return ''
-	}
-	mut name := parts[1].all_before('?').all_before('#')
-	if name.ends_with('.git') {
-		name = name[..name.len - 4]
-	}
-	return name
-}
-
 // ParsedRepoUrl is an (owner, repo) pair that has been confirmed to come
 // from a URL matching one of allowed_vcs's configured hosts/protocols.
 struct ParsedRepoUrl {
@@ -101,18 +62,37 @@ struct ParsedRepoUrl {
 }
 
 fn parse_repo_url(url string) !ParsedRepoUrl {
+	parsed_url := urllib.parse(url) or { return error('invalid repository URL') }
+
 	for vcs in allowed_vcs {
-		for protocol in vcs.protocols {
-			for host in vcs.hosts {
-				if !url.starts_with(vcs.format_url(protocol, host, '')) {
-					continue
-				}
-				return ParsedRepoUrl{
-					vcs_name:  vcs.name
-					owner:     extract_owner_from_url(url)
-					repo_name: extract_repo_name_from_url(url)
-				}
-			}
+		if parsed_url.scheme !in vcs.protocols || parsed_url.host !in vcs.hosts {
+			continue
+		}
+		if !url.starts_with('${parsed_url.scheme}://${parsed_url.host}/') {
+			return error('invalid repository URL')
+		}
+
+		mut path := parsed_url.path
+		if path.ends_with('/') {
+			path = path[..path.len - 1]
+		}
+		parts := path.split('/')
+		if parts.len != 3 || parts[0] != '' || parts[1] == '' || parts[2] == '' {
+			return error('invalid repository URL')
+		}
+
+		mut repo_name := parts[2]
+		if repo_name.ends_with('.git') {
+			repo_name = repo_name[..repo_name.len - 4]
+		}
+		if repo_name == '' {
+			return error('invalid repository URL')
+		}
+
+		return ParsedRepoUrl{
+			vcs_name:  vcs.name
+			owner:     parts[1]
+			repo_name: repo_name
 		}
 	}
 	return error('unsupported vcs')
