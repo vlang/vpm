@@ -2,8 +2,13 @@
 	<div class="min-w-0 flex-auto">
 		<a class="package-card__title mb-1 block font-bold text-medium text-primary overflow-hidden whitespace-nowrap overflow-ellipsis"
 			href="/@pkg.author.username/@pkg.name">
-			@pkg.format_name()
+			@pkg.short_name()
 		</a>
+		@if pkg.author_name().len > 0
+		<p class="mb-2 block text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">
+			@pkg.author_name()
+		</p>
+		@end
 		<p
 			class="package-card__description mb-2 block text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">
 			@pkg.description
