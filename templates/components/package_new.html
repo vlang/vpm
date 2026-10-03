@@ -1,0 +1,29 @@
+<section class="package" id="package@pkg.id">
+    <a class="package-card__title hover:underline cursor-pointer" href="/packages/@pkg.name">
+        @pkg.format_name()
+    </a>
+    <p
+        class="package-card__description h-6 mb-2 block text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">
+        @pkg.description
+    </p>
+    <div class="flex gap-4 items-center text-sub font-bold overflow-hidden">
+        <div class="package-card__attribute package-card__created flex gap-2 whitespace-nowrap" title="Created">
+            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <use href="#calendar_icon"></use>
+            </svg>
+            @pkg.created_at.relative()
+        </div>
+        <div class="package-card__attribute package-card__stars flex gap-2 whitespace-nowrap">
+            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <use href="#star_icon"></use>
+            </svg>
+            @pkg.stars
+        </div>
+        <div class="package-card__attribute package-card__downloads flex gap-2 whitespace-nowrap">
+            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <use href="#download_icon"></use>
+            </svg>
+            @pkg.nr_downloads
+        </div>
+    </div>
+</section>

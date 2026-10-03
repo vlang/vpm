@@ -38,7 +38,11 @@
 
 <div class="panel flex flex-col" data-package-show-all>
 	@for i, pkg in packages
+	@if sort == '-created_at' || sort == 'created_at'
+	@include './components/package_new.html'
+	@else
 	@include './components/package.html'
+	@end
 	@if less_than(i, packages.len - 1)
 	<hr />
 	@end

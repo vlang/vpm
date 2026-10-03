@@ -47,9 +47,9 @@
     </h2>
     <div class="lg:flex lg:gap-x-5">
         <section class="flex-1 min-w-0 panel content-section-t" data-active id="content-0">
-            <div class="flex flex-col" data-package-last-update>
+            <div class="flex flex-col" data-package-created>
                 @for i, pkg in app.new_packages
-                @include './components/package.html'
+                @include './components/package_new.html'
                 @if less_than(i, app.new_packages.len - 1)
                 <hr />
                 @end
