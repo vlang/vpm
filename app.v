@@ -33,7 +33,7 @@ pub mut:
 	nr_packages               string
 	new_packages              []Package
 	recently_updated_packages []Package
-	most_downloaded_packages  []Package
+	most_popular_packages     []Package
 	last_update               time.Time
 }
 

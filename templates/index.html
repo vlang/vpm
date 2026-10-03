@@ -32,14 +32,14 @@
 <div id="content-container">
     <div class="hidden lg:flex lg:gap-x-5">
         <h2 class="flex-1 mb-4" onclick="setActive(0)">New packages</h2>
-        <h2 class="flex-1 mb-4" onclick="setActive(1)">Most downloaded</h2>
+        <h2 class="flex-1 mb-4" onclick="setActive(1)">Most popular</h2>
     </div>
     <!-- Select on mobile -->
     <h2 class="lg:hidden mb-4 flex items-center">
         <select class="w-full flex-none pr-7 primary appearance-none bg-transparent" id="mobile-content-selector"
             name="content-selector" onchange="onSelectChange()">
             <option selected value="0">New packages</option>
-            <option value="1">Most downloaded</option>
+            <option value="1">Most popular</option>
         </select>
         <svg class="flex-none -ml-6 pointer-events-none" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
             <use href="#arrow_up_down"></use>
@@ -58,7 +58,7 @@
         </section>
         <section class="flex-1 min-w-0 panel content-section-t" id="content-1">
             <div class="flex flex-col" data-package-downloads data-package-stars>
-                @for i, pkg in app.most_downloaded_packages
+                @for i, pkg in app.most_popular_packages
                 @include './components/package.html'
                 @if less_than(i, app.new_packages.len - 1)
                 <hr />

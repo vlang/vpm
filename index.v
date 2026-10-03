@@ -9,7 +9,7 @@ pub fn (mut app App) index(mut ctx Context) veb.Result {
 		p := app.packages()
 		app.new_packages = p.get_new_packages()
 		app.recently_updated_packages = p.get_recently_updated_packages()
-		app.most_downloaded_packages = p.get_most_downloaded_packages()
+		app.most_popular_packages = p.get_most_popular_packages()
 		app.nr_packages = '${p.get_packages_count()} packages'
 		app.last_update = time.now()
 	}

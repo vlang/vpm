@@ -381,6 +381,10 @@ fn (r FakePackagesRepoForDelete) get_most_downloaded_packages() []Package {
 	return []Package{}
 }
 
+fn (r FakePackagesRepoForDelete) get_most_popular_packages() []Package {
+	return []Package{}
+}
+
 fn (r FakePackagesRepoForDelete) update_package_stars(package_id int, stars int) ! {}
 
 fn (r FakePackagesRepoForDelete) update_package_info(package_id int, name string, url string, description string) ! {

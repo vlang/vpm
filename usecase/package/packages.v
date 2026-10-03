@@ -47,6 +47,7 @@ pub interface PackagesRepo {
 	get_packages_count() int
 	get_new_packages() []Package
 	get_most_downloaded_packages() []Package
+	get_most_popular_packages() []Package
 	update_package_stars(package_id int, stars int) !
 	update_package_info(package_id int, name string, url string, description string) !
 }
@@ -303,6 +304,10 @@ pub fn (u UseCase) get_new_packages() []Package {
 
 pub fn (u UseCase) get_most_downloaded_packages() []Package {
 	return u.packages.get_most_downloaded_packages()
+}
+
+pub fn (u UseCase) get_most_popular_packages() []Package {
+	return u.packages.get_most_popular_packages()
 }
 
 pub fn (u UseCase) update_package_stats(package_id int) ! {
