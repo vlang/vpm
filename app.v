@@ -56,8 +56,3 @@ fn (app &App) users() user.UseCase {
 fn (mut ctx Context) is_logged_in() bool {
 	return ctx.cur_user.username != ''
 }
-
-// Template helper
-fn less_than(i int, value int) bool {
-	return i < value
-}

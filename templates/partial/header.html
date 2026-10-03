@@ -11,9 +11,8 @@
 </head>
 
 <body class="min-h-screen flex flex-col">
-	<header class="flex-shrink-0 h-20 flex justify-center items-center bg-white
-	md:border-b md:border-solid md:border-off-white">
-		<div class="px-6 w-page h-16 flex gap-4 justify-between items-center">
+	<header class="site-header flex-shrink-0 flex justify-center items-center">
+		<div class="px-6 w-header max-w-full min-w-0 flex gap-6 justify-between items-center">
 			<div class="flex-1 flex items-center">
 				<a class="clip-zero w-full md:w-16 lg:w-full" href="/">
 					<svg xmlns="http://www.w3.org/2000/svg" width="145" height="64">
@@ -24,10 +23,14 @@
 			<div class="hidden md:flex basis-[36.25rem]">
 				@include 'components/searchbar.html'
 			</div>
-			<div class="flex-1 flex justify-end items-center gap-6">
+			<div class="flex-1 flex justify-end items-center gap-7">
+				<nav class="main-nav hidden lg:flex">
+					<a href="/search">Browse</a>
+					<a href="/new">Submit</a>
+				</nav>
 
 				@if !ctx.is_logged_in()
-				<a class="button bg-general text-white hover:bg-[#303030] hover:no-underline focus:bg-[#424242] flex justify-center gap-2"
+				<a class="button flex justify-center gap-2"
 					rel="external" href="@app.login_link()" aria-label="Login with Github">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 						<use href="#github_login_icon"></use>
@@ -44,8 +47,8 @@
 		</div>
 	</header>
 	<div
-		class="md:hidden top-0 sticky z-10 justify-center bg-white h-fit py-2 px-4 border-b border-solid border-off-white">
+		class="md:hidden top-0 sticky z-10 justify-center bg-surface h-fit py-2 px-4 border-b border-solid border-line">
 		@include 'components/searchbar.html'
 	</div>
 
-	<main class="flex-1 w-full xl:w-page p-4 md:p-6 flex flex-col gap-12 mx-auto md:pt-20">
+	<main class="flex-1 w-full xl:w-page max-w-full min-w-0 p-4 md:p-6 flex flex-col gap-12 mx-auto md:pt-10">

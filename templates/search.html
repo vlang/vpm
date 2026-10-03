@@ -1,8 +1,11 @@
 @include 'partial/header.html'
-<h1>@title</h1>
+<div>
+	<span class="eyebrow">Search results</span>
+	<h1>@title</h1>
+</div>
 
 <div class="flex items-center gap-2 flex-wrap">
-	<span class="text-sub font-bold">Sort by</span>
+	<span class="eyebrow mb-0">Sort by</span>
 
 	@if sort == '-downloads'
 	<a class="sort-pill active" href="/search?q=@query&sort=-downloads">Downloads</a>
@@ -36,15 +39,12 @@
 </div>
 
 
-<div class="panel flex flex-col" data-package-show-all>
+<div class="grid gap-3" data-package-show-all>
 	@for i, pkg in packages
 	@if sort == '-created_at' || sort == 'created_at'
 	@include './components/package_new.html'
 	@else
 	@include './components/package.html'
-	@end
-	@if less_than(i, packages.len - 1)
-	<hr />
 	@end
 	@end
 </div>

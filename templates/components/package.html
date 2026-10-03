@@ -1,33 +1,33 @@
-<section class="package" id="package@pkg.id">
+<section class="package-card" id="package@pkg.id">
     <a class="package-card__title hover:underline cursor-pointer" href="/packages/@pkg.name">
         @pkg.format_name()
     </a>
     <p
-        class="package-card__description h-6 mb-2 block text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">
+        class="package-card__description mb-2 block text-small text-muted overflow-hidden whitespace-nowrap overflow-ellipsis">
         @pkg.description
     </p>
-    <div class="flex gap-4 items-center text-sub font-bold overflow-hidden">
+    <div class="meta">
         <div class="package-card__attribute package-card__last-update flex gap-2 whitespace-nowrap">
-            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use href="#clock_icon"></use>
             </svg>
             @pkg.updated_at.relative()
         </div>
         <div class="package-card__attribute package-card__stars flex gap-2 whitespace-nowrap">
-            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use href="#star_icon"></use>
             </svg>
             @pkg.stars
         </div>
         <div class="package-card__attribute package-card__downloads flex gap-2 whitespace-nowrap">
-            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use href="#download_icon"></use>
             </svg>
             @pkg.nr_downloads
         </div>
     </div>
     <!--
-    <a class="package-card__chevron text-primary" href="/@pkg.author.username/@pkg.name" tabindex="-1">
+    <a class="package-card__chevron text-accent" href="/@pkg.author.username/@pkg.name" tabindex="-1">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
             <use href="#chevron_right_icon"></use>
         </svg>

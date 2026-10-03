@@ -27,33 +27,69 @@
 
 @layer base {
   :root {
-    @apply font-sans font-semibold text-small text-general bg-base;
+    color-scheme: dark;
     scroll-behavior: smooth;
   }
 
-  *:focus {
-    @apply outline-offset-2;
+  /* The body font size belongs on body, not :root: setting it on :root
+     redefines the rem unit, so every other step of the scale gets resized a
+     second time (text-tiny would compute to 12.2px instead of 13px). */
+  body {
+    @apply font-sans text-small text-fg bg-bg;
+    -webkit-font-smoothing: antialiased;
   }
 
-  *:focus-within {
-    @apply outline-offset-2 outline-primary;
+  /* An outline offset alone is not a focus indicator: give it an explicit
+     width, style and colour so it is visible against every surface. */
+  *:focus-visible {
+    outline: 2px solid theme(colors.accent.DEFAULT);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* The V site sets its headings in medium weight with tight negative
+     tracking, not bold. That restraint is most of its typographic voice, so
+     the sizes here are scaled for a registry but the weight and tracking are
+     taken as-is. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-fg;
+    font-weight: 500;
+    line-height: 1.16;
+    letter-spacing: -0.035em;
   }
 
   h1 {
-    font-size: 32px;
-    @apply font-bold text-general md:text-display-medium leading-tight;
+    font-size: clamp(2rem, 1.4rem + 2.6vw, 3rem);
   }
 
   h2 {
-    @apply font-bold text-large md:text-large text-general;
+    font-size: clamp(1.5rem, 1.25rem + 1.1vw, 2rem);
   }
 
   h3 {
-    @apply font-bold text-medium text-general;
+    @apply text-medium;
   }
 
   hr {
-    @apply text-off-white;
+    @apply text-line;
+  }
+
+  ::placeholder {
+    @apply text-muted opacity-100;
   }
 
   /* Use with class 'primary' to get the same look as buttons */
@@ -73,9 +109,9 @@
   }
 
   .select option {
-    color: black;
+    color: theme(colors.fg);
     font-weight: 400;
-    @apply bg-white text-center;
+    @apply bg-raised text-center;
   }
 
   .prose > ul {
@@ -100,7 +136,7 @@
   }
 
   .prose code:not(pre code) {
-    @apply bg-off-white;
+    @apply bg-raised font-mono;
     padding: 0.2em 0.4em;
     margin: 0;
     font-size: 85%;
@@ -108,59 +144,286 @@
     border-radius: 6px;
   }
 
-  .prose pre:has(code) {
-    background-color: #f5f2f0;
-    color: #000;
+  /* Rendered READMEs are third-party HTML: they arrive as markdown, go through
+     `markdown.to_html` then `html.sanitize`, and the sanitizer keeps `class`.
+     Give the whole block explicit colours rather than relying on inheritance,
+     and keep the palette identical to the Prism theme loaded on this page so
+     code never shows up in a second, lighter theme. */
+  .package-readme pre:has(code),
+  .package-readme pre[class*="language-"] {
+    @apply bg-raised border border-line;
+    color: theme(colors.fg);
   }
 
-  /* .prose > ul > li:not(task-list-item)::marker {
-    @apply pl-8;
-  } */
+  /* Headings inside a README get a rule, scoped to the README so they cannot
+     restyle the rest of the page. */
+  .package-readme :is(h1, h2) {
+    @apply border-b border-line;
+    padding-bottom: 0.3em;
+  }
+
+  .package-readme ul:has(> .task-list-item) {
+    list-style-type: none;
+  }
+
+  .package-readme .task-list-item-checkbox {
+    margin-right: 0.375rem;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* Tailwind Typography drives every colour in the README through its
+     --tw-prose-* variables; point the inverted set at our tokens so the
+     rendered markdown matches the rest of the page instead of Typography's
+     default greys. */
+  .prose.package-readme {
+    --tw-prose-invert-body: theme(colors.fg);
+    --tw-prose-invert-headings: theme(colors.white);
+    --tw-prose-invert-links: theme(colors.accent.DEFAULT);
+    --tw-prose-invert-bold: theme(colors.white);
+    --tw-prose-invert-counters: theme(colors.muted);
+    --tw-prose-invert-bullets: theme(colors.control-border);
+    --tw-prose-invert-hr: theme(colors.line);
+    --tw-prose-invert-quotes: theme(colors.fg);
+    --tw-prose-invert-quote-borders: theme(colors.line);
+    --tw-prose-invert-captions: theme(colors.muted);
+    --tw-prose-invert-code: theme(colors.fg);
+    --tw-prose-invert-pre-code: theme(colors.fg);
+    --tw-prose-invert-pre-bg: theme(colors.raised);
+    --tw-prose-invert-th-borders: theme(colors.control-border);
+    --tw-prose-invert-td-borders: theme(colors.line);
+  }
+
+  /* Author images are pixels we do not control — badges, transparent logos,
+     diagrams drawn on white. Inverting them would wreck as much as it fixes,
+     so leave the pixels alone and only guarantee they stay inside the column. */
+  .package-readme img {
+    display: initial;
+    max-width: 100%;
+  }
+
+  /* `overflow-x` does nothing on a `display: table` box, so a wide README
+     table needs a wrapper to scroll in. Without JavaScript there is none, and
+     this fallback keeps the table inside its column: content wraps rather
+     than widening the document. A twelve-column table gets cramped this way,
+     which is why the page also wraps tables at runtime (see package.html). */
+  .package-readme table {
+    table-layout: fixed;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .package-readme table :is(td, th) {
+    overflow-wrap: anywhere;
+  }
+
+  /* Wrapped at runtime: the box scrolls, so the table can take its natural
+     width again and the cells stop breaking mid-word. */
+  .package-readme .table-scroll {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .package-readme .table-scroll table {
+    table-layout: auto;
+    width: auto;
+    min-width: 100%;
+    max-width: none;
+  }
+
+  .package-readme .table-scroll :is(td, th) {
+    overflow-wrap: normal;
+  }
+
+  .package-readme pre {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  /* An unbroken URL is not a scrollable box: it has to be allowed to break,
+     or it widens the whole document. */
+  .package-readme :not(pre, pre *) {
+    overflow-wrap: anywhere;
+  }
 }
 
 @layer components {
   .button {
-    font-size: 16px;
-    @apply px-8 py-4 rounded-md font-bold flex justify-center gap-3;
+    @apply px-5 py-3 rounded font-semibold text-small flex justify-center items-center gap-3;
+    @apply border border-line bg-surface text-fg;
+    @apply transition duration-200 hover:no-underline;
   }
+  .button:hover {
+    @apply border-control-border text-white;
+  }
+  /* `accent` is a light blue built for dark backgrounds, so its label has to
+     be dark ink: white on accent measures 1.6:1, well under WCAG AA. */
   .button.primary {
-    /* Styling */
-    @apply text-white bg-primary hover:bg-primary-dark active:bg-primary-darker hover:no-underline;
-    /* Transition */
-    @apply duration-150 hover:ease-out;
+    @apply bg-accent border-accent text-on-accent;
+    @apply hover:bg-accent-strong hover:border-accent-strong hover:text-on-accent;
+  }
+  .button.danger {
+    @apply bg-danger border-danger text-on-danger hover:bg-danger hover:text-on-danger;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .button:hover {
+      transform: translateY(-2px);
+    }
   }
 
+  /* The V site gives its cards a shallow diagonal gradient rather than a flat
+     fill, and lifts them 2px on hover while the border brightens. On a dark
+     ground that reads far better than a drop shadow, which turns to haze. */
   .panel,
   .package-card {
-    transition: box-shadow 0.25s ease;
-    @apply p-4 rounded-xl bg-white border border-off-white;
+    background: linear-gradient(120deg, #151a2280, #10141980);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    @apply p-5 rounded-lg border border-line;
   }
   .panel:not(.inactive):hover,
   .package-card:not(.inactive):hover {
-    box-shadow: 0 0 0 3px #f0f0f0, 0px 3px 12px rgba(17, 17, 17, 0.08);
+    @apply border-control-border;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .package-card:not(.inactive):hover {
+      transform: translateY(-2px);
+    }
   }
 
-  .category {
-    @apply px-4 py-2 rounded-lg whitespace-nowrap font-bold text-center text-dark-grey bg-off-white;
+  /* Monospace micro-label in small caps: the site uses it above every section
+     heading and on dates. It is the most recognisable piece of its grammar. */
+  .eyebrow {
+    @apply font-mono text-muted block;
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
   }
 
-  .category sup {
-    @apply -ml-1 leading-[0] text-[0.625rem] font-bold;
+  /* Section title on the left, action on the right, aligned on their
+     baselines — the site's `.section-heading`. */
+  .section-heading {
+    @apply flex items-end justify-between gap-6 mb-6;
+  }
+
+  /* The site's header carries no fill and no rule: it floats on the page
+     background, and its container is wider than the content below it. */
+  .site-header {
+    height: 90px;
+  }
+
+  /* Same treatment for the footer: a single hairline and plenty of air,
+     no filled band. */
+  .site-footer > div {
+    padding-top: 45px;
+    padding-bottom: 25px;
+  }
+
+  .main-nav {
+    @apply items-center text-muted;
+    gap: 29px;
+    font-size: 0.9375rem;
+  }
+
+  .main-nav a:hover {
+    @apply text-white no-underline;
+  }
+
+  .text-link {
+    @apply inline-flex items-center gap-3 text-muted hover:text-white hover:no-underline;
+    font-size: 0.8125rem;
+  }
+
+  /* Counts and dates are data, so the site sets them in the mono face rather
+     than in bold sans. */
+  .meta {
+    @apply font-mono text-muted flex flex-wrap items-center min-w-0;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* Each group stays on one line; the row wraps instead of clipping. Hiding
+     the overflow here would silently cut the counts on narrow screens
+     without the document ever overflowing. */
+  .meta > * {
+    @apply flex gap-2 items-center whitespace-nowrap;
+  }
+
+  .meta svg {
+    @apply shrink-0;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* An outbound link carries the site's arrow instead of an icon. */
+  .link-out::after {
+    content: "↗";
+    @apply text-muted ml-2;
+    font-size: 0.8125rem;
   }
 
   .footer-link {
-    @apply text-sub hover:text-primary hover:no-underline;
+    @apply text-muted hover:text-white hover:no-underline;
+    font-size: 0.8125rem;
   }
 
+  /* Applied by Notyf from package.html, not by a class attribute. */
   .notification-toast {
-    @apply pl-8 pr-6 rounded-lg font-bold text-small;
+    @apply pl-8 pr-6 rounded font-bold text-small bg-accent text-on-accent;
+  }
+
+  /* A form field has to be identifiable by its outline, so it uses
+     `control-border` (3:1 against its surface) rather than the decorative
+     `line`, and carries its own background instead of inheriting the page. */
+  .field {
+    @apply p-3 rounded bg-raised border border-control-border text-fg;
+    @apply transition duration-200;
+  }
+  .field:hover {
+    @apply border-muted;
+  }
+  .field::placeholder {
+    @apply text-muted;
   }
 
   .package-card {
-    @apply w-full flex flex-col items-center;
+    @apply w-full min-w-0 flex flex-col items-stretch;
+  }
+
+  /* Full-width listings only — on the home page the two columns are narrow
+     enough that stacking stays right. Pulling the counts up beside the title
+     removes a whole line per card, which matters over hundreds of rows, and
+     keeps the numbers from floating in empty space. */
+  @media (min-width: 768px) {
+    [data-package-show-all] .package-card {
+      display: grid;
+      align-items: center;
+      column-gap: 1.5rem;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "title meta"
+        "desc  meta";
+      @apply py-4;
+    }
+    [data-package-show-all] .package-card > .package-card__title {
+      grid-area: title;
+      @apply mb-0;
+    }
+    [data-package-show-all] .package-card > .package-card__description {
+      grid-area: desc;
+    }
+    [data-package-show-all] .package-card > .meta {
+      grid-area: meta;
+      @apply justify-end;
+    }
   }
   .package-card__title {
-    @apply mb-1 block font-bold text-medium text-primary overflow-hidden whitespace-nowrap overflow-ellipsis;
+    @apply mb-1 block text-medium text-fg overflow-hidden whitespace-nowrap overflow-ellipsis;
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
   .package-card__description {
     @apply line-clamp-1;
@@ -180,26 +443,16 @@
   }
 
   .sort-pill {
-    @apply bg-off-white text-dark-grey rounded-lg px-4 py-2 font-bold whitespace-nowrap;
+    @apply bg-surface border border-line text-muted rounded px-4 py-2 font-semibold text-small whitespace-nowrap;
+    @apply transition duration-200;
   }
   .sort-pill:hover {
-    @apply bg-light-grey no-underline;
+    @apply bg-raised border-control-border text-fg no-underline;
   }
   .sort-pill.active {
-    @apply bg-primary text-white;
+    @apply bg-accent border-accent text-on-accent;
   }
 
-  .package {
-    @apply px-1 py-4;
-  }
-
-  .package:first-child {
-    @apply pt-0;
-  }
-
-  .package:last-child {
-    @apply pb-1;
-  }
 
   .active-border {
     transition: 0.3s ease-out;
