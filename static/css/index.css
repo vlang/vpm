@@ -177,6 +177,16 @@
     @apply lg:hidden;
   }
 
+  .sort-pill {
+    @apply bg-off-white text-dark-grey rounded-lg px-4 py-2 font-bold whitespace-nowrap;
+  }
+  .sort-pill:hover {
+    @apply bg-light-grey no-underline;
+  }
+  .sort-pill.active {
+    @apply bg-primary text-white;
+  }
+
   .package {
     @apply px-1 py-4;
   }
