@@ -35,13 +35,26 @@ In order to use GitHub authentication, add GitHub client id and secret as well.
 
 ## Tailwind Setup
 Download and install Tailwinds [Standalone CLI][tailwindCli] in your local clone.
+Pin the version: `latest` silently moves to Tailwind 4, whose config format this
+project does not use, and an unpinned CLI makes `dist.css` irreproducible.
 
-**Linux Example**:
+**Linux**:
 ```bash
-curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64
+curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/download/v3.3.3/tailwindcss-linux-x64
 chmod +x tailwindcss-linux-x64
 mv tailwindcss-linux-x64 tailwindcss
 ```
+
+**macOS (Apple Silicon)**:
+```bash
+curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/download/v3.3.3/tailwindcss-macos-arm64
+chmod +x tailwindcss-macos-arm64
+mv tailwindcss-macos-arm64 tailwindcss
+```
+
+The standalone CLI bundles the first-party plugins, including Typography, so no
+`package.json` or `node_modules` is needed. Check `./tailwindcss --help` prints
+`tailwindcss v3.3.3` before building.
 You can edit the tailwind configuration in `tailwind.config.js` and add custom css to `static/css/index.css`.
 
 ### Watching CSS
