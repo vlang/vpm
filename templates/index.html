@@ -29,22 +29,6 @@
     </div>
 </section>
 
-<section>
-    <h2 class="mb-4">Popular categories</h2>
-    <div class="panel">
-        <div class=" flex flex-wrap gap-2 lg:h-10 lg:overflow-hidden lg:justify-between">
-            @for category in app.categories
-            <a class="category flex-1" href="/search?category=@category.slug">
-                @category.slug
-                @if category.packages > 0
-                <sup>@category.packages</sup>
-                @end
-            </a>
-            @end
-        </div>
-    </div>
-</section>
-
 <div id="content-container">
     <div class="hidden lg:flex lg:gap-x-5">
         <h2 class="flex-1 mb-4" onclick="setActive(0)">New packages</h2>

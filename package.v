@@ -58,7 +58,6 @@ pub fn (app &App) package(mut ctx Context, name string) veb.Result {
 	pkg := app.packages().get(name) or { return ctx.redirect('/') }
 
 	ctx.title = pkg.name + ' | vpm'
-	categories := app.packages().get_package_categories(pkg.id) or { [] }
 
 	readme_path := '/packages_readme/${pkg.id}/README.html'
 	// pass ctx to helpers if they need request context, otherwise pass nothing
