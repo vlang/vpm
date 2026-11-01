@@ -1,6 +1,6 @@
 module package
 
-import entity { Category, Package, User }
+import entity { Package, User }
 
 // Test helper function: extract_owner_from_url
 fn test_extract_owner_from_url_https() {
@@ -300,28 +300,6 @@ fn test_package_prefix() {
 // Minimal fakes for UseCase.delete()'s dependencies. delete_calls/get_by_id_pkg
 // are pointers so a value receiver method can still record what happened
 // for the test to observe.
-struct FakeCategoriesRepoForDelete {}
-
-fn (r FakeCategoriesRepoForDelete) add_category_to_package(category_id int, package_id int) ! {}
-
-fn (r FakeCategoriesRepoForDelete) get(slug string) !Category {
-	return error('not found')
-}
-
-fn (r FakeCategoriesRepoForDelete) get_all() ![]Category {
-	return []Category{}
-}
-
-fn (r FakeCategoriesRepoForDelete) get_category_packages(category_id int) ![]Package {
-	return []Package{}
-}
-
-fn (r FakeCategoriesRepoForDelete) get_package_categories(package_id int) ![]Category {
-	return []Category{}
-}
-
-fn (r FakeCategoriesRepoForDelete) update_category_stats(category_id int) ! {}
-
 struct FakeOrganizationsRepoForDelete {}
 
 fn (r FakeOrganizationsRepoForDelete) get_user_org_names(user_id int) []string {
@@ -403,6 +381,10 @@ fn (r FakePackagesRepoForDelete) get_most_downloaded_packages() []Package {
 	return []Package{}
 }
 
+fn (r FakePackagesRepoForDelete) get_most_popular_packages() []Package {
+	return []Package{}
+}
+
 fn (r FakePackagesRepoForDelete) update_package_stars(package_id int, stars int) ! {}
 
 fn (r FakePackagesRepoForDelete) update_package_info(package_id int, name string, url string, description string) ! {
@@ -413,7 +395,6 @@ fn (r FakePackagesRepoForDelete) update_package_info(package_id int, name string
 fn test_delete_rejects_lost_org_access() {
 	mut delete_calls := 0
 	u := UseCase{
-		categories:    FakeCategoriesRepoForDelete{}
 		packages:      FakePackagesRepoForDelete{
 			pkg:          Package{
 				id:      1
@@ -445,7 +426,6 @@ fn test_delete_rejects_lost_org_access() {
 fn test_delete_allows_personal_package() {
 	mut delete_calls := 0
 	u := UseCase{
-		categories:    FakeCategoriesRepoForDelete{}
 		packages:      FakePackagesRepoForDelete{
 			pkg:          Package{
 				id:      2
@@ -475,7 +455,6 @@ fn test_delete_allows_personal_package() {
 fn test_delete_allows_legacy_non_github_package() {
 	mut delete_calls := 0
 	u := UseCase{
-		categories:    FakeCategoriesRepoForDelete{}
 		packages:      FakePackagesRepoForDelete{
 			pkg:          Package{
 				id:      6
@@ -505,7 +484,6 @@ fn test_delete_allows_legacy_non_github_package() {
 fn test_delete_allows_legacy_owner_prefixed_package() {
 	mut delete_calls := 0
 	u := UseCase{
-		categories:    FakeCategoriesRepoForDelete{}
 		packages:      FakePackagesRepoForDelete{
 			pkg:          Package{
 				id:      7
@@ -536,7 +514,6 @@ fn test_delete_allows_legacy_owner_prefixed_package() {
 fn test_delete_admin_bypasses_org_check() {
 	mut delete_calls := 0
 	u := UseCase{
-		categories:    FakeCategoriesRepoForDelete{}
 		packages:      FakePackagesRepoForDelete{
 			pkg:          Package{
 				id:      3
@@ -568,7 +545,6 @@ fn test_admin_delete_uses_package_owner() {
 	mut delete_calls := 0
 	mut last_delete_user_id := -1
 	u := UseCase{
-		categories:    FakeCategoriesRepoForDelete{}
 		packages:      FakePackagesRepoForDelete{
 			pkg:                 Package{
 				id:      5
@@ -601,7 +577,6 @@ fn test_admin_delete_uses_package_owner() {
 fn test_delete_rejects_non_owner_before_repo_check() {
 	mut delete_calls := 0
 	u := UseCase{
-		categories:    FakeCategoriesRepoForDelete{}
 		packages:      FakePackagesRepoForDelete{
 			pkg:          Package{
 				id:      4

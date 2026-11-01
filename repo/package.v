@@ -1,6 +1,7 @@
 module repo
 
 import orm
+import time
 import entity { Package }
 
 const banned_names = ['xxx']
@@ -140,6 +141,32 @@ pub fn (p PackagesRepo) get_most_downloaded_packages() []Package {
 	return sql p.db {
 		select from Package order by nr_downloads desc limit 10
 	} or { [] }
+}
+
+// get_most_popular_packages returns the top 10 by the blended `Package.score`
+// (downloads + stars × 50 ÷ age-in-days, with a 1-year decay on updated_at).
+// The score lives on the entity so the search page's "Popularity" sort uses
+// the exact same ranking — single source of truth.
+pub fn (p PackagesRepo) get_most_popular_packages() []Package {
+	mut pkgs := sql p.db {
+		select from Package
+	} or { return [] }
+	now := time.now()
+	pkgs.sort_with_compare(fn [now] (a &Package, b &Package) int {
+		sa := a.score(now)
+		sb := b.score(now)
+		if sa < sb {
+			return 1
+		}
+		if sa > sb {
+			return -1
+		}
+		return 0
+	})
+	if pkgs.len > 10 {
+		return pkgs[..10]
+	}
+	return pkgs
 }
 
 pub fn (p PackagesRepo) update_package_stars(package_id int, stars int) ! {

@@ -1,12 +1,12 @@
 @include 'partial/header.html'
-<h1>@name packages</h1>
+<div>
+    <span class="eyebrow">Author</span>
+    <h1>@name packages</h1>
+</div>
 
-<div class="panel flex flex-col" data-package-show-all>
-    @for i, pkg in packages
+<div class="grid gap-3" data-package-show-all>
+    @for pkg in packages
     @include './components/package.html'
-    @if less_than(i, packages.len - 1)
-    <hr />
-    @end
     @end
 </div>
 

@@ -2,7 +2,21 @@ module package
 
 import net.http
 import net.urllib
+import time
 import x.json2
+
+// Cap external GitHub fetches so a slow upstream can't park a veb worker
+// indefinitely: a single stuck handler was enough to make the whole site
+// unresponsive.
+fn http_get_with_timeout(url string) !http.Response {
+	return http.fetch(
+		url:           url
+		method:        .get
+		read_timeout:  6 * time.second
+		write_timeout: 6 * time.second
+		max_retries:   1
+	)
+}
 
 // https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes
 // each possible path a readme can be read from, in descending order of priority
@@ -44,7 +58,7 @@ pub fn (u UseCase) get_package_markdown(name string) !string {
 
 	// Getting default git branch
 	bb := 'https://api.github.com/repos${url.path}'
-	api_repo := http.get(bb)!
+	api_repo := http_get_with_timeout(bb)!
 	if api_repo.status() != http.Status.ok {
 		return error('repo status is not 200, real ${api_repo.status()}')
 	}
@@ -54,7 +68,7 @@ pub fn (u UseCase) get_package_markdown(name string) !string {
 	// Getting raw readme markdown
 	for path in valid_readme_paths {
 		readme_url := 'https://raw.githubusercontent.com${url.path}/${branch}/${path}'
-		readme := http.get(readme_url)!
+		readme := http_get_with_timeout(readme_url)!
 		if readme.status() == http.Status.ok {
 			return readme.body
 		}

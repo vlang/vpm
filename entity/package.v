@@ -28,3 +28,28 @@ pub fn (p Package) format_name() string {
 pub fn (p Package) belongs_to_user(user_id int) bool {
 	return p.user_id == user_id
 }
+
+// score blends the four signals we have into a single ranking number:
+//   - nr_downloads + stars * 50   (raw engagement, stars weighted because they
+//                                  are a deliberate human signal vs. passive
+//                                  download counts)
+//   - divided by days_since_created (so a 100k-download package added 2y ago
+//                                    doesn't outrank a 30k-download one added
+//                                    6mo ago at the same activity level)
+//   - multiplied by a 1-year half-decay on `updated_at` (abandonware drifts
+//                                                       down without vanishing)
+pub fn (p Package) score(now time.Time) i64 {
+	now_unix := now.unix()
+
+	secs_since_cre := now_unix - p.created_at.unix()
+	days_cre := if secs_since_cre > 86400 { secs_since_cre / 86400 } else { i64(1) }
+
+	secs_since_upd := now_unix - p.updated_at.unix()
+	days_upd := if secs_since_upd > 0 { secs_since_upd / 86400 } else { i64(0) }
+
+	// Scale before any division. Dividing first would quantise the result to
+	// steps of `days_cre`: on a 100-day-old package every count from 0 to 99
+	// collapsed to 0, and 100 to 199 all tied at the same value.
+	weighted := (i64(p.nr_downloads) + i64(p.stars) * 50) * 1000 * 365
+	return weighted / (days_cre * (365 + days_upd))
+}

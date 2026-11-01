@@ -26,41 +26,206 @@
 @tailwind variants;
 
 @layer base {
+  /* Dark is the default: it is what the V website uses, and what a visitor
+     with no stated preference gets. Light is applied either because the
+     system asks for it, or because the reader picked it.
+
+     The `:not([data-theme])` guard keeps the two apart. Without it a reader
+     who explicitly chose dark would be flipped back to light by a system set
+     to light, which is the one thing an explicit choice must survive. */
   :root {
-    @apply font-sans font-semibold text-small text-general bg-base;
+    color-scheme: dark;
     scroll-behavior: smooth;
+
+    --c-bg: #090b0f;
+    --c-surface: #101318;
+    --c-raised: #15191f;
+
+    --c-line: #252a32;
+    --c-control-border: #6b7585;
+
+    --c-fg: #edf0f5;
+    --c-fg-strong: #ffffff;
+    --c-muted: #939ba9;
+
+    --c-accent: #a9cefa;
+    --c-accent-strong: #c0d9f8;
+    --c-on-accent: #112034;
+
+    --c-danger: #ff6b8b;
+    --c-on-danger: #2a0810;
+    --c-success: #3ddc97;
+
+    /* The card gradient keeps its own variables: the stops carry alpha, and
+       a colour variable cannot be concatenated with an alpha suffix. */
+    --c-card-grad-a: #151a2280;
+    --c-card-grad-b: #10141980;
+
+    /* Syntax colours live here too, so prism.css holds one set of
+       structural rules instead of one stylesheet per theme. */
+    --c-syn-comment: #999;
+    --c-syn-punctuation: #ccc;
+    --c-syn-tag: #e2777a;
+    --c-syn-function: #f08d49;
+    --c-syn-keyword: #cc99cd;
+    --c-syn-string: #7ec699;
+    --c-syn-operator: #67cdcc;
+    --c-syn-variable: #6196cc;
+    --c-syn-number: #f8c555;
+    --c-syn-inserted: #6ee7a0;
+    --c-code-bg: #15191f;
+    --c-code-border: #252a32;
   }
 
-  *:focus {
-    @apply outline-offset-2;
+  /* Fields sit on `raised`, the tightest of the three backgrounds, so
+     `control-border` is measured against it: 3.05:1 there, 3.19 on bg,
+     3.45 on surface. */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      color-scheme: light;
+
+      --c-bg: #f4f6fa;
+      --c-surface: #ffffff;
+      --c-raised: #eef1f7;
+
+      --c-line: #dde2ea;
+      --c-control-border: #808b9c;
+
+      --c-fg: #11161d;
+      --c-fg-strong: #000000;
+      --c-muted: #5c6676;
+
+      --c-accent: #1763c4;
+      --c-accent-strong: #0f5bb8;
+      --c-on-accent: #ffffff;
+
+      --c-danger: #c0264a;
+      --c-on-danger: #ffffff;
+      --c-success: #0f7a4d;
+
+      --c-card-grad-a: #ffffffcc;
+      --c-card-grad-b: #f7f9fccc;
+
+      --c-syn-comment: #5b646e;
+      --c-syn-punctuation: #3b4149;
+      --c-syn-tag: #b32851;
+      --c-syn-function: #9a4d00;
+      --c-syn-keyword: #7b3fa8;
+      --c-syn-string: #0f6b45;
+      --c-syn-operator: #0b6a73;
+      --c-syn-variable: #1763c4;
+      --c-syn-number: #8a5a00;
+      --c-syn-inserted: #0f7a4d;
+      --c-code-bg: #f3f5f9;
+      --c-code-border: #dde2ea;
+    }
   }
 
-  *:focus-within {
-    @apply outline-offset-2 outline-primary;
+  :root[data-theme="light"] {
+    color-scheme: light;
+
+    --c-bg: #f4f6fa;
+    --c-surface: #ffffff;
+    --c-raised: #eef1f7;
+
+    --c-line: #dde2ea;
+    --c-control-border: #808b9c;
+
+    --c-fg: #11161d;
+    --c-fg-strong: #000000;
+    --c-muted: #5c6676;
+
+    --c-accent: #1763c4;
+    --c-accent-strong: #0f5bb8;
+    --c-on-accent: #ffffff;
+
+    --c-danger: #c0264a;
+    --c-on-danger: #ffffff;
+    --c-success: #0f7a4d;
+
+    --c-card-grad-a: #ffffffcc;
+    --c-card-grad-b: #f7f9fccc;
+
+    --c-syn-comment: #5b646e;
+    --c-syn-punctuation: #3b4149;
+    --c-syn-tag: #b32851;
+    --c-syn-function: #9a4d00;
+    --c-syn-keyword: #7b3fa8;
+    --c-syn-string: #0f6b45;
+    --c-syn-operator: #0b6a73;
+    --c-syn-variable: #1763c4;
+    --c-syn-number: #8a5a00;
+    --c-syn-inserted: #0f7a4d;
+    --c-code-bg: #f3f5f9;
+    --c-code-border: #dde2ea;
+  }
+
+  /* The body font size belongs on body, not :root: setting it on :root
+     redefines the rem unit, so every other step of the scale gets resized a
+     second time (text-tiny would compute to 12.2px instead of 13px). */
+  body {
+    @apply font-sans text-small text-fg bg-bg;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* An outline offset alone is not a focus indicator: give it an explicit
+     width, style and colour so it is visible against every surface. */
+  *:focus-visible {
+    outline: 2px solid theme(colors.accent.DEFAULT);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* The V site sets its headings in medium weight with tight negative
+     tracking, not bold. That restraint is most of its typographic voice, so
+     the sizes here are scaled for a registry but the weight and tracking are
+     taken as-is. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-fg;
+    font-weight: 500;
+    line-height: 1.16;
+    letter-spacing: -0.035em;
   }
 
   h1 {
-    font-size: 32px;
-    @apply font-bold text-general md:text-display-medium leading-tight;
+    font-size: clamp(2rem, 1.4rem + 2.6vw, 3rem);
   }
 
   h2 {
-    @apply font-bold text-large md:text-large text-general;
+    font-size: clamp(1.5rem, 1.25rem + 1.1vw, 2rem);
   }
 
   h3 {
-    @apply font-bold text-medium text-general;
+    @apply text-medium;
   }
 
   hr {
-    @apply text-off-white;
+    @apply text-line;
+  }
+
+  ::placeholder {
+    @apply text-muted opacity-100;
   }
 
   /* Use with class 'primary' to get the same look as buttons */
   .select {
     text-align-last: center;
     /* Arrow icon */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='white' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E%0A");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23888888' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E%0A");
     background-position: right center;
     background-size: 40px;
     text-align-last: center;
@@ -73,9 +238,9 @@
   }
 
   .select option {
-    color: black;
+    color: theme(colors.fg);
     font-weight: 400;
-    @apply bg-white text-center;
+    @apply bg-raised text-center;
   }
 
   .prose > ul {
@@ -100,7 +265,7 @@
   }
 
   .prose code:not(pre code) {
-    @apply bg-off-white;
+    @apply bg-raised font-mono;
     padding: 0.2em 0.4em;
     margin: 0;
     font-size: 85%;
@@ -108,62 +273,347 @@
     border-radius: 6px;
   }
 
-  .prose pre:has(code) {
-    background-color: #f5f2f0;
-    color: #000;
+  /* Rendered READMEs are third-party HTML: they arrive as markdown, go through
+     `markdown.to_html` then `html.sanitize`, and the sanitizer keeps `class`.
+     Give the whole block explicit colours rather than relying on inheritance,
+     and keep the palette identical to the Prism theme loaded on this page so
+     code never shows up in a second, lighter theme. */
+  .package-readme pre:has(code),
+  .package-readme pre[class*="language-"] {
+    @apply bg-raised border border-line;
+    color: theme(colors.fg);
   }
 
-  /* .prose > ul > li:not(task-list-item)::marker {
-    @apply pl-8;
-  } */
+  /* Headings inside a README get a rule, scoped to the README so they cannot
+     restyle the rest of the page. */
+  .package-readme :is(h1, h2) {
+    @apply border-b border-line;
+    padding-bottom: 0.3em;
+  }
+
+  .package-readme ul:has(> .task-list-item) {
+    list-style-type: none;
+  }
+
+  .package-readme .task-list-item-checkbox {
+    margin-right: 0.375rem;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* Tailwind Typography drives every colour in the README through its
+     --tw-prose-* variables. Pointing them at our tokens makes the rendered
+     markdown follow whichever theme is active, which is why `prose-invert`
+     is not used: it would pin the dark set in place. */
+  .prose.package-readme {
+    --tw-prose-body: theme(colors.fg);
+    --tw-prose-headings: theme(colors.fg-strong);
+    --tw-prose-links: theme(colors.accent.DEFAULT);
+    --tw-prose-bold: theme(colors.fg-strong);
+    --tw-prose-counters: theme(colors.muted);
+    --tw-prose-bullets: theme(colors.control-border);
+    --tw-prose-hr: theme(colors.line);
+    --tw-prose-quotes: theme(colors.fg);
+    --tw-prose-quote-borders: theme(colors.line);
+    --tw-prose-captions: theme(colors.muted);
+    --tw-prose-code: theme(colors.fg);
+    --tw-prose-lead: theme(colors.muted);
+    --tw-prose-pre-code: theme(colors.fg);
+    --tw-prose-pre-bg: theme(colors.raised);
+    --tw-prose-th-borders: theme(colors.control-border);
+    --tw-prose-td-borders: theme(colors.line);
+  }
+
+  /* Author images are pixels we do not control — badges, transparent logos,
+     diagrams drawn on white. Inverting them would wreck as much as it fixes,
+     so leave the pixels alone and only guarantee they stay inside the column. */
+  .package-readme img {
+    display: initial;
+    max-width: 100%;
+  }
+
+  /* `overflow-x` does nothing on a `display: table` box, so a wide README
+     table needs a wrapper to scroll in. Without JavaScript there is none, and
+     this fallback keeps the table inside its column: content wraps rather
+     than widening the document. A twelve-column table gets cramped this way,
+     which is why the page also wraps tables at runtime (see package.html). */
+  .package-readme table {
+    table-layout: fixed;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .package-readme table :is(td, th) {
+    overflow-wrap: anywhere;
+  }
+
+  /* Wrapped at runtime: the box scrolls, so the table can take its natural
+     width again and the cells stop breaking mid-word. */
+  .package-readme .table-scroll {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .package-readme .table-scroll table {
+    table-layout: auto;
+    width: auto;
+    min-width: 100%;
+    max-width: none;
+  }
+
+  .package-readme .table-scroll :is(td, th) {
+    overflow-wrap: normal;
+  }
+
+  .package-readme pre {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  /* An unbroken URL is not a scrollable box: it has to be allowed to break,
+     or it widens the whole document. */
+  .package-readme :not(pre, pre *) {
+    overflow-wrap: anywhere;
+  }
 }
 
 @layer components {
   .button {
-    font-size: 16px;
-    @apply px-8 py-4 rounded-md font-bold flex justify-center gap-3;
+    @apply px-5 py-3 rounded font-semibold text-small flex justify-center items-center gap-3;
+    @apply border border-line bg-surface text-fg;
+    @apply transition duration-200 hover:no-underline;
   }
+  .button:hover {
+    @apply border-control-border text-fg-strong;
+  }
+  /* `accent` is a light blue built for dark backgrounds, so its label has to
+     be dark ink: white on accent measures 1.6:1, well under WCAG AA. */
   .button.primary {
-    /* Styling */
-    @apply text-white bg-primary hover:bg-primary-dark active:bg-primary-darker hover:no-underline;
-    /* Transition */
-    @apply duration-150 hover:ease-out;
+    @apply bg-accent border-accent text-on-accent;
+    @apply hover:bg-accent-strong hover:border-accent-strong hover:text-on-accent;
+  }
+  .button.danger {
+    @apply bg-danger border-danger text-on-danger hover:bg-danger hover:text-on-danger;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .button:hover {
+      transform: translateY(-2px);
+    }
   }
 
+  /* The V site gives its cards a shallow diagonal gradient rather than a flat
+     fill, and lifts them 2px on hover while the border brightens. On a dark
+     ground that reads far better than a drop shadow, which turns to haze. */
   .panel,
   .package-card {
-    transition: box-shadow 0.25s ease;
-    @apply p-4 rounded-xl bg-white border border-off-white;
+    background: linear-gradient(120deg, var(--c-card-grad-a), var(--c-card-grad-b));
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    @apply p-5 rounded-lg border border-line;
   }
   .panel:not(.inactive):hover,
   .package-card:not(.inactive):hover {
-    box-shadow: 0 0 0 3px #f0f0f0, 0px 3px 12px rgba(17, 17, 17, 0.08);
+    @apply border-control-border;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .package-card:not(.inactive):hover {
+      transform: translateY(-2px);
+    }
   }
 
-  .category {
-    @apply px-4 py-2 rounded-lg whitespace-nowrap font-bold text-center text-dark-grey bg-off-white;
+  /* Monospace micro-label in small caps: the site uses it above every section
+     heading and on dates. It is the most recognisable piece of its grammar. */
+  .eyebrow {
+    @apply font-mono text-muted block;
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
   }
 
-  .category sup {
-    @apply -ml-1 leading-[0] text-[0.625rem] font-bold;
+  /* Section title on the left, action on the right, aligned on their
+     baselines — the site's `.section-heading`. */
+  .section-heading {
+    @apply flex items-end justify-between gap-6 mb-6;
+  }
+
+  /* The site's header carries no fill and no rule: it floats on the page
+     background, and its container is wider than the content below it. */
+  .site-header {
+    height: 90px;
+  }
+
+  /* Same treatment for the footer: a single hairline and plenty of air,
+     no filled band. */
+  .site-footer > div {
+    padding-top: 45px;
+    padding-bottom: 25px;
+  }
+
+  /* A secondary control, so it lives in the footer: the header already
+     carries the logo, the search field and login, and adding it there pushed
+     the row to 412px at a 320 viewport. */
+  .theme-toggle {
+    @apply relative inline-flex items-center text-muted;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  }
+
+  /* The chevron is a mask filled with `currentColor`, not a coloured image:
+     a fixed grey would be frozen to one palette and fall under the 3:1
+     non-text threshold on the other. */
+  .theme-toggle::after {
+    content: "";
+    position: absolute;
+    right: 0.55rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    pointer-events: none;
+    background-color: currentColor;
+    -webkit-mask: var(--chevron) no-repeat center / contain;
+    mask: var(--chevron) no-repeat center / contain;
+  }
+
+  /* Without `appearance: none` the platform draws its own control and
+     ignores the background entirely. */
+  .theme-toggle select {
+    @apply bg-surface border border-line text-muted rounded font-sans appearance-none;
+    font-size: 0.8125rem;
+    padding: 0.35rem 1.6rem 0.35rem 0.6rem;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .theme-toggle:hover,
+  .theme-toggle select:hover {
+    @apply text-fg;
+  }
+
+  .theme-toggle select:hover {
+    @apply border-control-border;
+  }
+
+  .theme-toggle[hidden] {
+    display: none;
+  }
+
+  .main-nav {
+    @apply items-center text-muted;
+    gap: 29px;
+    font-size: 0.9375rem;
+  }
+
+  .main-nav a:hover {
+    @apply text-fg-strong no-underline;
+  }
+
+  .text-link {
+    @apply inline-flex items-center gap-3 text-muted hover:text-fg-strong hover:no-underline;
+    font-size: 0.8125rem;
+  }
+
+  /* Counts and dates are data, so the site sets them in the mono face rather
+     than in bold sans. */
+  .meta {
+    @apply font-mono text-muted flex flex-wrap items-center min-w-0;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* Each group stays on one line; the row wraps instead of clipping. Hiding
+     the overflow here would silently cut the counts on narrow screens
+     without the document ever overflowing. */
+  .meta > * {
+    @apply flex gap-2 items-center whitespace-nowrap;
+  }
+
+  .meta svg {
+    @apply shrink-0;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* An outbound link carries the site's arrow instead of an icon. */
+  .link-out::after {
+    content: "↗";
+    @apply text-muted ml-2;
+    font-size: 0.8125rem;
   }
 
   .footer-link {
-    @apply text-sub hover:text-primary hover:no-underline;
+    @apply text-muted hover:text-fg-strong hover:no-underline;
+    font-size: 0.8125rem;
   }
 
+  /* Applied by Notyf from package.html, not by a class attribute. */
   .notification-toast {
-    @apply pl-8 pr-6 rounded-lg font-bold text-small;
+    @apply pl-8 pr-6 rounded font-bold text-small bg-accent text-on-accent;
+  }
+
+  .notification-toast--error {
+    @apply bg-danger text-on-danger;
+  }
+
+  /* A form field has to be identifiable by its outline, so it uses
+     `control-border` (3:1 against its surface) rather than the decorative
+     `line`, and carries its own background instead of inheriting the page. */
+  .field {
+    @apply p-3 rounded bg-raised border border-control-border text-fg;
+    @apply transition duration-200;
+  }
+  .field:hover {
+    @apply border-muted;
+  }
+  .field::placeholder {
+    @apply text-muted;
   }
 
   .package-card {
-    @apply w-full flex flex-col items-center;
+    @apply w-full min-w-0 flex flex-col items-stretch;
+  }
+
+  /* Full-width listings only — on the home page the two columns are narrow
+     enough that stacking stays right. Pulling the counts up beside the title
+     removes a whole line per card, which matters over hundreds of rows, and
+     keeps the numbers from floating in empty space. */
+  @media (min-width: 768px) {
+    [data-package-show-all] .package-card {
+      display: grid;
+      align-items: center;
+      column-gap: 1.5rem;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "title meta"
+        "desc  meta";
+      @apply py-4;
+    }
+    [data-package-show-all] .package-card > .package-card__title {
+      grid-area: title;
+      @apply mb-0;
+    }
+    [data-package-show-all] .package-card > .package-card__description {
+      grid-area: desc;
+    }
+    [data-package-show-all] .package-card > .meta {
+      grid-area: meta;
+      @apply justify-end;
+    }
   }
   .package-card__title {
-    @apply mb-1 block font-bold text-medium text-primary overflow-hidden whitespace-nowrap overflow-ellipsis;
+    @apply mb-1 block text-medium text-fg overflow-hidden whitespace-nowrap overflow-ellipsis;
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
   .package-card__description {
     @apply line-clamp-1;
+  }
+
+  /* The home page runs two lists side by side, so a card without a
+     description must still occupy the same height as one with it — otherwise
+     the two columns drift a line apart and never line up again. Full-width
+     listings keep collapsing, where the empty line is just waste. */
+  .content-section-t .package-card__description {
+    min-height: 1.5rem;
   }
 
   .package-card__attribute:not(
@@ -172,22 +622,24 @@
         .package-card__attribute.package-card__downloads,
       *[data-package-last-update]
         .package-card__attribute.package-card__last-update,
+      *[data-package-created]
+        .package-card__attribute.package-card__created,
       *[data-package-show-all] .package-card__attribute
     ) {
     @apply lg:hidden;
   }
 
-  .package {
-    @apply px-1 py-4;
+  .sort-pill {
+    @apply bg-surface border border-line text-muted rounded px-4 py-2 font-semibold text-small whitespace-nowrap;
+    @apply transition duration-200;
+  }
+  .sort-pill:hover {
+    @apply bg-raised border-control-border text-fg no-underline;
+  }
+  .sort-pill.active {
+    @apply bg-accent border-accent text-on-accent;
   }
 
-  .package:first-child {
-    @apply pt-0;
-  }
-
-  .package:last-child {
-    @apply pb-1;
-  }
 
   .active-border {
     transition: 0.3s ease-out;
@@ -209,6 +661,18 @@
 }
 
 @layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
   .clip-zero {
     clip-path: inset(0 0 0 0);
   }

@@ -2,7 +2,7 @@ module main
 
 import veb
 import config
-import entity { Category, Package, User }
+import entity { Package, User }
 import db.pg
 import usecase.package
 import lib.storage
@@ -31,17 +31,15 @@ pub mut:
 	// Shared cache data (Requires synchronization if updated concurrently,
 	// but assuming single-threaded worker or simple reads for now)
 	nr_packages               string
-	categories                []Category
 	new_packages              []Package
 	recently_updated_packages []Package
-	most_downloaded_packages  []Package
+	most_popular_packages     []Package
 	last_update               time.Time
 }
 
 // Helper accessors now take the App (global)
 fn (app &App) packages() package.UseCase {
 	return package.UseCase{
-		categories:    repo.categories(app.db)
 		packages:      repo.packages(app.db)
 		users:         repo.users(app.db)
 		organizations: repo.organizations(app.db)
@@ -57,9 +55,4 @@ fn (app &App) users() user.UseCase {
 // Logic checks now operate on Context
 fn (mut ctx Context) is_logged_in() bool {
 	return ctx.cur_user.username != ''
-}
-
-// Template helper
-fn less_than(i int, value int) bool {
-	return i < value
 }

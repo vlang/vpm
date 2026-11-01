@@ -1,36 +1,106 @@
 </main>
 
-<footer class="flex-shrink-0 flex justify-center items-center bg-white border-t-2 border-solid border-off-white">
+<footer class="site-footer flex-shrink-0 flex justify-center items-start">
     <div
-        class="mx-auto p-6 w-page flex flex-col items-center md:flex-row gap-4 md:justify-between font-bold text-medium">
-        <div class="flex-1 order-2 md:-order-none flex gap-4 justify-start items-center" href="/">
+        class="mx-auto px-6 w-page max-w-full min-w-0 border-t border-solid border-line flex flex-col items-stretch md:flex-row md:items-center gap-4 md:justify-between">
+        <div class="flex-1 order-2 md:-order-none flex gap-4 justify-center md:justify-start items-center">
             <a class="footer-link" rel="external" title="Standart Library Documentation"
                 href="https://modules.vlang.io">Modules</a>
         </div>
 
         <div class="flex-1 order-1 md:-order-none flex gap-8 justify-center items-center">
             <a class="footer-link" rel="external" title="V Language Twitter" href="https://twitter.com/v_language">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20">
                     <use href="#twitter_icon"></use>
                 </svg>
             </a>
             <a class="footer-link" rel="external" title="VPM Repository" href="https://github.com/vlang/vpm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20">
                     <use href="#github_icon"></use>
                 </svg>
             </a>
             <a class="footer-link" rel="external" title="Join V Language Discord" href="https://discord.gg/vlang">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20">
                     <use href="#discord_icon"></use>
                 </svg>
             </a>
         </div>
 
-        <div class="flex-1 order-2 md:-order-none flex gap-4 justify-end items-center">
+        <div class="flex-1 order-3 md:-order-none flex gap-4 justify-center md:justify-end items-center">
+            <!-- A secondary control, so it sits here rather than in the header,
+                 which already carries the logo, the search field and login and
+                 has no room left at 320. Hidden until scripted: without
+                 JavaScript the theme follows the system and this would do
+                 nothing. -->
+            <label class="theme-toggle" hidden>
+                <span class="sr-only">Colour theme</span>
+                <select id="theme-select" aria-label="Colour theme">
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </label>
             <a class="footer-link" rel="external" title="V Language Homepage" href="https://vlang.io">vlang.io</a>
         </div>
     </div>
 </footer>
+
+<script>
+	// The control shows the PREFERENCE, not the theme in effect: with
+	// "System" selected the page may well be dark, and the reader needs to
+	// see that they chose "follow the system" rather than "dark".
+	(function () {
+		var sel = document.getElementById('theme-select');
+		if (!sel) { return; }
+		function apply(pref) {
+			if (pref === 'light' || pref === 'dark') {
+				document.documentElement.setAttribute('data-theme', pref);
+			} else {
+				document.documentElement.removeAttribute('data-theme');
+			}
+		}
+
+		// Re-read here rather than trusting what the <head> applied: another
+		// tab may have written between the two, and syncing only the control
+		// would leave the label disagreeing with the page.
+		var stored = null;
+		try { stored = localStorage.getItem('vpm-theme'); } catch (e) { }
+		if (stored === 'light' || stored === 'dark') {
+			sel.value = stored;
+			apply(stored);
+		} else if (stored === null && !document.documentElement.hasAttribute('data-theme')) {
+			sel.value = 'system';
+		} else {
+			// Storage became unreadable, or holds something we do not accept:
+			// keep whatever is already on the page instead of contradicting it.
+			sel.value = document.documentElement.getAttribute('data-theme') || 'system';
+		}
+		sel.closest('.theme-toggle').hidden = false;
+
+		sel.addEventListener('change', function () {
+			var pref = sel.value;
+			// Apply first: if storage is unavailable the toggle must still
+			// work for this page rather than silently doing nothing.
+			apply(pref);
+			try {
+				if (pref === 'system') { localStorage.removeItem('vpm-theme'); }
+				else { localStorage.setItem('vpm-theme', pref); }
+			} catch (e) { }
+		});
+
+		// Keep tabs of the same site in step.
+		window.addEventListener('storage', function (e) {
+			if (e.storageArea !== window.localStorage) { return; }
+			// A null key means another tab cleared the whole store, which
+			// drops our preference too: fall back to the system like it did.
+			if (e.key !== null && e.key !== 'vpm-theme') { return; }
+			var v = e.key === null ? null : e.newValue;
+			var pref = (v === 'light' || v === 'dark') ? v : 'system';
+			sel.value = pref;
+			apply(pref);
+		});
+	})();
+</script>
 
 @include 'assets/icons.html'
 </body>

@@ -25,12 +25,12 @@ struct GitHubAccessTokenResponse {
 const random = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890'
 
 fn random_string(len int) string {
-	mut buf := [`0`].repeat(len)
+	mut buf := []u8{len: len}
 	for i := 0; i < len; i++ {
 		idx := rand.intn(random.len) or { 0 }
 		buf[i] = random[idx]
 	}
-	return buf.str()
+	return buf.bytestr()
 }
 
 const orgs_per_page = 100

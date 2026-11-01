@@ -1,11 +1,12 @@
 @include 'partial/header.html'
 
-<section class="flex gap-4 flex-col items-start mx-auto">
+<section class="w-full flex gap-4 flex-col items-start">
+    <span class="eyebrow">The V package registry</span>
     <h1>
-        Package Manager for the <span class="text-primary">V</span> Language
+        Package Manager for the <span class="text-accent">V</span> Language
     </h1>
 
-    <p class="text-medium md:text-large text-sub">
+    <p class="text-small md:text-medium text-muted max-w-2xl">
         Discover new packages from open-source collaborators. Become a contributor and enhance our community with your
         work. It's all about exploring, learning, and growing together.
     </p>
@@ -29,56 +30,46 @@
     </div>
 </section>
 
-<section>
-    <h2 class="mb-4">Popular categories</h2>
-    <div class="panel">
-        <div class=" flex flex-wrap gap-2 lg:h-10 lg:overflow-hidden lg:justify-between">
-            @for category in app.categories
-            <a class="category flex-1" href="/search?category=@category.slug">
-                @category.slug
-                @if category.packages > 0
-                <sup>@category.packages</sup>
-                @end
-            </a>
-            @end
-        </div>
-    </div>
-</section>
-
 <div id="content-container">
     <div class="hidden lg:flex lg:gap-x-5">
-        <h2 class="flex-1 mb-4" onclick="setActive(0)">New packages</h2>
-        <h2 class="flex-1 mb-4" onclick="setActive(1)">Most downloaded</h2>
+        <div class="flex-1 min-w-0 section-heading">
+            <div>
+                <span class="eyebrow">Latest additions</span>
+                <h2 onclick="setActive(0)">New packages</h2>
+            </div>
+            <a class="text-link" href="/search?sort=-created_at">Browse all</a>
+        </div>
+        <div class="flex-1 min-w-0 section-heading">
+            <div>
+                <span class="eyebrow">Ranked by activity</span>
+                <h2 onclick="setActive(1)">Most popular</h2>
+            </div>
+            <a class="text-link" href="/search">Browse all</a>
+        </div>
     </div>
     <!-- Select on mobile -->
     <h2 class="lg:hidden mb-4 flex items-center">
         <select class="w-full flex-none pr-7 primary appearance-none bg-transparent" id="mobile-content-selector"
             name="content-selector" onchange="onSelectChange()">
             <option selected value="0">New packages</option>
-            <option value="1">Most downloaded</option>
+            <option value="1">Most popular</option>
         </select>
         <svg class="flex-none -ml-6 pointer-events-none" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
             <use href="#arrow_up_down"></use>
         </svg>
     </h2>
     <div class="lg:flex lg:gap-x-5">
-        <section class="flex-1 min-w-0 panel content-section-t" data-active id="content-0">
-            <div class="flex flex-col" data-package-last-update>
-                @for i, pkg in app.new_packages
-                @include './components/package.html'
-                @if less_than(i, app.new_packages.len - 1)
-                <hr />
-                @end
+        <section class="flex-1 min-w-0 content-section-t" data-active id="content-0">
+            <div class="grid gap-3" data-package-created>
+                @for pkg in app.new_packages
+                @include './components/package_new.html'
                 @end
             </div>
         </section>
-        <section class="flex-1 min-w-0 panel content-section-t" id="content-1">
-            <div class="flex flex-col" data-package-downloads data-package-stars>
-                @for i, pkg in app.most_downloaded_packages
+        <section class="flex-1 min-w-0 content-section-t" id="content-1">
+            <div class="grid gap-3" data-package-downloads data-package-stars>
+                @for pkg in app.most_popular_packages
                 @include './components/package.html'
-                @if less_than(i, app.new_packages.len - 1)
-                <hr />
-                @end
                 @end
             </div>
         </section>

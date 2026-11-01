@@ -1,17 +1,17 @@
 <a class="package-card min-w-fit w-full" href="/packages/@pkg.name" id="package@pkg.id">
     <p class="package-card__title">@pkg.format_name()</p>
-    <p class="package-card__description h-6 mb-2 text-small text-sub overflow-ellipsis">
+    <p class="package-card__description mb-2 text-small text-muted overflow-ellipsis">
         @pkg.description<br>
     </p>
-    <div class="flex gap-4 items-center text-sub font-bold overflow-hidden">
+    <div class="meta">
         <div class="package-card__stars flex gap-2 whitespace-nowrap">
-            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use href="#star_icon"></use>
             </svg>
             @pkg.stars
         </div>
         <div class="package-card__last-update flex gap-2 whitespace-nowrap">
-            <svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use href="#download_icon"></use>
             </svg>
             @pkg.nr_downloads

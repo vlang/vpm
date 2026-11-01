@@ -1,11 +1,50 @@
 @include 'partial/header.html'
-<h1>@title</h1>
+<div>
+	<span class="eyebrow">Search results</span>
+	<h1>@title</h1>
+</div>
 
-<div class="panel flex flex-col" data-package-show-all>
-	@for i, pkg in packages
+<div class="flex items-center gap-2 flex-wrap">
+	<span class="eyebrow mb-0">Sort by</span>
+
+	@if sort == '-downloads'
+	<a class="sort-pill active" href="/search?q=@query&sort=-downloads">Downloads</a>
+	@else
+	<a class="sort-pill" href="/search?q=@query&sort=-downloads">Downloads</a>
+	@end
+
+	@if sort == '-created_at'
+	<a class="sort-pill active" href="/search?q=@query&sort=-created_at">Newest</a>
+	@else
+	<a class="sort-pill" href="/search?q=@query&sort=-created_at">Newest</a>
+	@end
+
+	@if sort == '' || sort == 'popularity' || sort == '-popularity' || sort == 'freshness' || sort == '-freshness'
+	<a class="sort-pill active" href="/search?q=@query">Popularity</a>
+	@else
+	<a class="sort-pill" href="/search?q=@query">Popularity</a>
+	@end
+
+	@if sort == '-stars'
+	<a class="sort-pill active" href="/search?q=@query&sort=-stars">Stars</a>
+	@else
+	<a class="sort-pill" href="/search?q=@query&sort=-stars">Stars</a>
+	@end
+
+	@if sort == '-updated_at'
+	<a class="sort-pill active" href="/search?q=@query&sort=-updated_at">Updated</a>
+	@else
+	<a class="sort-pill" href="/search?q=@query&sort=-updated_at">Updated</a>
+	@end
+</div>
+
+
+<div class="grid gap-3" data-package-show-all>
+	@for pkg in packages
+	@if sort == '-created_at' || sort == 'created_at'
+	@include './components/package_new.html'
+	@else
 	@include './components/package.html'
-	@if less_than(i, packages.len - 1)
-	<hr />
 	@end
 	@end
 </div>
