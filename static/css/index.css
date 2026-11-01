@@ -26,9 +26,138 @@
 @tailwind variants;
 
 @layer base {
+  /* Dark is the default: it is what the V website uses, and what a visitor
+     with no stated preference gets. Light is applied either because the
+     system asks for it, or because the reader picked it.
+
+     The `:not([data-theme])` guard keeps the two apart. Without it a reader
+     who explicitly chose dark would be flipped back to light by a system set
+     to light, which is the one thing an explicit choice must survive. */
   :root {
     color-scheme: dark;
     scroll-behavior: smooth;
+
+    --c-bg: #090b0f;
+    --c-surface: #101318;
+    --c-raised: #15191f;
+
+    --c-line: #252a32;
+    --c-control-border: #6b7585;
+
+    --c-fg: #edf0f5;
+    --c-fg-strong: #ffffff;
+    --c-muted: #939ba9;
+
+    --c-accent: #a9cefa;
+    --c-accent-strong: #c0d9f8;
+    --c-on-accent: #112034;
+
+    --c-danger: #ff6b8b;
+    --c-on-danger: #2a0810;
+    --c-success: #3ddc97;
+
+    /* The card gradient keeps its own variables: the stops carry alpha, and
+       a colour variable cannot be concatenated with an alpha suffix. */
+    --c-card-grad-a: #151a2280;
+    --c-card-grad-b: #10141980;
+
+    /* Syntax colours live here too, so prism.css holds one set of
+       structural rules instead of one stylesheet per theme. */
+    --c-syn-comment: #999;
+    --c-syn-punctuation: #ccc;
+    --c-syn-tag: #e2777a;
+    --c-syn-function: #f08d49;
+    --c-syn-keyword: #cc99cd;
+    --c-syn-string: #7ec699;
+    --c-syn-operator: #67cdcc;
+    --c-syn-variable: #6196cc;
+    --c-syn-number: #f8c555;
+    --c-syn-inserted: #6ee7a0;
+    --c-code-bg: #15191f;
+    --c-code-border: #252a32;
+  }
+
+  /* Fields sit on `raised`, the tightest of the three backgrounds, so
+     `control-border` is measured against it: 3.05:1 there, 3.19 on bg,
+     3.45 on surface. */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      color-scheme: light;
+
+      --c-bg: #f4f6fa;
+      --c-surface: #ffffff;
+      --c-raised: #eef1f7;
+
+      --c-line: #dde2ea;
+      --c-control-border: #808b9c;
+
+      --c-fg: #11161d;
+      --c-fg-strong: #000000;
+      --c-muted: #5c6676;
+
+      --c-accent: #1763c4;
+      --c-accent-strong: #0f5bb8;
+      --c-on-accent: #ffffff;
+
+      --c-danger: #c0264a;
+      --c-on-danger: #ffffff;
+      --c-success: #0f7a4d;
+
+      --c-card-grad-a: #ffffffcc;
+      --c-card-grad-b: #f7f9fccc;
+
+      --c-syn-comment: #5b646e;
+      --c-syn-punctuation: #3b4149;
+      --c-syn-tag: #b32851;
+      --c-syn-function: #9a4d00;
+      --c-syn-keyword: #7b3fa8;
+      --c-syn-string: #0f6b45;
+      --c-syn-operator: #0b6a73;
+      --c-syn-variable: #1763c4;
+      --c-syn-number: #8a5a00;
+      --c-syn-inserted: #0f7a4d;
+      --c-code-bg: #f3f5f9;
+      --c-code-border: #dde2ea;
+    }
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+
+    --c-bg: #f4f6fa;
+    --c-surface: #ffffff;
+    --c-raised: #eef1f7;
+
+    --c-line: #dde2ea;
+    --c-control-border: #808b9c;
+
+    --c-fg: #11161d;
+    --c-fg-strong: #000000;
+    --c-muted: #5c6676;
+
+    --c-accent: #1763c4;
+    --c-accent-strong: #0f5bb8;
+    --c-on-accent: #ffffff;
+
+    --c-danger: #c0264a;
+    --c-on-danger: #ffffff;
+    --c-success: #0f7a4d;
+
+    --c-card-grad-a: #ffffffcc;
+    --c-card-grad-b: #f7f9fccc;
+
+    --c-syn-comment: #5b646e;
+    --c-syn-punctuation: #3b4149;
+    --c-syn-tag: #b32851;
+    --c-syn-function: #9a4d00;
+    --c-syn-keyword: #7b3fa8;
+    --c-syn-string: #0f6b45;
+    --c-syn-operator: #0b6a73;
+    --c-syn-variable: #1763c4;
+    --c-syn-number: #8a5a00;
+    --c-syn-inserted: #0f7a4d;
+    --c-code-bg: #f3f5f9;
+    --c-code-border: #dde2ea;
   }
 
   /* The body font size belongs on body, not :root: setting it on :root
@@ -96,7 +225,7 @@
   .select {
     text-align-last: center;
     /* Arrow icon */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='white' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E%0A");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23888888' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E%0A");
     background-position: right center;
     background-size: 40px;
     text-align-last: center;
@@ -177,21 +306,22 @@
      rendered markdown matches the rest of the page instead of Typography's
      default greys. */
   .prose.package-readme {
-    --tw-prose-invert-body: theme(colors.fg);
-    --tw-prose-invert-headings: theme(colors.white);
-    --tw-prose-invert-links: theme(colors.accent.DEFAULT);
-    --tw-prose-invert-bold: theme(colors.white);
-    --tw-prose-invert-counters: theme(colors.muted);
-    --tw-prose-invert-bullets: theme(colors.control-border);
-    --tw-prose-invert-hr: theme(colors.line);
-    --tw-prose-invert-quotes: theme(colors.fg);
-    --tw-prose-invert-quote-borders: theme(colors.line);
-    --tw-prose-invert-captions: theme(colors.muted);
-    --tw-prose-invert-code: theme(colors.fg);
-    --tw-prose-invert-pre-code: theme(colors.fg);
-    --tw-prose-invert-pre-bg: theme(colors.raised);
-    --tw-prose-invert-th-borders: theme(colors.control-border);
-    --tw-prose-invert-td-borders: theme(colors.line);
+    --tw-prose-body: theme(colors.fg);
+    --tw-prose-headings: theme(colors.fg-strong);
+    --tw-prose-links: theme(colors.accent.DEFAULT);
+    --tw-prose-bold: theme(colors.fg-strong);
+    --tw-prose-counters: theme(colors.muted);
+    --tw-prose-bullets: theme(colors.control-border);
+    --tw-prose-hr: theme(colors.line);
+    --tw-prose-quotes: theme(colors.fg);
+    --tw-prose-quote-borders: theme(colors.line);
+    --tw-prose-captions: theme(colors.muted);
+    --tw-prose-code: theme(colors.fg);
+    --tw-prose-lead: theme(colors.muted);
+    --tw-prose-pre-code: theme(colors.fg);
+    --tw-prose-pre-bg: theme(colors.raised);
+    --tw-prose-th-borders: theme(colors.control-border);
+    --tw-prose-td-borders: theme(colors.line);
   }
 
   /* Author images are pixels we do not control — badges, transparent logos,
@@ -254,7 +384,7 @@
     @apply transition duration-200 hover:no-underline;
   }
   .button:hover {
-    @apply border-control-border text-white;
+    @apply border-control-border text-fg-strong;
   }
   /* `accent` is a light blue built for dark backgrounds, so its label has to
      be dark ink: white on accent measures 1.6:1, well under WCAG AA. */
@@ -276,7 +406,7 @@
      ground that reads far better than a drop shadow, which turns to haze. */
   .panel,
   .package-card {
-    background: linear-gradient(120deg, #151a2280, #10141980);
+    background: linear-gradient(120deg, var(--c-card-grad-a), var(--c-card-grad-b));
     transition: border-color 0.2s ease, transform 0.2s ease;
     @apply p-5 rounded-lg border border-line;
   }
@@ -320,6 +450,51 @@
     padding-bottom: 25px;
   }
 
+  /* A secondary control, so it lives in the footer: the header already
+     carries the logo, the search field and login, and adding it there pushed
+     the row to 412px at a 320 viewport. */
+  .theme-toggle {
+    @apply relative inline-flex items-center text-muted;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  }
+
+  /* The chevron is a mask filled with `currentColor`, not a coloured image:
+     a fixed grey would be frozen to one palette and fall under the 3:1
+     non-text threshold on the other. */
+  .theme-toggle::after {
+    content: "";
+    position: absolute;
+    right: 0.55rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    pointer-events: none;
+    background-color: currentColor;
+    -webkit-mask: var(--chevron) no-repeat center / contain;
+    mask: var(--chevron) no-repeat center / contain;
+  }
+
+  /* Without `appearance: none` the platform draws its own control and
+     ignores the background entirely. */
+  .theme-toggle select {
+    @apply bg-surface border border-line text-muted rounded font-sans appearance-none;
+    font-size: 0.8125rem;
+    padding: 0.35rem 1.6rem 0.35rem 0.6rem;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .theme-toggle:hover,
+  .theme-toggle select:hover {
+    @apply text-fg;
+  }
+
+  .theme-toggle select:hover {
+    @apply border-control-border;
+  }
+
+  .theme-toggle[hidden] {
+    display: none;
+  }
+
   .main-nav {
     @apply items-center text-muted;
     gap: 29px;
@@ -327,11 +502,11 @@
   }
 
   .main-nav a:hover {
-    @apply text-white no-underline;
+    @apply text-fg-strong no-underline;
   }
 
   .text-link {
-    @apply inline-flex items-center gap-3 text-muted hover:text-white hover:no-underline;
+    @apply inline-flex items-center gap-3 text-muted hover:text-fg-strong hover:no-underline;
     font-size: 0.8125rem;
   }
 
@@ -366,7 +541,7 @@
   }
 
   .footer-link {
-    @apply text-muted hover:text-white hover:no-underline;
+    @apply text-muted hover:text-fg-strong hover:no-underline;
     font-size: 0.8125rem;
   }
 
@@ -429,6 +604,14 @@
     @apply line-clamp-1;
   }
 
+  /* The home page runs two lists side by side, so a card without a
+     description must still occupy the same height as one with it — otherwise
+     the two columns drift a line apart and never line up again. Full-width
+     listings keep collapsing, where the empty line is just waste. */
+  .content-section-t .package-card__description {
+    min-height: 1.5rem;
+  }
+
   .package-card__attribute:not(
       *[data-package-stars] .package-card__attribute.package-card__stars,
       *[data-package-downloads]
@@ -474,6 +657,18 @@
 }
 
 @layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
   .clip-zero {
     clip-path: inset(0 0 0 0);
   }

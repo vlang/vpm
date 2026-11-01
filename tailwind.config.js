@@ -16,34 +16,31 @@
 module.exports = {
     content: ["./templates/**/*.{html,js}"],
     theme: {
+        // Every chromatic role points at a CSS custom property, so the two
+        // themes are one set of values redefined in `index.css` rather than a
+        // second build. No `/alpha` modifier is used anywhere in this project,
+        // which is what makes whole-colour variables viable here.
         colors: {
-            // Backgrounds, from furthest back to closest to the reader.
-            bg: "#090b0f",
-            surface: "#101318",
-            raised: "#15191f",
+            bg: "var(--c-bg)",
+            surface: "var(--c-surface)",
+            raised: "var(--c-raised)",
 
-            // `line` is decorative separation only (1.3:1 on surface).
-            // Anything that must be *identified* by its outline — form fields,
-            // focus rings — uses `control-border`, which clears the 3:1
-            // non-text threshold on all three backgrounds: 3.79:1 on raised,
-            // 4.00:1 on surface, 4.23:1 on bg. Fields sit on `raised`, which
-            // is the tightest of the three.
-            line: "#252a32",
-            "control-border": "#6b7585",
+            line: "var(--c-line)",
+            "control-border": "var(--c-control-border)",
 
-            fg: "#edf0f5",
-            muted: "#939ba9",
+            fg: "var(--c-fg)",
+            "fg-strong": "var(--c-fg-strong)",
+            muted: "var(--c-muted)",
 
             accent: {
-                DEFAULT: "#a9cefa",
-                strong: "#c0d9f8",
-                dim: "#8fb4e0",
+                DEFAULT: "var(--c-accent)",
+                strong: "var(--c-accent-strong)",
             },
-            "on-accent": "#112034",
+            "on-accent": "var(--c-on-accent)",
 
-            danger: "#ff6b8b",
-            "on-danger": "#2a0810",
-            success: "#3ddc97",
+            danger: "var(--c-danger)",
+            "on-danger": "var(--c-on-danger)",
+            success: "var(--c-success)",
 
             // Literal colours keep their literal meaning.
             white: "#FFFFFF",

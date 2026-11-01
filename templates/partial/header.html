@@ -7,6 +7,21 @@
 	<link rel="icon" href="/favicon.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>@ctx.title</title>
+	<script>
+		// Applied before the first paint, otherwise the page flashes the
+		// default theme before the reader's choice lands. Only reads; the
+		// toggle below does the writing. A blocked localStorage throws on
+		// access, and the catch leaves us on the system preference, which is
+		// also what a reader without JavaScript gets.
+		(function () {
+			try {
+				var t = localStorage.getItem('vpm-theme');
+				if (t === 'light' || t === 'dark') {
+					document.documentElement.setAttribute('data-theme', t);
+				}
+			} catch (e) { }
+		})();
+	</script>
 	@include 'assets/styles.html'
 </head>
 
