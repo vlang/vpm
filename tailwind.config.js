@@ -3,11 +3,10 @@
 // Palette aligned with the V website (vlang/website, static/app.css) so vpm and
 // vlang.io read as one product.
 //
-// These are build-time literals, which is enough for a single dark theme but
-// does not allow switching at runtime: a second theme would mean moving the
-// values to CSS custom properties on :root and pointing these names at them.
-// `static/css/prism.css` is not processed by Tailwind, so it necessarily
-// repeats two of these values; keep the two files in step by hand.
+// Every chromatic role points at a CSS custom property defined in
+// `static/css/index.css`, where the light and dark values live side by side.
+// That is also what lets `static/css/prism.css`, which Tailwind never sees,
+// carry one set of structural rules for both themes.
 //
 // Names are semantic roles, not literal colours:
 // `accent` is a *light* blue meant for dark backgrounds, which is why text on

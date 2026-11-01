@@ -52,11 +52,6 @@
 	(function () {
 		var sel = document.getElementById('theme-select');
 		if (!sel) { return; }
-		var stored = null;
-		try { stored = localStorage.getItem('vpm-theme'); } catch (e) { }
-		sel.value = (stored === 'light' || stored === 'dark') ? stored : 'system';
-		sel.closest('.theme-toggle').hidden = false;
-
 		function apply(pref) {
 			if (pref === 'light' || pref === 'dark') {
 				document.documentElement.setAttribute('data-theme', pref);
@@ -64,6 +59,23 @@
 				document.documentElement.removeAttribute('data-theme');
 			}
 		}
+
+		// Re-read here rather than trusting what the <head> applied: another
+		// tab may have written between the two, and syncing only the control
+		// would leave the label disagreeing with the page.
+		var stored = null;
+		try { stored = localStorage.getItem('vpm-theme'); } catch (e) { }
+		if (stored === 'light' || stored === 'dark') {
+			sel.value = stored;
+			apply(stored);
+		} else if (stored === null && !document.documentElement.hasAttribute('data-theme')) {
+			sel.value = 'system';
+		} else {
+			// Storage became unreadable, or holds something we do not accept:
+			// keep whatever is already on the page instead of contradicting it.
+			sel.value = document.documentElement.getAttribute('data-theme') || 'system';
+		}
+		sel.closest('.theme-toggle').hidden = false;
 
 		sel.addEventListener('change', function () {
 			var pref = sel.value;

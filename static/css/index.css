@@ -302,9 +302,9 @@
   }
 
   /* Tailwind Typography drives every colour in the README through its
-     --tw-prose-* variables; point the inverted set at our tokens so the
-     rendered markdown matches the rest of the page instead of Typography's
-     default greys. */
+     --tw-prose-* variables. Pointing them at our tokens makes the rendered
+     markdown follow whichever theme is active, which is why `prose-invert`
+     is not used: it would pin the dark set in place. */
   .prose.package-readme {
     --tw-prose-body: theme(colors.fg);
     --tw-prose-headings: theme(colors.fg-strong);
@@ -548,6 +548,10 @@
   /* Applied by Notyf from package.html, not by a class attribute. */
   .notification-toast {
     @apply pl-8 pr-6 rounded font-bold text-small bg-accent text-on-accent;
+  }
+
+  .notification-toast--error {
+    @apply bg-danger text-on-danger;
   }
 
   /* A form field has to be identifiable by its outline, so it uses

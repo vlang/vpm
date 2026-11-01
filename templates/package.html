@@ -31,7 +31,7 @@
 
         <!-- Markdown -->
         <div
-            class="package-readme min-w-0 mt-8 prose prose-invert prose-h1:mt-6 prose-h1:mb-4 prose-p:mt-0 prose-p:mb-4 prose-ul:my-0 prose-li:my-0 prose-img:my-0 max-w-none">
+            class="package-readme min-w-0 mt-8 prose prose-h1:mt-6 prose-h1:mb-4 prose-p:mt-0 prose-p:mb-4 prose-ul:my-0 prose-li:my-0 prose-img:my-0 max-w-none">
             @pkg_readme
         </div>
     </div>
@@ -120,15 +120,22 @@
     // Thing that creates notifications
     var notyf = new Notyf({
         duration: 3000,
+        // Notyf assigns these straight to `style.background`, so a custom
+        // property follows the theme while a literal would freeze one
+        // palette's colour under a label that flips with the other.
         types: [{
             type: 'success',
             className: 'notification-toast',
-            background: '#a9cefa',
+            background: 'var(--c-accent)',
             icon: `
 			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
 				<use href="#clipboard_icon"></use>
 			</svg>
 			`
+        }, {
+            type: 'error',
+            className: 'notification-toast notification-toast--error',
+            background: 'var(--c-danger)'
         }]
     });
 
