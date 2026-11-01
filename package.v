@@ -124,7 +124,7 @@ pub fn (mut app App) edit(mut ctx Context, name string) veb.Result {
 	return $veb.html()
 }
 
-@['/packages/:name/edit'; POST]
+@['/packages/:name/edit'; post]
 pub fn (mut app App) perform_edit(mut ctx Context, name string) veb.Result {
 	pkg := app.packages().get(name) or {
 		// app.error(err.msg())
@@ -169,7 +169,7 @@ pub fn (mut app App) delete(mut ctx Context, name string) veb.Result {
 	return $veb.html()
 }
 
-@['/packages/:name/delete'; POST]
+@['/packages/:name/delete'; post]
 pub fn (mut app App) perform_delete(mut ctx Context, name string) veb.Result {
 	pkg := app.packages().get(name) or {
 		// app.error(err.msg())
