@@ -40,7 +40,7 @@
 
 
 <div class="grid gap-3" data-package-show-all>
-	@for i, pkg in packages
+	@for pkg in packages
 	@if sort == '-created_at' || sort == 'created_at'
 	@include './components/package_new.html'
 	@else
