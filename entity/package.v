@@ -47,8 +47,9 @@ pub fn (p Package) score(now time.Time) i64 {
 	secs_since_upd := now_unix - p.updated_at.unix()
 	days_upd := if secs_since_upd > 0 { secs_since_upd / 86400 } else { i64(0) }
 
-	rate := (i64(p.nr_downloads) + i64(p.stars) * 50) / days_cre
-	// Scale by 1000 before the final divide so packages with similar rates
-	// still order deterministically under integer arithmetic.
-	return rate * 1000 * 365 / (365 + days_upd)
+	// Scale before any division. Dividing first would quantise the result to
+	// steps of `days_cre`: on a 100-day-old package every count from 0 to 99
+	// collapsed to 0, and 100 to 199 all tied at the same value.
+	weighted := (i64(p.nr_downloads) + i64(p.stars) * 50) * 1000 * 365
+	return weighted / (days_cre * (365 + days_upd))
 }
