@@ -2,6 +2,7 @@ module repo
 
 import orm
 import entity { Package }
+import time
 
 const banned_names = ['xxx']
 
@@ -149,7 +150,8 @@ pub fn (p PackagesRepo) update_package_stars(package_id int, stars int) ! {
 }
 
 pub fn (p PackagesRepo) update_package_info(package_id int, name string, url string, description string) ! {
+	now := time.now()
 	sql p.db {
-		update Package set name = name, url = url, description = description where id == package_id
+		update Package set name = name, url = url, description = description, updated_at = now where id == package_id
 	}!
 }
