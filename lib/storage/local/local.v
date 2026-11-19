@@ -28,7 +28,7 @@ pub fn (p Provider) read(path string) !storage.Entry {
 	p.ensure_still_provider_folder(target_path)!
 
 	file_stat := os.stat(target_path) or {
-		if os.is_not_exist(err) {
+		if !os.exists(target_path) {
 			return storage.err_not_found
 		}
 		return err
