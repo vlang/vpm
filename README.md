@@ -18,7 +18,12 @@
 [![Twitter][TwitterBadge]][TwitterUrl]
 </div>
 
-Instantly publish your modules and install them. Use the API to interact and find out more information about available modules. Become a contributor and enhance V with your work. [vpm.vlang.io →][vpm]
+Instantly publish your modules and install them. Use the API to interact and find out more
+information about available modules. Become a contributor and enhance V with your work.
+[vpm.vlang.io →][vpm]
+
+Package pages refresh the README from the repository's default branch on the first visit after
+the 24-hour cache expires. If the refresh fails, VPM continues to display the cached README.
 
 To run it locally, just run
 
@@ -29,7 +34,8 @@ v .
 
 Don't forget to update `config.toml`: set your Postgres host, port, user, password, and dbname.
 
-Make sure you have `libpq-dev` installed. Please refer to your OS or distribution documentation to install it.
+Make sure you have `libpq-dev` installed. Please refer to your OS or distribution documentation to
+install it.
 
 In order to use GitHub authentication, add GitHub client id and secret as well.
 
@@ -42,7 +48,8 @@ curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/t
 chmod +x tailwindcss-linux-x64
 mv tailwindcss-linux-x64 tailwindcss
 ```
-You can edit the tailwind configuration in `tailwind.config.js` and add custom css to `static/css/index.css`.
+You can edit the tailwind configuration in `tailwind.config.js` and add custom css to
+`static/css/index.css`.
 
 ### Watching CSS
 Use the Standalone CLI to watch the css for changes

@@ -1,6 +1,7 @@
 module local
 
 import os
+import crypto.rand
 import lib.storage
 
 @[noinit]
@@ -19,23 +20,26 @@ pub fn new(path string) !Provider {
 	}
 }
 
-pub fn (p Provider) read(path string) ![]u8 {
+// read returns the stored content and its modification time in Unix seconds.
+pub fn (p Provider) read(path string) !storage.Entry {
 	target_path := p.target_path(path)
 
 	// Just ensuring that we don't go out of provided directory
 	p.ensure_still_provider_folder(target_path)!
 
-	// Read file
-	data := os.read_file(target_path) or {
-		if err.msg().starts_with('failed to open file') {
+	file_stat := os.stat(target_path) or {
+		if os.is_not_exist(err) {
 			return storage.err_not_found
 		}
-
 		return err
 	}
-	return data.bytes()
+	return storage.Entry{
+		data:        os.read_bytes(target_path)!
+		modified_at: file_stat.mtime
+	}
 }
 
+// save writes the content to a temporary file before replacing the stored file.
 pub fn (p Provider) save(path string, content []u8) ! {
 	target_path := p.target_path(path)
 
@@ -44,8 +48,17 @@ pub fn (p Provider) save(path string, content []u8) ! {
 
 	os.mkdir_all(os.dir(target_path))!
 
-	// Write file
-	os.write_file_array(target_path, content)!
+	suffix := rand.bytes(16)!
+	temp_path := target_path + '.' + suffix.hex() + '.tmp'
+	defer {
+		os.rm(temp_path) or {}
+	}
+	os.write_file_array(temp_path, content)!
+	$if windows {
+		os.mv(temp_path, target_path, overwrite: true)!
+	} $else {
+		os.rename(temp_path, target_path)!
+	}
 }
 
 fn (p Provider) target_path(path string) string {
