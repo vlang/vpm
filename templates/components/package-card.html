@@ -1,5 +1,8 @@
 <a class="package-card min-w-fit w-full" href="/packages/@pkg.name" id="package@pkg.id">
-    <p class="package-card__title">@pkg.format_name()</p>
+    <p class="package-card__title">@pkg.short_name()</p>
+    @if pkg.author_name().len > 0
+    <p class="block mb-2 text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">@pkg.author_name()</p>
+    @end
     <p class="package-card__description h-6 mb-2 text-small text-sub overflow-ellipsis">
         @pkg.description<br>
     </p>

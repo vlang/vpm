@@ -1,7 +1,12 @@
 <section class="package" id="package@pkg.id">
     <a class="package-card__title hover:underline cursor-pointer" href="/packages/@pkg.name">
-        @pkg.format_name()
+        @pkg.short_name()
     </a>
+    @if pkg.author_name().len > 0
+    <p class="block mb-2 text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">
+        @pkg.author_name()
+    </p>
+    @end
     <p
         class="package-card__description h-6 mb-2 block text-small text-sub overflow-hidden whitespace-nowrap overflow-ellipsis">
         @pkg.description
