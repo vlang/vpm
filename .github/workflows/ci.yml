@@ -5,18 +5,26 @@ on: [push, pull_request]
 jobs:
   code-formatting:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - name: Checkout V
+        id: checkout_v
         uses: actions/checkout@v2
         with:
           repository: vlang/v
       - name: Checkout VPM
+        id: checkout_vpm
+        if: ${{ success() && !cancelled() && steps.checkout_v.outcome == 'success' }}
         uses: actions/checkout@v2
         with:
           path: vpm
       - name: Build V
+        id: build_v
+        if: ${{ success() && !cancelled() && steps.checkout_vpm.outcome == 'success' }}
         run: make
       - name: v fmt -verify
+        id: v_fmt_verify
+        if: ${{ success() && !cancelled() && steps.build_v.outcome == 'success' }}
         run: |
           cd vpm
           ../v install
@@ -24,18 +32,34 @@ jobs:
 
   ubuntu:
     runs-on: ubuntu-latest
+    env:
+      # Explicit test parallelism: a worker peaks near 0.25 GB,
+      # so this stays CPU-bound with ample headroom.
+      VJOBS: '4'
+      # Stop a failing test session at its first failure instead of
+      # running the whole suite to completion; the remaining files
+      # add no signal.
+      VTEST_FAIL_FAST: '1'
+    timeout-minutes: 60
     steps:
       - name: Checkout V
+        id: checkout_v
         uses: actions/checkout@v2
         with:
           repository: vlang/v
       - name: Checkout VPM
+        id: checkout_vpm
+        if: ${{ success() && !cancelled() && steps.checkout_v.outcome == 'success' }}
         uses: actions/checkout@v2
         with:
           path: vpm
       - name: Install dependencies
+        id: install_dependencies
+        if: ${{ success() && !cancelled() && steps.checkout_vpm.outcome == 'success' }}
         run: sudo apt-get install --quiet -y postgresql libpq-dev libssl-dev
       - name: Start PostgreSQL for tests
+        id: start_postgresql_for_tests
+        if: ${{ success() && !cancelled() && steps.install_dependencies.outcome == 'success' }}
         run: |
           sudo systemctl start postgresql.service
           sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
@@ -44,13 +68,19 @@ jobs:
           sudo sed -i -E 's/^(host\s+all\s+all\s+::1\/128\s+)\S+\s*$/\1trust/' "$PG_HBA"
           sudo systemctl restart postgresql.service
       - name: Build V
+        id: build_v
+        if: ${{ success() && !cancelled() && steps.start_postgresql_for_tests.outcome == 'success' }}
         run: make
       - name: Run tests
+        id: run_tests
+        if: ${{ success() && !cancelled() && steps.build_v.outcome == 'success' }}
         run: |
           cd vpm
           ../v install
           ../v test .
       - name: Build VPM
+        id: build_vpm
+        if: ${{ success() && !cancelled() && steps.run_tests.outcome == 'success' }}
         run: |
           cd vpm
           ../v install
