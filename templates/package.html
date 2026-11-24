@@ -62,6 +62,10 @@
             @if ctx.is_able_to_edit(pkg)
             <div class="pb-2 flex flex-wrap gap-2">
                 <a class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2"
+                    href="/packages/@pkg.name/refresh">
+                    Refresh README
+                </a>
+                <a class="button text-dark-grey whitespace-nowrap hover:no-underline bg-off-white flex gap-2"
                     href="/packages/@pkg.name/edit">
                     <svg class="shrink-0" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                         <use href="#edit"></use>
