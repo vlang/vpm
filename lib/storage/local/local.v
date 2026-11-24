@@ -39,6 +39,18 @@ pub fn (p Provider) read(path string) !storage.Entry {
 	}
 }
 
+// delete removes the stored file, if present.
+pub fn (p Provider) delete(path string) ! {
+	target_path := p.target_path(path)
+
+	// Just ensuring that we don't go out of provided directory
+	p.ensure_still_provider_folder(target_path)!
+
+	if os.exists(target_path) {
+		os.rm(target_path)!
+	}
+}
+
 // save writes the content to a temporary file before replacing the stored file.
 pub fn (p Provider) save(path string, content []u8) ! {
 	target_path := p.target_path(path)

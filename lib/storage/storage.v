@@ -9,4 +9,5 @@ pub:
 pub interface Provider {
 	read(path string) !Entry
 	save(path string, content []u8) !
+	delete(path string) !
 }

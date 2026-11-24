@@ -10,6 +10,7 @@ import time
 import usecase.package as package_readme
 
 const readme_cache_lifetime_seconds = 24 * 60 * 60
+const readme_refresh_rate_limit_seconds = 5 * 60
 
 @['/new']
 fn (app &App) new(mut ctx Context) veb.Result {
@@ -75,14 +76,23 @@ pub fn (app &App) package(mut ctx Context, name string) veb.Result {
 	return $veb.html()
 }
 
-fn get_readme(cache storage.Provider, path string, fetch fn () !string) !string {
+fn get_readme(cache storage.Provider, path string, fetch fn () !string, force ...bool) !string {
+	is_force := force.len > 0 && force[0]
+
 	cached := cache.read(path) or {
 		if err != storage.err_not_found {
 			return error('failed to read readme from storage: ${err}')
 		}
 		storage.Entry{}
 	}
-	if cached.modified_at > time.now().unix() - readme_cache_lifetime_seconds {
+
+	now := time.now().unix()
+
+	if is_force && cached.modified_at > 0 && now - cached.modified_at < readme_refresh_rate_limit_seconds {
+		return cached.data.bytestr()
+	}
+
+	if !is_force && cached.modified_at > now - readme_cache_lifetime_seconds {
 		return cached.data.bytestr()
 	}
 
@@ -101,6 +111,19 @@ fn get_readme(cache storage.Provider, path string, fetch fn () !string) !string 
 	}
 
 	return rendered
+}
+
+// refresh_readme forces a (rate-limited) refresh of the cached package README.
+@['/packages/:name/refresh']
+pub fn (app &App) refresh_readme(mut ctx Context, name string) veb.Result {
+	pkg := app.packages().get(name) or { return ctx.redirect('/') }
+
+	readme_path := '/packages_readme/${pkg.id}/README.html'
+	get_readme(app.storage, readme_path, fn [pkg] () !string {
+		return package_readme.fetch_markdown(pkg.url)
+	}, true) or {}
+
+	return ctx.redirect('/packages/${name}')
 }
 
 @['/packages/:name/edit']
@@ -146,6 +169,10 @@ pub fn (mut app App) perform_edit(mut ctx Context, name string) veb.Result {
 		// app.error(err.msg())
 		// return app.edit(name)
 	}
+
+	// Invalidate the cached README so the next view reflects upstream changes.
+	readme_path := '/packages_readme/${pkg.id}/README.html'
+	app.storage.delete(readme_path) or {}
 
 	return ctx.redirect('/')
 }
